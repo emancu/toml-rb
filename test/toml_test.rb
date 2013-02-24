@@ -69,7 +69,6 @@ class TomlTest < Test::Unit::TestCase
     assert_equal({"works" => true}, match.value)
   end
 
-
   def test_array
     match = Toml.parse('array = [ 2, 4]', :root => :keyvalue)
     assert_equal({"array" => [2,4]}, match.value)
@@ -84,6 +83,10 @@ class TomlTest < Test::Unit::TestCase
     assert_equal({"array" => [["hey","TOML"], [2,4]]}, match.value)
   end
 
+  def test_datetime
+    match = Toml.parse('dob = 1986-08-28T15:15:00Z', :root => :keyvalue)
+    assert_equal( {"dob" => Time.utc(1986,8,28,15,15)} ,match.value)
+  end
 
 
   private

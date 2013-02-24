@@ -11,11 +11,18 @@ grammar Primitive
     [a-zA-Z]+
   end
 
-  rule float
-    sign? number ('.' number)?
+  # Full Zulu form
+  rule datetime
+    ( y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z" ) {
+      Time.utc( *[y,m,d,h,mi,s].map(&:value))
+    }
   end
 
-  rule number
+  rule float
+    sign? integer ('.' integer)?
+  end
+
+  rule integer
     sign? [0-9]+
   end
 
@@ -61,13 +68,13 @@ grammar Toml
   end
 
   rule keyvalue
-    (space? word space? '=' space? (string | bool | float | array ) space? comment? ) {
+    (space? word space? '=' space? (datetime | string | bool | float | array ) space? comment? ) {
       def key
         word
       end
 
       def val
-        eval(string || bool || float || array)
+        datetime ? datetime.value : eval(string || bool || float || array)
       end
 
       def value
