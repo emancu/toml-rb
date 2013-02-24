@@ -1,3 +1,5 @@
+require_relative "helper"
+
 class TomlTest < Test::Unit::TestCase
   def test_comment
     match = Toml.parse('# This is a comment', :root => :comment)
