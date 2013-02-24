@@ -1,4 +1,12 @@
 grammar Primitive
+  rule primitive
+    (string | float | bool | array | datetime)
+  end
+
+  rule array
+    '[' space? (primitive (',' space? primitive)*)* space? ']'
+  end
+
   rule string
     ('"' word ( [\s] word)* '"') { eval(self) }
   end
@@ -35,29 +43,8 @@ grammar Primitive
   end
 end
 
-grammar Arrays
-  include Primitive
-
-  rule array
-    ("[" space? (float_array | string_array | array_array )* space? "]")
-  end
-
-  rule float_array
-    (float ("," space? float)*)
-  end
-
-  rule string_array
-    (string ("," space? string)*)
-  end
-
-  rule array_array
-    (array ("," space? array)*)
-  end
-end
-
 grammar Toml
   include Primitive
-  include Arrays
 
   rule comment
     (space? "#" comment:(.)*) { comment }
