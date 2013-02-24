@@ -47,5 +47,17 @@ class TomlTest < Test::Unit::TestCase
     assert_equal(1.69, match.val)
     assert_equal({"height" => 1.69}, match.value)
   end
+
+  def test_keyvalue_signed_numbers
+    match = Toml.parse('age = +26', :root => :keyvalue)
+    assert_equal(26, match.val)
+    match = Toml.parse('age = -26', :root => :keyvalue)
+    assert_equal(-26, match.val)
+    match = Toml.parse('height = +1.69', :root => :keyvalue)
+    assert_equal(1.69, match.val)
+    match = Toml.parse('height = -1.69', :root => :keyvalue)
+    assert_equal(-1.69, match.val)
+  end
+
 end
 
