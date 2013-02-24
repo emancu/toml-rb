@@ -69,6 +69,21 @@ class TomlTest < Test::Unit::TestCase
     assert_equal({"works" => true}, match.value)
   end
 
+
+  def test_array
+    match = Toml.parse('array = [ 2, 4]', :root => :keyvalue)
+    assert_equal({"array" => [2,4]}, match.value)
+
+    match = Toml.parse('array = [ 2.4, 4.72]', :root => :keyvalue)
+    assert_equal({"array" => [2.4,4.72]}, match.value)
+
+    match = Toml.parse('array = [ "hey", "TOML"]', :root => :keyvalue)
+    assert_equal({"array" => ["hey","TOML"]}, match.value)
+
+  end
+
+
+
   private
 
   # Creates all the alternatives of valid indentations to test

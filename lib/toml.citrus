@@ -28,9 +28,26 @@ grammar Primitive
   end
 end
 
+grammar Arrays
+  include Primitive
+
+  rule array
+    ("[" space? (float_array | string_array ) "]")
+  end
+
+  rule float_array
+    (float ("," space? float)*)
+  end
+
+  rule string_array
+    (string ("," space? string)*)
+  end
+
+end
 
 grammar Toml
   include Primitive
+  include Arrays
 
   rule comment
     (space? "#" comment:(.)*) { comment }
@@ -41,13 +58,13 @@ grammar Toml
   end
 
   rule keyvalue
-    (space? word ' = ' (string | bool | float | number) space? comment? ) {
+    (space? word space? '=' space? (string | bool | float | array ) space? comment? ) {
       def key
         word
       end
 
       def val
-        eval(string || bool || float || number)
+        eval(string || bool || float || array)
       end
 
       def value
