@@ -69,8 +69,10 @@ class TomlTest < Test::Unit::TestCase
     assert_equal({"works" => true}, match.value)
   end
 
-
   def test_array
+    match = Toml.parse('array = []', :root => :keyvalue)
+    assert_equal({"array" => []}, match.value)
+
     match = Toml.parse('array = [ 2, 4]', :root => :keyvalue)
     assert_equal({"array" => [2,4]}, match.value)
 
@@ -83,8 +85,6 @@ class TomlTest < Test::Unit::TestCase
     match = Toml.parse('array = [ ["hey", "TOML"], [2,4] ]', :root => :keyvalue)
     assert_equal({"array" => [["hey","TOML"], [2,4]]}, match.value)
   end
-
-
 
   private
 

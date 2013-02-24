@@ -32,7 +32,7 @@ grammar Arrays
   include Primitive
 
   rule array
-    ("[" space? (float_array | string_array | array_array ) space? "]")
+    ("[" space? (float_array | string_array | array_array )* space? "]")
   end
 
   rule float_array
