@@ -1,5 +1,5 @@
 require "test/unit"
 require 'citrus'
 
-Citrus.load '/Users/emancu/Sites/toml_parser-ruby/lib/toml'
+Citrus.load File.dirname(__FILE__) + '/../lib/toml'
 
