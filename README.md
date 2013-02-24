@@ -8,7 +8,7 @@ Installation
 
 Run this line
 
-    $ gem install toml-ruby
+    $ gem install toml_parser-ruby
 
 Test
 ----
