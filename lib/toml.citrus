@@ -1,8 +1,6 @@
 grammar Primitive
   rule string
-    ('"' word ( [\s] word)* '"') {
-      eval(self)
-    }
+    ('"' word ( [\s] word)* '"') { eval(self) }
   end
 
   rule bool
@@ -24,6 +22,10 @@ grammar Primitive
   rule sign
     ('+' | '-')
   end
+
+  rule space
+    [ \t]*
+  end
 end
 
 
@@ -31,15 +33,15 @@ grammar Toml
   include Primitive
 
   rule comment
-    "#" (.)*
+    (space? "#" comment:(.)*) { comment }
   end
 
   rule keygroup
-    ('[' word ']') { word.value }
+    ( space? '[' word ']' space? comment?) { word.value }
   end
 
   rule keyvalue
-    (word ' = ' (string | bool | float | number) ) {
+    (space? word ' = ' (string | bool | float | number) space? comment? ) {
       def key
         word
       end
