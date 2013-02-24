@@ -70,6 +70,9 @@ class TomlTest < Test::Unit::TestCase
   end
 
   def test_array
+    match = Toml.parse('array = []', :root => :keyvalue)
+    assert_equal({"array" => []}, match.value)
+
     match = Toml.parse('array = [ 2, 4]', :root => :keyvalue)
     assert_equal({"array" => [2,4]}, match.value)
 
