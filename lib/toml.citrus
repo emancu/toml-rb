@@ -1,0 +1,57 @@
+grammar Primitive
+  rule string
+    ('"' word ( [\s] word)* '"') {
+      eval(self)
+    }
+  end
+
+  rule bool
+    'true' | 'false'
+  end
+
+  rule word
+    [a-zA-Z]+
+  end
+
+  rule float
+    sign? number ('.' number)?
+  end
+
+  rule number
+    sign? [0-9]+
+  end
+
+  rule sign
+    ('+' | '-')
+  end
+end
+
+
+grammar Toml
+  include Primitive
+
+  rule comment
+    "#" (.)*
+  end
+
+  rule keygroup
+    ('[' word ']') { word.value }
+  end
+
+  rule keyvalue
+    (word ' = ' (string | bool | float | number) ) {
+      def key
+        word
+      end
+
+      def val
+        eval(string || bool || float || number)
+      end
+
+      def value
+        Hash[word.value, val]
+      end
+    }
+  end
+end
+
