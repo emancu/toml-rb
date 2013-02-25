@@ -88,7 +88,18 @@ class TomlTest < Test::Unit::TestCase
 
   def test_datetime
     match = Toml.parse('dob = 1986-08-28T15:15:00Z', :root => :keyvalue)
-    assert_equal( {"dob" => Time.utc(1986,8,28,15,15)} ,match.value)
+    assert_equal( {"dob" => Time.utc(1986,8,28,15,15)}, match.value)
+
+    multiline_array = <<-EOS
+      array = [
+        "hey",
+        "ho",
+        "lets",
+        "go",
+      ]
+    EOS
+    match = Toml.parse(multiline_array, :root => :keyvalue)
+    assert_equal({"array" => ["hey", "ho", "lets", "go"]}, match.value)
   end
 
 
