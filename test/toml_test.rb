@@ -84,6 +84,17 @@ class TomlTest < Test::Unit::TestCase
 
     match = Toml.parse('array = [ ["hey", "TOML"], [2,4] ]', :root => :keyvalue)
     assert_equal({"array" => [["hey","TOML"], [2,4]]}, match.value)
+
+    multiline_array = <<-EOS
+      array = [
+        "hey",
+        "ho",
+        "lets",
+        "go",
+      ]
+    EOS
+    match = Toml.parse(multiline_array, :root => :keyvalue)
+    assert_equal({"array" => ["hey", "ho", "lets", "go"]}, match.value)
   end
 
   def test_datetime
