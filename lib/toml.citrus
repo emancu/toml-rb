@@ -59,7 +59,11 @@ grammar Array
   include Primitive
 
   rule array
-    ("[" indent? (float_array | string_array | array_array )* ","? indent? "]" indent?) { eval(self) }
+    ("[" indent? (elements)* ","? indent? "]" indent?) { eval(self) }
+  end
+
+  rule elements
+    float_array | string_array | array_array | integer_array | datetime_array | bool_array
   end
 
   rule float_array
@@ -72,6 +76,18 @@ grammar Array
 
   rule array_array
     (array ("," indent? array)*)
+  end
+
+  rule integer_array
+    (integer ("," indent? integer)*)
+  end
+
+  rule datetime_array
+    (datetime ("," indent? datetime)*)
+  end
+
+  rule bool_array
+    (bool ("," indent? bool)*)
   end
 end
 
