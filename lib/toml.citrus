@@ -42,6 +42,10 @@ grammar Primitive
     [ \t]*
   end
 
+  rule indent
+    [ \t\n]*
+  end
+
   rule true
     'true' { true }
   end
@@ -51,29 +55,29 @@ grammar Primitive
   end
 end
 
-grammar Arrays
+grammar Array
   include Primitive
 
   rule array
-    ("[" space? (float_array | string_array | array_array )* space? "]") { eval(self) }
+    ("[" indent? (float_array | string_array | array_array )* ","? indent? "]" indent?) { eval(self) }
   end
 
   rule float_array
-    (float ("," space? float)*)
+    (float ("," indent? float)*)
   end
 
   rule string_array
-    (string ("," space? string)*)
+    (string ("," indent? string)*)
   end
 
   rule array_array
-    (array ("," space? array)*)
+    (array ("," indent? array)*)
   end
 end
 
 grammar Toml
   include Primitive
-  include Arrays
+  include Array
 
   rule comment
     (space? "#" comment:(.)*) { comment }
