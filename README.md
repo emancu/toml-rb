@@ -1,7 +1,7 @@
 toml_parser-ruby
 ================
 
-A parser for TOML using Citrus library.
+A [TOML](https://github.com/mojombo/toml) parser for using [Citrus](http://mjijackson.com/citrus/example.html) library.
 
 Installation
 ------------
