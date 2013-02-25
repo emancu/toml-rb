@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'toml_parser-ruby'
-  s.version     = '0.0.1'
+  s.version     = '0.2'
   s.date        = '2013-02-24'
   s.summary     = "TOML parser in ruby, for ruby."
   s.description = "A TOML parser using Citrus parsing library"
