@@ -55,7 +55,7 @@ grammar Primitive
   end
 end
 
-grammar Array
+grammar TomlArray
   include Primitive
 
   rule array
@@ -93,7 +93,7 @@ end
 
 grammar Toml
   include Primitive
-  include Array
+  include TomlArray
 
   rule comment
     (space? "#" comment:(.)*) { comment }
