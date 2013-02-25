@@ -1,37 +1,49 @@
 grammar Primitive
+  rule primitive
+    string | bool | datetime | float | integer
+  end
+
   rule string
     ('"' word ( [\s] word)* '"') { eval(self) }
   end
 
   rule bool
-    'true' | 'false'
+    true | false
+  end
+
+  # Full Zulu form
+  rule datetime
+    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z") {
+      Time.utc(*[y,m,d,h,mi,s].map(&:value))
+    }
+  end
+
+  rule float
+    (integer ('.' integer)?) { to_f }
+  end
+
+  rule integer
+    (sign? [0-9]+) { to_i }
+  end
+
+  rule sign
+    '+' | '-'
   end
 
   rule word
     [a-zA-Z]+
   end
 
-  # Full Zulu form
-  rule datetime
-    ( y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z" ) {
-      Time.utc( *[y,m,d,h,mi,s].map(&:value))
-    }
-  end
-
-  rule float
-    sign? integer ('.' integer)?
-  end
-
-  rule integer
-    sign? [0-9]+
-  end
-
-  rule sign
-    ('+' | '-')
-  end
-
   rule space
     [ \t]*
+  end
+
+  rule true
+    'true' { true }
+  end
+
+  rule false
+    'false' { false }
   end
 end
 
@@ -39,7 +51,7 @@ grammar Arrays
   include Primitive
 
   rule array
-    ("[" space? (float_array | string_array | array_array )* space? "]")
+    ("[" space? (float_array | string_array | array_array )* space? "]") { eval(self) }
   end
 
   rule float_array
@@ -64,17 +76,17 @@ grammar Toml
   end
 
   rule keygroup
-    ( space? '[' word ']' space? comment?) { word.value }
+    (space? '[' word ']' space? comment?) { word.value }
   end
 
   rule keyvalue
-    (space? word space? '=' space? (datetime | string | bool | float | array ) space? comment? ) {
+    (space? word space? '=' space? v:(primitive | array) space? comment?) {
       def key
         word
       end
 
       def val
-        datetime ? datetime.value : eval(string || bool || float || array)
+        v.value
       end
 
       def value
