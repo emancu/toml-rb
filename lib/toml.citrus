@@ -1,4 +1,12 @@
 grammar Primitive
+  rule primitive
+    (string | float | bool | array | datetime)
+  end
+
+  rule array
+    '[' indent? (primitive (',' indent? primitive)*)* ','? indent? ']'
+  end
+
   rule string
     ('"' word ( [\s] word)* '"') { eval(self) }
   end
@@ -33,31 +41,14 @@ grammar Primitive
   rule space
     [ \t]*
   end
-end
 
-grammar Arrays
-  include Primitive
-
-  rule array
-    ("[" space? (float_array | string_array | array_array )* space? "]")
-  end
-
-  rule float_array
-    (float ("," space? float)*)
-  end
-
-  rule string_array
-    (string ("," space? string)*)
-  end
-
-  rule array_array
-    (array ("," space? array)*)
+  rule indent
+    [ \t\n]*
   end
 end
 
 grammar Toml
   include Primitive
-  include Arrays
 
   rule comment
     (space? "#" comment:(.)*) { comment }
@@ -68,7 +59,7 @@ grammar Toml
   end
 
   rule keyvalue
-    (space? word space? '=' space? (datetime | string | bool | float | array ) space? comment? ) {
+    (space? word space? '=' space? (datetime | string | bool | float | array ) space? comment? "\n"? ) {
       def key
         word
       end
