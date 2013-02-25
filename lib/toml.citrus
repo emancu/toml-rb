@@ -1,6 +1,6 @@
 grammar Primitive
   rule primitive
-    string | bool | datetime | float | integer
+    string | bool | datetime | number
   end
 
   rule string
@@ -16,6 +16,10 @@ grammar Primitive
     (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z") {
       Time.utc(*[y,m,d,h,mi,s].map(&:value))
     }
+  end
+
+  rule number
+    float | integer
   end
 
   rule float
