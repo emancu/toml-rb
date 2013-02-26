@@ -16,11 +16,11 @@ class TomlTest < Test::Unit::TestCase
   end
 
   def test_keyvalue_string
-    indentation_alternatives_for('title = "TOML Example"').each do |str|
+    indentation_alternatives_for('title = "TOML-Example, should work."').each do |str|
       match = Toml.parse(str, :root => :keyvalue)
       assert_equal('title', match.key)
-      assert_equal('TOML Example', match.val)
-      assert_equal({"title" => "TOML Example"}, match.value)
+      assert_equal('TOML-Example, should work.', match.val)
+      assert_equal({"title" => "TOML-Example, should work."}, match.value)
     end
   end
 
@@ -87,8 +87,7 @@ class TomlTest < Test::Unit::TestCase
 
     multiline_array = <<-EOS
       array = [
-        "hey",
-        "ho",
+        "hey", "ho",
         "lets",
         "go",
       ]

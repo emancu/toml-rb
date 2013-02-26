@@ -4,7 +4,8 @@ grammar Primitive
   end
 
   rule string
-    ('"' word ( [\s] word)* '"') { eval(self) }
+    # Start with ", match all characters until ". Then end with "
+    ('"' (~'"')* '"') { eval(self) }
   end
 
   rule bool
@@ -100,7 +101,7 @@ grammar Toml
   end
 
   rule keygroup
-    (space? '[' word ']' space? comment?) { word.value }
+    (space? '[' word ']' space? comment?) { word }
   end
 
   rule keyvalue
