@@ -43,7 +43,7 @@ class ParserTest < Test::Unit::TestCase
       }
     }
 
-    match = Toml.parse file
+    match = Document.parse file
     assert_equal hash, match.value
   end
 
