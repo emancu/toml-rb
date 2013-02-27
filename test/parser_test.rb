@@ -37,6 +37,9 @@ class ParserTest < Test::Unit::TestCase
           "name" => "L. Tolchinsky",
           "age" => 24
         }
+      },
+      "version" => {
+        "version" => true
       }
     }
 
