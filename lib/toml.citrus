@@ -5,7 +5,7 @@ grammar Primitive
 
   rule string
     # Start with ", match all characters until ". Then end with "
-    ('"' (~'"')* '"') { eval(self) }
+    ('"' str:(~'"')* '"') { str.value }
   end
 
   rule bool
