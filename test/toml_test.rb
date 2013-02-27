@@ -4,7 +4,7 @@ class TomlTest < Test::Unit::TestCase
   def test_comment
     indentation_alternatives_for('# This is a comment').each do |str|
       match = Toml.parse(str, :root => :comment)
-      assert_equal(' This is a comment', match.value)
+      assert_equal(nil, match.value)
     end
   end
 

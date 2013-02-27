@@ -97,7 +97,7 @@ grammar Toml
   include TomlArray
 
   rule comment
-    (space? "#" comment:(.)*) { comment }
+    (space? "#" comment:(~"\n")* "\n"?) { nil }
   end
 
   rule keygroup
