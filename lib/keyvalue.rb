@@ -1,15 +1,6 @@
 module Keyvalue
-
-  def key
-    word
-  end
-
-  def val
-    v.value
-  end
-
   def value
-    Hash[word.value, val]
+    Hash[word.value, v.value]
   end
 end
 

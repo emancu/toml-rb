@@ -39,7 +39,7 @@ class ParserTest < Test::Unit::TestCase
         }
       },
       "version" => {
-        "version" => true
+        "zape" => true
       }
     }
 

@@ -105,7 +105,7 @@ grammar Toml
   end
 
   rule keygroup
-    (space? '[' word ']' space? comment?) { word }
+    (space? '[' nested_keys:(word "."?)+ ']' space? comment?) { nested_keys.to_s.split(".") }
   end
 
   rule keyvalue
