@@ -96,6 +96,10 @@ grammar Toml
   include Primitive
   include TomlArray
 
+  rule document
+    (comment | keygroup | keyvalue | "\n")*
+  end
+
   rule comment
     (space? "#" comment:(~"\n")* "\n"?) { nil }
   end
