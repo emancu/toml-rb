@@ -105,19 +105,7 @@ grammar Toml
   end
 
   rule keyvalue
-    (space? word space? '=' space? v:(primitive | array) space? comment?) {
-      def key
-        word
-      end
-
-      def val
-        v.value
-      end
-
-      def value
-        Hash[word.value, val]
-      end
-    }
+    (space? word space? '=' space? v:(primitive | array) comment?) <Keyvalue>
   end
 end
 
