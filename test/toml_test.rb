@@ -18,8 +18,6 @@ class TomlTest < Test::Unit::TestCase
   def test_keyvalue_string
     indentation_alternatives_for('title = "TOML-Example, should work."').each do |str|
       match = Toml.parse(str, :root => :keyvalue)
-      assert_equal('title', match.key)
-      assert_equal('TOML-Example, should work.', match.val)
       assert_equal({"title" => "TOML-Example, should work."}, match.value)
     end
   end
@@ -27,8 +25,6 @@ class TomlTest < Test::Unit::TestCase
   def test_keyvalue_bool
     indentation_alternatives_for('enabled = true').each do |str|
       match = Toml.parse(str, :root => :keyvalue)
-      assert_equal('enabled', match.key)
-      assert_equal(true, match.val)
       assert_equal({"enabled" => true}, match.value)
     end
   end
@@ -36,8 +32,6 @@ class TomlTest < Test::Unit::TestCase
   def test_keyvalue_integer
     indentation_alternatives_for('age = 26').each do |str|
       match = Toml.parse(str, :root => :keyvalue)
-      assert_equal('age', match.key)
-      assert_equal(26, match.val)
       assert_equal({"age" => 26}, match.value)
     end
   end
@@ -45,8 +39,6 @@ class TomlTest < Test::Unit::TestCase
   def test_keyvalue_float
     indentation_alternatives_for('height = 1.69').each do |str|
       match = Toml.parse(str, :root => :keyvalue)
-      assert_equal('height', match.key)
-      assert_equal(1.69, match.val)
       assert_equal({"height" => 1.69}, match.value)
     end
   end
