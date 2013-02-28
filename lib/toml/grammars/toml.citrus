@@ -23,7 +23,7 @@ grammar Primitive
   end
 
   rule float
-    (integer ('.' integer)?) { to_f }
+    (integer '.' integer) { to_f }
   end
 
   rule integer
