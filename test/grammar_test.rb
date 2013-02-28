@@ -28,6 +28,11 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal("TOML-Example, should work.", match.value)
   end
 
+  def test_special_characters
+    match = Document.parse('"\\ \0 \" \t \n \r"', root: :string)
+    assert_equal("\\ \0 \" \t \n \r", match.value)
+  end
+
   def test_bool
     match = Document.parse('true', root: :bool)
     assert_equal(true, match.value)
