@@ -2,7 +2,7 @@ require_relative "helper"
 
 class DocumentTest < Test::Unit::TestCase
   def test_keygroup
-    indentation_alternatives_for('[akey]').each do |str|
+    indentation_alternatives_for('[akey]') do |str|
       match = Document.parse(str, root: :keygroup).value
       assert_equal(['akey'], match.nested_keys)
     end
@@ -12,7 +12,7 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_keyvalue_string
-    indentation_alternatives_for('title = "TOML-Example, should work."').each do |str|
+    indentation_alternatives_for('title = "TOML-Example, should work."') do |str|
       match = Document.parse(str, root: :keyvalue).value
       assert_equal("title", match.key)
       assert_equal("TOML-Example, should work.", match.value)
@@ -20,7 +20,7 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_keyvalue_bool
-    indentation_alternatives_for('enabled = true').each do |str|
+    indentation_alternatives_for('enabled = true') do |str|
       match = Document.parse(str, root: :keyvalue).value
       assert_equal("enabled", match.key)
       assert_equal(true, match.value)
@@ -28,7 +28,7 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_keyvalue_integer
-    indentation_alternatives_for('age = 26').each do |str|
+    indentation_alternatives_for('age = 26') do |str|
       match = Document.parse(str, root: :keyvalue).value
       assert_equal("age", match.key)
       assert_equal(26, match.value)
@@ -36,7 +36,7 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_keyvalue_float
-    indentation_alternatives_for('height = 1.69').each do |str|
+    indentation_alternatives_for('height = 1.69') do |str|
       match = Document.parse(str, root: :keyvalue).value
       assert_equal("height", match.key)
       assert_equal(1.69, match.value)
@@ -105,7 +105,9 @@ class DocumentTest < Test::Unit::TestCase
 
   # Creates all the alternatives of valid indentations to test
   def indentation_alternatives_for(str)
-    [str, "  #{str}", "\t#{str}", "\t\t#{str}"]
+    [str, "  #{str}", "\t#{str}", "\t\t#{str}"].each do |alternative|
+      yield(alternative)
+    end
   end
 end
 
