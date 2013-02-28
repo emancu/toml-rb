@@ -3,7 +3,7 @@ toml-rb
 
 Formerly known as __toml_parser-ruby__.
 
-A [TOML](https://github.com/mojombo/toml) parser for using [Citrus](http://mjijackson.com/citrus/example.html) library.
+A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackson.com/citrus/example.html) library.
 
 
 Installation
