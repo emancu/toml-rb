@@ -3,58 +3,60 @@ require_relative "helper"
 class DocumentTest < Test::Unit::TestCase
   def test_keygroup
     indentation_alternatives_for('[akey]') do |str|
-      match = Document.parse(str, root: :keygroup).value
-      assert_equal(['akey'], match.nested_keys)
+      match = Document.parse(str, root: :keygroup)
+      assert_equal(TOML::Keygroup, match.value.class)
+      assert_equal(['akey'], match.value.send(:nested_keys))
     end
 
-    match = Document.parse("[owner.emancu]", root: :keygroup).value
+    match = Document.parse('[owner.emancu]', root: :keygroup).value
     assert_equal(['owner', 'emancu'], match.nested_keys)
   end
 
-  def test_keyvalue_string
-    indentation_alternatives_for('title = "TOML-Example, should work."') do |str|
-      match = Document.parse(str, root: :keyvalue).value
-      assert_equal("title", match.key)
-      assert_equal("TOML-Example, should work.", match.value)
+  def test_keyvalue
+    indentation_alternatives_for('key = "value"') do |str|
+      match = Document.parse(str, root: :keyvalue)
+      assert_equal(TOML::Keyvalue, match.value.class)
+
+      keyvalue = match.value
+      assert_equal('key', keyvalue.send(:key))
+      assert_equal('value', keyvalue.send(:value))
     end
   end
 
-  def test_keyvalue_bool
-    indentation_alternatives_for('enabled = true') do |str|
-      match = Document.parse(str, root: :keyvalue).value
-      assert_equal("enabled", match.key)
-      assert_equal(true, match.value)
-    end
+  def test_string
+    match = Document.parse('"TOML-Example, should work."', root: :string)
+    assert_equal("TOML-Example, should work.", match.value)
   end
 
-  def test_keyvalue_integer
-    indentation_alternatives_for('age = 26') do |str|
-      match = Document.parse(str, root: :keyvalue).value
-      assert_equal("age", match.key)
-      assert_equal(26, match.value)
-    end
+  def test_bool
+    match = Document.parse('true', root: :bool)
+    assert_equal(true, match.value)
+
+    match = Document.parse('false', root: :bool)
+    assert_equal(false, match.value)
   end
 
-  def test_keyvalue_float
-    indentation_alternatives_for('height = 1.69') do |str|
-      match = Document.parse(str, root: :keyvalue).value
-      assert_equal("height", match.key)
-      assert_equal(1.69, match.value)
-    end
+  def test_integer
+    match = Document.parse('26', root: :number)
+    assert_equal(26, match.value)
   end
 
-  def test_keyvalue_signed_numbers
-    match = Document.parse('age = +26', root: :keyvalue).value
-    assert_equal("age", match.key)
+  def test_float
+    match = Document.parse('1.69', root: :number)
+    assert_equal(1.69, match.value)
+  end
+
+  def test_signed_numbers
+    match = Document.parse('+26', root: :number)
     assert_equal(26, match.value)
 
-    match = Document.parse('age = -26', root: :keyvalue).value
+    match = Document.parse('-26', root: :number)
     assert_equal(-26, match.value)
 
-    match = Document.parse('height = 1.69', root: :keyvalue).value
+    match = Document.parse('1.69', root: :number)
     assert_equal(1.69, match.value)
 
-    match = Document.parse('height = -1.69', root: :keyvalue).value
+    match = Document.parse('-1.69', root: :number)
     assert_equal(-1.69, match.value)
   end
 
@@ -68,38 +70,30 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_array
-    match = Document.parse('array = []', root: :keyvalue).value
-    assert_equal("array", match.key)
+    match = Document.parse('[]', root: :array)
     assert_equal([], match.value)
 
-    match = Document.parse('array = [ 2, 4]', root: :keyvalue).value
+    match = Document.parse('[ 2, 4]', root: :array)
     assert_equal([2,4], match.value)
 
-    match = Document.parse('array = [ 2.4, 4.72]', root: :keyvalue).value
+    match = Document.parse('[ 2.4, 4.72]', root: :array)
     assert_equal([2.4,4.72], match.value)
 
-    match = Document.parse('array = [ "hey", "TOML"]', root: :keyvalue).value
+    match = Document.parse('[ "hey", "TOML"]', root: :array)
     assert_equal(["hey","TOML"], match.value)
 
-    match = Document.parse('array = [ ["hey", "TOML"], [2,4] ]', root: :keyvalue).value
+    match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
     assert_equal([["hey","TOML"], [2,4]], match.value)
 
-    multiline_array = <<-EOS
-      array = [
-        "hey", "ho",
-        "lets",
-        "go",
-      ]
-    EOS
-    match = Document.parse(multiline_array, root: :keyvalue).value
+    multiline_array = "[ \"hey\",\n   \"ho\",\n\t \"lets\", \"go\",\n ]"
+    match = Document.parse(multiline_array, root: :array)
     assert_equal(["hey", "ho", "lets", "go"], match.value)
   end
 
   def test_datetime
-    match = Document.parse('dob = 1986-08-28T15:15:00Z', root: :keyvalue).value
+    match = Document.parse('1986-08-28T15:15:00Z', root: :datetime)
     assert_equal(Time.utc(1986,8,28,15,15), match.value)
   end
-
 
   private
 
