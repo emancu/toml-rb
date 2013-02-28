@@ -15,7 +15,7 @@ class TomlTest < Test::Unit::TestCase
         "dob" => Time.utc(1979,05,27,07,32,00)
       },
 
-      "databse" => {
+      "database" => {
         "server" => "192.168.1.1",
         "ports" => [ 8001, 8001, 8002 ],
         "connection_max" => 5000,
