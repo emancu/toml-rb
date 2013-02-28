@@ -1,6 +1,6 @@
 require_relative "helper"
 
-class DocumentTest < Test::Unit::TestCase
+class GrammarTest < Test::Unit::TestCase
   def test_keygroup
     indentation_alternatives_for('[akey]') do |str|
       match = Document.parse(str, root: :keygroup)
