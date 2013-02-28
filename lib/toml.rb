@@ -3,7 +3,7 @@ require_relative 'toml/keyvalue'
 require_relative 'toml/keygroup'
 require_relative 'toml/parser'
 
-Citrus.load("toml/grammars/toml")
+Citrus.load(File.dirname(__FILE__) + "/toml/grammars/toml")
 
 module TOML
   VERSION = '0.3'
@@ -15,5 +15,8 @@ module TOML
   def self.parse(path)
     TOML.load(File.read(path))
   end
-  alias_method :parse, :load_file
+
+  def self.load_file(path)
+    TOML.parse(path)
+  end
 end

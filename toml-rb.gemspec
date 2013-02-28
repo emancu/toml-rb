@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "lib/**/*.rb",
+    "lib/**/*.citrus",
     "*.gemspec",
     "test/*.*"
   ]
