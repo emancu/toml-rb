@@ -12,7 +12,8 @@ module TOML
     Parser.new(content).hash
   end
 
-  def self.load_file(path)
-    Parser.new((File.read(path)).hash
+  def self.parse(path)
+    TOML.load(File.read(path))
   end
+  alias_method :parse, :load_file
 end
