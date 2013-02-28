@@ -5,11 +5,11 @@ class DocumentTest < Test::Unit::TestCase
     indentation_alternatives_for('[akey]') do |str|
       match = Document.parse(str, root: :keygroup)
       assert_equal(TOML::Keygroup, match.value.class)
-      assert_equal(['akey'], match.value.send(:nested_keys))
+      assert_equal(['akey'], match.value.instance_variable_get("@nested_keys"))
     end
 
-    match = Document.parse('[owner.emancu]', root: :keygroup).value
-    assert_equal(['owner', 'emancu'], match.nested_keys)
+    match = Document.parse('[owner.emancu]', root: :keygroup)
+    assert_equal(['owner', 'emancu'], match.value.instance_variable_get("@nested_keys"))
   end
 
   def test_keyvalue
@@ -18,8 +18,8 @@ class DocumentTest < Test::Unit::TestCase
       assert_equal(TOML::Keyvalue, match.value.class)
 
       keyvalue = match.value
-      assert_equal('key', keyvalue.send(:key))
-      assert_equal('value', keyvalue.send(:value))
+      assert_equal('key', keyvalue.instance_variable_get("@key"))
+      assert_equal('value', keyvalue.instance_variable_get("@value"))
     end
   end
 
@@ -61,12 +61,12 @@ class DocumentTest < Test::Unit::TestCase
   end
 
   def test_expressions_with_comments
-    match = Document.parse('[shouldwork] # with comment', root: :keygroup).value
-    assert_equal(['shouldwork'], match.nested_keys)
+    match = Document.parse('[shouldwork] # with comment', root: :keygroup)
+    assert_equal(['shouldwork'], match.value.instance_variable_get("@nested_keys"))
 
     match = Document.parse('works = true # with comment', root: :keyvalue).value
-    assert_equal("works", match.key)
-    assert_equal(true, match.value)
+    assert_equal("works", match.instance_variable_get("@key"))
+    assert_equal(true, match.instance_variable_get("@value"))
   end
 
   def test_array

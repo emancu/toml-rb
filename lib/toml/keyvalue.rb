@@ -2,8 +2,6 @@ module TOML
   class ValueOverwriteError < StandardError; end
 
   class Keyvalue
-    attr_accessor :key, :value
-
     def initialize(key, value)
       @key, @value = key, value
     end

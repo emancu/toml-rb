@@ -1,7 +1,5 @@
 module TOML
   class Keygroup
-    attr_accessor :nested_keys
-
     def initialize(nested_keys)
       @nested_keys = nested_keys
     end
