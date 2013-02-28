@@ -92,7 +92,7 @@ grammar TomlArray
   end
 end
 
-grammar Toml
+grammar Document
   include Primitive
   include TomlArray
 
@@ -101,11 +101,11 @@ grammar Toml
   end
 
   rule comment
-    (space? "#" comment:(~"\n")* "\n"?) { nil }
+    (space? "#" (~"\n")* "\n"?) { nil }
   end
 
   rule keygroup
-    (space? '[' nested_keys:(word "."?)+ ']' space? comment?) { nested_keys.to_s.split(".") }
+    (space? '[' nested_keys:(word "."?)+ ']' space? comment?) <Keygroup>
   end
 
   rule keyvalue

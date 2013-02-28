@@ -1,10 +1,9 @@
 require 'citrus'
-
 require_relative 'toml/keyvalue'
 require_relative 'toml/keygroup'
+require_relative 'toml/parser'
 
 Citrus.load("toml/grammars/toml")
-
 
 module TOML
   VERSION = '0.3'
@@ -14,6 +13,6 @@ module TOML
   end
 
   def self.load_file(path)
-    load(File.read(path))
+    Parser.new((File.read(path)).hash
   end
 end
