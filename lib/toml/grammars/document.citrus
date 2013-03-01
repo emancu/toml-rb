@@ -1,0 +1,20 @@
+grammar Document
+  include Primitive
+  include TomlArray
+
+  rule document
+    (comment | keygroup | keyvalue | "\n")*
+  end
+
+  rule comment
+    (space? "#" (~"\n")* "\n"?) { nil }
+  end
+
+  rule keygroup
+    (space? '[' nested_keys:(word "."?)+ ']' space? comment?) <Keygroup>
+  end
+
+  rule keyvalue
+    (space? word space? '=' space? v:(primitive | array) comment?) <Keyvalue>
+  end
+end
