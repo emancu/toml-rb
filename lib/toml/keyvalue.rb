@@ -6,7 +6,7 @@ module TOML
       @key, @value = key, value
     end
 
-    def assign(hash, symbolize_keys)
+    def assign(hash, symbolize_keys = false)
       if hash[@key]
         raise ValueOverwriteError
       else

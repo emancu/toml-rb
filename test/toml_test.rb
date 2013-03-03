@@ -67,7 +67,7 @@ class TomlTest < Test::Unit::TestCase
 
   def test_symbolize_keys
     path = File.join(File.dirname(__FILE__), 'example.toml')
-    parsed = TOML::Parser.new(File.read(path), true)
+    parsed = TOML::Parser.new(File.read(path), :symbolize_keys => true)
 
     hash = {
       title: "TOML Example",

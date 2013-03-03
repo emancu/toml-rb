@@ -3,11 +3,11 @@ require_relative "../init"
 module TOML
   VERSION = '0.3'
 
-  def self.parse(content, symbolize_keys = false)
-    Parser.new(content, symbolize_keys).hash
+  def self.parse(content, options = {})
+    Parser.new(content, options).hash
   end
 
-  def self.load_file(path, symbolize_keys = false)
-    TOML.parse(File.read(path), symbolize_keys)
+  def self.load_file(path, options = {})
+    TOML.parse(File.read(path), options)
   end
 end
