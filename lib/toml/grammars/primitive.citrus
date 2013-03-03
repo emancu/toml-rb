@@ -1,4 +1,6 @@
 grammar Primitive
+  include Helper
+
   rule primitive
     string | bool | datetime | number
   end
@@ -36,14 +38,6 @@ grammar Primitive
 
   rule key
     [a-zA-Z_] [a-zA-Z_0-9#?]*
-  end
-
-  rule space
-    [ \t]*
-  end
-
-  rule indent
-    [ \t\n]*
   end
 
   rule true
