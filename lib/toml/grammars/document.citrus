@@ -6,10 +6,6 @@ grammar Document
     (comment | keygroup | keyvalue | "\n")*
   end
 
-  rule comment
-    (space? "#" (~"\n")* "\n"?) { nil }
-  end
-
   rule keygroup
     (space? '[' nested_keys:(key "."?)+ ']' space? comment?) <Keygroup>
   end
