@@ -19,6 +19,6 @@ end
 # Used in toml.citrus
 module Keyvalue
   def value
-    TOML::Keyvalue.new(word.value, v.value)
+    TOML::Keyvalue.new(key.value, v.value)
   end
 end

@@ -41,4 +41,27 @@ class TomlTest < Test::Unit::TestCase
 
     assert_equal(hash, parsed.hash)
   end
+
+  def test_hard_example
+    path = File.join(File.dirname(__FILE__), 'hard_example.toml')
+    parsed = TOML::Parser.new(File.read(path))
+
+    hash = {
+      "the" => {
+        "test_string" => "You'll hate me after this - #",
+        "hard" => {
+          "test_array"  =>  [ "] ", " # "],
+          "test_array2" =>  [ "Test #11 ]proved that", "Experiment #9 was a success" ],
+          "another_test_string" => " Same thing, but with a string #",
+          "harder_test_string" => " And when \"'s are in the string, along with # \"",
+          "bit#" => {
+            "what?" => "You don't think some user won't do that?",
+            "multi_line_array" => [ "]" ]
+          }
+        }
+      }
+    }
+
+    assert_equal(hash, parsed.hash)
+  end
 end

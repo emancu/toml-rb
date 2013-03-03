@@ -11,10 +11,10 @@ grammar Document
   end
 
   rule keygroup
-    (space? '[' nested_keys:(word "."?)+ ']' space? comment?) <Keygroup>
+    (space? '[' nested_keys:(key "."?)+ ']' space? comment?) <Keygroup>
   end
 
   rule keyvalue
-    (space? word space? '=' space? v:(primitive | array) comment?) <Keyvalue>
+    (space? key space? '=' space? v:(primitive | array) comment?) <Keyvalue>
   end
 end
