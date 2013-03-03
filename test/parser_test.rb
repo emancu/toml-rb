@@ -2,7 +2,7 @@ require_relative "helper"
 
 class ParserTest < Test::Unit::TestCase
   def test_text
-    file =<<-TOML
+    text =<<-TOML
         # This is a comment
         # and other comment
 
@@ -42,18 +42,18 @@ class ParserTest < Test::Unit::TestCase
       }
     }
 
-    parsed = TOML::Parser.new(file)
+    parsed = TOML::Parser.new(text)
     assert_equal hash, parsed.hash
   end
 
   def test_overwrite_value
-    file = <<-TOML
+    text = <<-TOML
       title = "TOML Example"
       title = "NOT"
     TOML
 
     assert_raise TOML::ValueOverwriteError do
-      TOML::Parser.new(file)
+      TOML::Parser.new(text)
     end
   end
 end
