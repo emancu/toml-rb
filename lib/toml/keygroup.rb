@@ -4,8 +4,9 @@ module TOML
       @nested_keys = nested_keys
     end
 
-    def navigate_keys(hash)
+    def navigate_keys(hash, symbolize_keys = false)
       @nested_keys.each do |key|
+        key = symbolize_keys ? key.to_sym : key
         hash[key] = {} unless hash[key]
         hash = hash[key]
       end
