@@ -1,0 +1,13 @@
+grammar Helper
+  rule comment
+    (space? "#" (~"\n")* "\n"?) { nil }
+  end
+
+  rule space
+    [ \t]*
+  end
+
+  rule indent
+    [ \t\n]*
+  end
+end
