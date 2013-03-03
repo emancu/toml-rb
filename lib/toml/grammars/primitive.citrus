@@ -4,7 +4,7 @@ grammar Primitive
   end
 
   rule string
-    ('"' str:(~'"')* '"') { str.value }
+    (/(["'])(?:\\?.)*?\1/ space) <TomlString>
   end
 
   rule bool

@@ -29,8 +29,11 @@ class GrammarTest < Test::Unit::TestCase
   end
 
   def test_special_characters
-    match = Document.parse('"\\ \0 \" \t \n \r"', root: :string)
-    assert_equal("\\ \0 \" \t \n \r", match.value)
+    match = Document.parse('"\0 \" \t \n \r"', root: :string)
+    assert_equal("\0 \" \t \n \r", match.value)
+
+    match = Document.parse('"C:\\Documents\\virus.exe"', root: :string)
+    assert_equal("C:\\Documents\\virus.exe", match.value)
   end
 
   def test_bool
