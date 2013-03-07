@@ -14,25 +14,26 @@ Installation
 Usage
 -----
 
-    require 'toml'
+```ruby
+require 'toml'
 
-    # From a file!
-    path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
-    TOML.load_file(path)
+# From a file!
+path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
+TOML.load_file(path)
 
-    # From a stream!
-    stream = <<-EOS
-      title = "wow!"
+# From a stream!
+stream = <<-EOS
+  title = "wow!"
 
-      [awesome]
-        you    = true
-        others = false
-    EOS
-    TOML.parse(stream)
+  [awesome]
+    you    = true
+    others = false
+EOS
+TOML.parse(stream)
 
-    # You want symbols as your keys? No problem!
-    Toml.load_file(path, symbolize_keys: true)
-
+# You want symbols as your keys? No problem!
+Toml.load_file(path, symbolize_keys: true)
+```
 
 Contributing
 ------------
