@@ -33,19 +33,17 @@ Usage
     # You want symbols as your keys? No problem!
     Toml.load_file(path, symbolize_keys: true)
 
-Test
-----
-
-    $ rake
 
 Contributing
 ------------
 
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+2. Bundle it `$ dep install` (install [dep](https://github.com/cyx/dep) if you don't have it)
+3. Create your feature branch `git checkout -b my-new-feature`
+4. Add tests and commit your changes `git commit -am 'Add some feature'`
+5. Run tests `$ rake`
+6. Push the branch `git push origin my-new-feature`
+7. Create new Pull Request
 
 License
 -------
