@@ -9,23 +9,41 @@ A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackso
 Installation
 ------------
 
-Run this line
-
     $ gem install toml-rb
 
-Test
-----
+Usage
+-----
 
-    $ rake
+    require 'toml'
+
+    # From a file!
+    path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
+    TOML.load_file(path)
+
+    # From a stream!
+    stream = <<-EOS
+      title = "wow!"
+
+      [awesome]
+        you    = true
+        others = false
+    EOS
+    TOML.parse(stream)
+
+    # You want symbols as your keys? No problem!
+    Toml.load_file(path, symbolize_keys: true)
+
 
 Contributing
 ------------
 
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+2. Bundle it `$ dep install` (install [dep](https://github.com/cyx/dep) if you don't have it)
+3. Create your feature branch `git checkout -b my-new-feature`
+4. Add tests and commit your changes `git commit -am 'Add some feature'`
+5. Run tests `$ rake`
+6. Push the branch `git push origin my-new-feature`
+7. Create new Pull Request
 
 License
 -------
