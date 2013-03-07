@@ -30,6 +30,9 @@ Usage
     EOS
     TOML.parse(stream)
 
+    # You want symbols as your keys? No problem!
+    Toml.load_file(path, symbolize_keys: true)
+
 Test
 ----
 
