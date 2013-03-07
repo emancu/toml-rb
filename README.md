@@ -9,9 +9,26 @@ A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackso
 Installation
 ------------
 
-Run this line
-
     $ gem install toml-rb
+
+Usage
+-----
+
+    require 'toml'
+
+    # From a file!
+    path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
+    TOML.load_file(path)
+
+    # From a stream!
+    stream = <<-EOS
+      title = "wow!"
+
+      [awesome]
+        you    = true
+        others = false
+    EOS
+    TOML.parse(stream)
 
 Test
 ----
