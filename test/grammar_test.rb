@@ -1,6 +1,12 @@
 require_relative "helper"
 
 class GrammarTest < Test::Unit::TestCase
+
+  def test_comment
+    match = Document.parse(" # A comment", root: :comment)
+    assert_equal(nil, match.value)
+  end
+
   def test_keygroup
     indentation_alternatives_for('[akey]') do |str|
       match = Document.parse(str, root: :keygroup)

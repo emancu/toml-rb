@@ -3,7 +3,7 @@ require_relative 'helper'
 class TomlTest < Test::Unit::TestCase
   def test_file
     path = File.join(File.dirname(__FILE__), 'example.toml')
-    parsed = TOML::Parser.new(File.read(path))
+    parsed = TOML.load_file(path)
 
     hash = {
       "title" => "TOML Example",
@@ -39,12 +39,12 @@ class TomlTest < Test::Unit::TestCase
       }
     }
 
-    assert_equal(hash, parsed.hash)
+    assert_equal(hash, parsed)
   end
 
   def test_hard_example
     path = File.join(File.dirname(__FILE__), 'hard_example.toml')
-    parsed = TOML::Parser.new(File.read(path))
+    parsed = TOML.load_file(path)
 
     hash = {
       "the" => {
@@ -62,12 +62,12 @@ class TomlTest < Test::Unit::TestCase
       }
     }
 
-    assert_equal(hash, parsed.hash)
+    assert_equal(hash, parsed)
   end
 
   def test_symbolize_keys
     path = File.join(File.dirname(__FILE__), 'example.toml')
-    parsed = TOML::Parser.new(File.read(path), :symbolize_keys => true)
+    parsed = TOML.load_file(path, symbolize_keys: true)
 
     hash = {
       title: "TOML Example",
@@ -103,6 +103,6 @@ class TomlTest < Test::Unit::TestCase
       }
     }
 
-    assert_equal(hash, parsed.hash)
+    assert_equal(hash, parsed)
   end
 end
