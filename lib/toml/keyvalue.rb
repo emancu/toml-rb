@@ -7,12 +7,10 @@ module TOML
     end
 
     def assign(hash, symbolize_keys = false)
-      if hash[@key]
-        raise ValueOverwriteError
-      else
-        key = symbolize_keys ? @key.to_sym : @key
-        hash[key] = @value
-      end
+      raise ValueOverwriteError if hash[@key]
+
+      key = symbolize_keys ? @key.to_sym : @key
+      hash[key] = @value
     end
   end
 end
