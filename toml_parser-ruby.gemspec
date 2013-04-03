@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = 'toml_parser-ruby'
-  s.version     = '0.3'
-  s.date        = '2013-02-24'
+  s.version     = '0.1.0'
+  s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = "TOML parser in ruby, for ruby."
-  s.description = "A TOML parser using Citrus parsing library"
+  s.description = "DEPRECATED by 'toml-rb' gem.\n A TOML parser using Citrus parsing library"
   s.authors     = ["Emiliano Mancuso"]
   s.email       = 'emiliano.mancuso@gmail.com'
   s.homepage    = 'http://github.com/eMancu/toml_parser-ruby'
