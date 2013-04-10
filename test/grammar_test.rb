@@ -93,8 +93,8 @@ class GrammarTest < Test::Unit::TestCase
     match = Document.parse('[ 2.4, 4.72]', root: :array)
     assert_equal([2.4,4.72], match.value)
 
-    match = Document.parse('[ "hey", "TOML"]', root: :array)
-    assert_equal(["hey","TOML"], match.value)
+    match = Document.parse('[ "hey", "TOML", "#{2+2}"]', root: :array)
+    assert_equal(['hey','TOML', '#{2+2}'], match.value)
 
     match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
     assert_equal([["hey","TOML"], [2,4]], match.value)
