@@ -3,7 +3,7 @@ grammar Document
   include TomlArray
 
   rule document
-    (comment | keygroup | keyvalue | "\n")*
+    (comment | keygroup | keyvalue | line_break)*
   end
 
   rule keygroup

@@ -1,6 +1,6 @@
 grammar Helper
   rule comment
-    (space? "#" (~"\n")* "\n"?) { nil }
+    (space? "#" (~line_break)* line_break?) { nil }
   end
 
   rule space
@@ -8,6 +8,10 @@ grammar Helper
   end
 
   rule indent
-    [ \t\n]*
+    [ \t\r\n]*
+  end
+
+  rule line_break
+    "\n" | "\r\n"
   end
 end

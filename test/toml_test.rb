@@ -105,4 +105,9 @@ class TomlTest < Test::Unit::TestCase
 
     assert_equal(hash, parsed)
   end
+
+  def test_line_break
+    parsed = TOML.parse("hello = 'world'\r\nline_break = true")
+    assert_equal({'hello' => 'world', 'line_break' => true}, parsed)
+  end
 end
