@@ -53,4 +53,24 @@ module TOML
   def self.load_file(path, options = {})
     TOML.parse(File.read(path), options)
   end
+
+
+  # Public: Returns a *TOML* string from a Ruby Hash.
+  #
+  # hash - Ruby Hash to be dumped into *TOML*
+  #
+  #
+  # Examples
+  #
+  #   TOML.dump({title: "TOML dump"})
+  #   # => TODO:
+  #
+  #   TOML.parse('title = "TOML parser"')
+  #   # => 
+  #
+  #
+  # Returns a TOML string representing the hash.
+  def self.dump(hash)
+    Dumper.new(hash)
+  end
 end
