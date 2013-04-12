@@ -13,6 +13,10 @@ module TOML
 
       hash
     end
+
+    def commit_to_hash(parser, symbolize_keys)
+      parser.current = navigate_keys(parser.hash, symbolize_keys)
+    end
   end
 end
 

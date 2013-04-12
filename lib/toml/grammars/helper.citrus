@@ -12,6 +12,6 @@ grammar Helper
   end
 
   rule line_break
-    "\n" | "\r\n"
+    ("\n" | "\r\n") { nil }
   end
 end

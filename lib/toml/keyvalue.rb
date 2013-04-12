@@ -12,6 +12,10 @@ module TOML
       key = symbolize_keys ? @key.to_sym : @key
       hash[key] = @value
     end
+
+    def commit_to_hash(parser, symbolize_keys)
+      assign(parser.current, symbolize_keys)
+    end
   end
 end
 
