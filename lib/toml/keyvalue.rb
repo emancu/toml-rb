@@ -13,8 +13,8 @@ module TOML
       hash[key] = @value
     end
 
-    def commit_into_hash(parser, symbolize_keys)
-      parser.commit_keyvalue_into_hash(self, symbolize_keys)
+    def commit_into_hash(parser)
+      parser.commit_keyvalue_into_hash(self)
     end
   end
 end
