@@ -19,7 +19,7 @@ module TOML
   end
 end
 
-# Used in toml.citrus
+# Used in document.citrus
 module Keyvalue
   def value
     TOML::Keyvalue.new(key.value, v.value)
