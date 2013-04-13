@@ -13,6 +13,10 @@ module TOML
 
       hash
     end
+
+    def commit_into_hash(parser, symbolize_keys)
+      parser.commit_keygroup_into_hash(self, symbolize_keys)
+    end
   end
 end
 

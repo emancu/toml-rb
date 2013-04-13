@@ -8,12 +8,16 @@ module TOML
 
       parsed = Document.parse(content)
       parsed.matches.map(&:value).compact.each do |match|
-        if match.is_a? Keygroup
-          @current = match.navigate_keys(@hash, options[:symbolize_keys])
-        elsif match.is_a? Keyvalue
-          match.assign(@current, options[:symbolize_keys])
-        end
+        match.commit_into_hash(self, options[:symbolize_keys])
       end
+    end
+
+    def commit_keygroup_into_hash(keygroup, symbolize_keys)
+      @current = keygroup.navigate_keys(@hash, symbolize_keys)
+    end
+
+    def commit_keyvalue_into_hash(keyvalue, symbolize_keys)
+      keyvalue.assign(@current, symbolize_keys)
     end
   end
 end
