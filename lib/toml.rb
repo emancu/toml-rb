@@ -71,6 +71,6 @@ module TOML
   #
   # Returns a TOML string representing the hash.
   def self.dump(hash)
-    Dumper.new(hash)
+    Dumper.new(hash).toml_str
   end
 end
