@@ -20,7 +20,7 @@ module TOML
   end
 end
 
-# Used in toml.citrus
+# Used in document.citrus
 module Keygroup
   def value
     TOML::Keygroup.new(nested_keys.to_s.split("."))

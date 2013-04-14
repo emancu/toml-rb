@@ -7,9 +7,8 @@ module TOML
     end
 
     def assign(hash, symbolize_keys = false)
-      raise ValueOverwriteError if hash[@key]
-
       key = symbolize_keys ? @key.to_sym : @key
+      raise ValueOverwriteError if hash[key]
       hash[key] = @value
     end
 
@@ -19,7 +18,7 @@ module TOML
   end
 end
 
-# Used in toml.citrus
+# Used in document.citrus
 module Keyvalue
   def value
     TOML::Keyvalue.new(key.value, v.value)
