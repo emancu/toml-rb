@@ -11,8 +11,8 @@ Installation
 
     $ gem install toml-rb
 
-Usage
------
+Parser Usage
+------------
 
 ```ruby
 require 'toml'
@@ -30,10 +30,35 @@ stream = <<-EOS
     others = false
 EOS
 TOML.parse(stream)
+# => {"title"=>"wow!", "awesome"=>{"you"=>true, "others"=>false}}
 
 # You want symbols as your keys? No problem!
 TOML.load_file(path, symbolize_keys: true) 
 # Works the same for TOML.parse
+```
+
+Dumper Usage
+------------
+
+```ruby
+require 'toml'
+
+# Simple example
+TOML.dump( simple: true)
+# => "simple = true\n"
+
+
+# Complex example
+hash = { 
+    "title"=>"wow!", 
+    "awesome"=> {
+        "you"=>true, 
+        "others"=>false
+    }
+}
+
+TOML.dump(hash)
+# => "title = \"wow!\"\n[awesome]\nothers = false\nyou = true\n"
 ```
 
 Contributing
