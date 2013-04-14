@@ -13,6 +13,10 @@ module TOML
 
       hash
     end
+
+    def accept_visitor(parser)
+      parser.visit_keygroup(self)
+    end
   end
 end
 

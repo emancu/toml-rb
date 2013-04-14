@@ -12,6 +12,10 @@ module TOML
       key = symbolize_keys ? @key.to_sym : @key
       hash[key] = @value
     end
+
+    def accept_visitor(parser)
+      parser.visit_keyvalue(self)
+    end
   end
 end
 

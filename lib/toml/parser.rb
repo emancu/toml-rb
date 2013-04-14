@@ -5,15 +5,20 @@ module TOML
     def initialize(content, options = {})
       @hash = {}
       @current = @hash
+      @symbolize_keys = options[:symbolize_keys]
 
       parsed = Document.parse(content)
-      parsed.matches.map(&:value).compact.each do |match|
-        if match.is_a? Keygroup
-          @current = match.navigate_keys(@hash, options[:symbolize_keys])
-        elsif match.is_a? Keyvalue
-          match.assign(@current, options[:symbolize_keys])
-        end
-      end
+      parsed.matches.map(&:value).compact.each {|match| match.accept_visitor(self)}
+    end
+
+    # Read about the Visitor pattern to learn more about this use of double-dispatch
+    # http://en.wikipedia.org/wiki/Visitor_pattern
+    def visit_keygroup(keygroup)
+      @current = keygroup.navigate_keys(@hash, @symbolize_keys)
+    end
+
+    def visit_keyvalue(keyvalue)
+      keyvalue.assign(@current, @symbolize_keys)
     end
   end
 end
