@@ -14,8 +14,8 @@ module TOML
       hash
     end
 
-    def commit_into_hash(parser)
-      parser.commit_keygroup_into_hash(self)
+    def accept_visitor(parser)
+      parser.visit_keygroup(self)
     end
   end
 end

@@ -8,14 +8,16 @@ module TOML
       @symbolize_keys = options[:symbolize_keys]
 
       parsed = Document.parse(content)
-      parsed.matches.map(&:value).compact.each {|match| match.commit_into_hash(self)}
+      parsed.matches.map(&:value).compact.each {|match| match.accept_visitor(self)}
     end
 
-    def commit_keygroup_into_hash(keygroup)
+    # Read about the Visitor pattern to learn more about this use of double-dispatch
+    # http://en.wikipedia.org/wiki/Visitor_pattern
+    def visit_keygroup(keygroup)
       @current = keygroup.navigate_keys(@hash, @symbolize_keys)
     end
 
-    def commit_keyvalue_into_hash(keyvalue)
+    def visit_keyvalue(keyvalue)
       keyvalue.assign(@current, @symbolize_keys)
     end
   end
