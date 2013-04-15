@@ -1,4 +1,4 @@
-require_relative "../init"
+require_relative '../init'
 
 module TOML
 
@@ -62,11 +62,19 @@ module TOML
   #
   # Examples
   #
-  #   TOML.dump({title: "TOML dump"})
-  #   # => TODO:
+  #   TOML.dump(title: 'TOML dump')
+  #   # => "simple = true\n"
   #
-  #   TOML.parse('title = "TOML parser"')
-  #   # => 
+  #   hash = {
+  #     "title"=>"wow!",
+  #     "awesome"=> {
+  #       "you"=>true,
+  #       "others"=>false
+  #     }
+  #   }
+  #
+  #   TOML.dump(hash)
+  #   # => "title = \"wow!\"\n[awesome]\nothers = false\nyou = true\n"
   #
   #
   # Returns a TOML string representing the hash.

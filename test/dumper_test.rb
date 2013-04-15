@@ -23,13 +23,13 @@ class DumperTest < Test::Unit::TestCase
     dumped = TOML.dump(false: false)
     assert_equal("false = false\n", dumped)
 
-    dumped = TOML.dump(array: [1,2,3])
+    dumped = TOML.dump(array: [1, 2, 3])
     assert_equal("array = [1, 2, 3]\n", dumped)
 
-    dumped = TOML.dump(array: [[1,2], ["weird", "one"]])
+    dumped = TOML.dump(array: [[1, 2], ['weird', 'one']])
     assert_equal("array = [[1, 2], [\"weird\", \"one\"]]\n", dumped)
 
-    dumped = TOML.dump(datetime: Time.utc(1986,8,28,15,15))
+    dumped = TOML.dump(datetime: Time.utc(1986, 8, 28, 15, 15))
     assert_equal("datetime = 1986-08-28T15:15:00Z\n", dumped)
   end
 

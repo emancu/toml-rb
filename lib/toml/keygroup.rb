@@ -23,6 +23,6 @@ end
 # Used in document.citrus
 module Keygroup
   def value
-    TOML::Keygroup.new(nested_keys.to_s.split("."))
+    TOML::Keygroup.new(nested_keys.to_s.split('.'))
   end
 end
