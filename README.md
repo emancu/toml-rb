@@ -5,6 +5,7 @@ Formerly known as __toml_parser-ruby__.
 
 A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackson.com/citrus) library.
 
+[![Code Climate](https://codeclimate.com/github/eMancu/toml-rb.png)](https://codeclimate.com/github/eMancu/toml-rb)
 
 Installation
 ------------
