@@ -8,7 +8,7 @@ A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackso
 [![Gem Version](https://badge.fury.io/rb/toml-rb.png)](http://badge.fury.io/rb/toml-rb)
 [![Build Status](https://travis-ci.org/emancu/toml-rb.png)](https://travis-ci.org/emancu/toml-rb)
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb.png)](https://codeclimate.com/github/emancu/toml-rb)
-
+[![Dependency Status](https://gemnasium.com/emancu/toml-rb.png)](https://gemnasium.com/emancu/toml-rb)
 
 Installation
 ------------
