@@ -1,4 +1,6 @@
 module TOML
+  class ParseError < StandardError; end
+
   class Parser
     attr_reader :hash
 
@@ -7,8 +9,12 @@ module TOML
       @current = @hash
       @symbolize_keys = options[:symbolize_keys]
 
-      parsed = Document.parse(content)
-      parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
+      begin
+        parsed = Document.parse(content)
+        parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
+      rescue Citrus::ParseError => e
+        raise ParseError.new(e.message)
+      end
     end
 
     # Read about the Visitor pattern

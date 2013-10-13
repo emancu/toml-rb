@@ -25,7 +25,8 @@ module TOML
   #
   #
   # Returns a Ruby hash representation of the content according to TOML spec.
-  # Raises ValueOverwriteError if a key is overwritten
+  # Raises ValueOverwriteError if a key is overwritten.
+  # Raises ParseError if the content has invalid TOML.
   def self.parse(content, options = {})
     Parser.new(content, options).hash
   end
@@ -47,7 +48,8 @@ module TOML
   #
   #
   # Returns a Ruby hash representation of the content.
-  # Raises ValueOverwriteError if a key is overwritten
+  # Raises ValueOverwriteError if a key is overwritten.
+  # Raises ParseError if the content has invalid TOML.
   # Raises Errno::ENOENT if the file cannot be found.
   # Raises Errno::EACCES if the file cannot be accessed.
   def self.load_file(path, options = {})
