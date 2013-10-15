@@ -50,10 +50,10 @@ class TomlTest < Test::Unit::TestCase
       'the' => {
         'test_string' => "You'll hate me after this - #",
         'hard' => {
-          'array'  =>  ['] ', ' # '],
-          'array2' =>  ['Test #11 ]proved that', 'Experiment #9 was a success'],
-          'another_string' => ' Same thing, but with a string #',
-          'harder_string' => "And when \"'s are in the string, along with # \"",
+          'test_array'  =>  ['] ', ' # '],
+          'test_array2' =>  ['Test #11 ]proved that', 'Experiment #9 was a success'],
+          'another_test_string' => ' Same thing, but with a string #',
+          'harder_test_string' => " And when \"'s are in the string, along with # \"",
           'bit#' => {
             'what?' => "You don't think some user won't do that?",
             'multi_line_array' => [']']

@@ -12,6 +12,6 @@ grammar Helper
   end
 
   rule line_break
-    ("\n" | "\r\n") { nil }
+    (space? "\n" | space? "\r\n") { nil }
   end
 end
