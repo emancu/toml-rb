@@ -1,8 +1,6 @@
 toml-rb
 =======
 
-Formerly known as __toml_parser-ruby__.
-
 A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjijackson.com/citrus) library.
 
 [![Gem Version](https://badge.fury.io/rb/toml-rb.png)](http://badge.fury.io/rb/toml-rb)
