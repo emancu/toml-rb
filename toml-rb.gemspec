@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
     "init.rb"
   ]
 
-  s.add_dependency "citrus"
+  s.add_dependency "citrus", "~> 2.4.1"
 end
