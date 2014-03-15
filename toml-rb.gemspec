@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
     "lib/**/*.rb",
     "lib/**/*.citrus",
     "*.gemspec",
-    "Gemfile",
     "test/*.*",
     "init.rb"
   ]

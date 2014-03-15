@@ -1,5 +1,3 @@
-require 'bundler/gem_tasks'
-
 task :test do
   Dir["test/*_test.rb"].each { |file| load file }
 end
