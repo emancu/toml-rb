@@ -2,7 +2,7 @@ grammar TomlArray
   include Primitive
 
   rule array
-    ("[" indent? (elements)* ","? indent? comment? indent? "]" indent?) { eval(self) }
+    ("[" indent? (elements)* ","? indent? comment? indent? "]" indent?) { eval(to_str) }
   end
 
   rule elements
