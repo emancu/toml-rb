@@ -16,6 +16,7 @@ grammar Primitive
   # Full Zulu form
   rule datetime
     (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z") {
+      y,m,d,h,mi,s = [:y,:m,:d,:h,:mi,:s].map{|s| capture(s) }
       Time.utc(*[y,m,d,h,mi,s].map(&:value))
     }
   end
@@ -25,11 +26,11 @@ grammar Primitive
   end
 
   rule float
-    (integer '.' integer) { to_f }
+    (integer '.' integer) { to_str.to_f }
   end
 
   rule integer
-    (sign? [0-9]+) { to_i }
+    (sign? [0-9]+) { to_str.to_i }
   end
 
   rule sign
