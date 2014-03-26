@@ -23,7 +23,6 @@ end
 # Used in document.citrus
 module Keygroup
   def value
-    nested_keys = captures[:nested_keys].first
-    TOML::Keygroup.new(nested_keys.to_s.split('.'))
+    TOML::Keygroup.new(capture(:nested_keys).to_str.split('.'))
   end
 end

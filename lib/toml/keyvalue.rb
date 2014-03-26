@@ -21,7 +21,6 @@ end
 # Used in document.citrus
 module Keyvalue
   def value
-    key, v = [:key, :v].map{|x| captures[x].first }
-    TOML::Keyvalue.new(key.value, v.value)
+    TOML::Keyvalue.new(capture(:key).value, capture(:v).value)
   end
 end
