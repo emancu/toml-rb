@@ -2,19 +2,19 @@ grammar Primitive
   include Helper
 
   rule primitive
-    strings | bool | datetime | number
-  end
-
-  rule strings
-    multiline_string | multiline_literal | string | literal
+    string | bool | datetime | number
   end
 
   rule string
-    (/(["])(?:\\?.)*?\1/ space) <TomlString>
+    multiline_string | multiline_literal | basic_string | literal_string
   end
 
-  rule literal
-    (/(['])(?:\\?.)*?\1/ space) <TomlLiteral>
+  rule basic_string
+    (/(["])(?:\\?.)*?\1/ space) <TomlBasicString>
+  end
+
+  rule literal_string
+    (/(['])(?:\\?.)*?\1/ space) <TomlLiteralString>
   end
 
   rule multiline_string

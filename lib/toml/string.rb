@@ -1,7 +1,7 @@
 # Used in primitive.citrus
-module TomlString
+module TomlBasicString
   def value
-    aux = TomlString.transform_escaped_chars first.value
+    aux = TomlBasicString.transform_escaped_chars first.value
 
     aux[1...-1]
   end
@@ -17,7 +17,7 @@ module TomlString
   end
 end
 
-module TomlLiteral
+module TomlLiteralString
   def value
     first.value[1...-1]
   end
@@ -30,7 +30,7 @@ module TomlMultilineString
     # Remove spaces on multilined Singleline strings
     aux.gsub!(/\\\r?\n[\n\t\r ]*/, '')
 
-    TomlString.transform_escaped_chars aux
+    TomlBasicString.transform_escaped_chars aux
   end
 end
 
