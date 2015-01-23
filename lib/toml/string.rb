@@ -16,3 +16,28 @@ module TomlString
       .gsub(/\\\\/, '\\')
   end
 end
+
+module TomlLiteral
+  def value
+    first.value[1...-1]
+  end
+end
+
+module TomlMultilineString
+  def value
+    aux = captures[:text].first.value
+
+    # Remove spaces on multilined Singleline strings
+    aux.gsub!(/\\\r?\n[\n\t\r ]*/, '')
+
+    TomlString.transform_escaped_chars aux
+  end
+end
+
+module TomlMultilineLiteral
+  def value
+    aux = captures[:text].first.value
+
+    aux.gsub(/\\\r?\n[\n\t\r ]*/, '')
+  end
+end
