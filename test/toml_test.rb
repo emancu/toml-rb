@@ -1,6 +1,46 @@
 require_relative 'helper'
 
 class TomlTest < Test::Unit::TestCase
+  def test_file_v_0_3_1
+    path = File.join(File.dirname(__FILE__), 'example-v0.3.0.toml')
+    parsed = TOML.load_file(path)
+
+    hash = {
+      'Table' => {
+        'key' => 'value'
+      },
+      'dog' => {
+        'tater' => {
+          'type' => 'pug'
+        }
+      },
+      'x' => {
+        'y' => {
+          'z' => {
+            'w' => {}
+          }
+        }
+      },
+      'String' => {
+        'basic' => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF.",
+        'Multiline' => {
+          'key1' => "One\nTwo",
+          'key2' => "One\nTwo",
+          'key3' => "One\nTwo"
+        },
+        'Multilined' => {
+          'Singleline' => {
+            'key1' => 'The quick brown fox jumps over the lazy dog.',
+            'key2' => 'The quick brown fox jumps over the lazy dog.',
+            'key3' => 'The quick brown fox jumps over the lazy dog.'
+          }
+        }
+      }
+    }
+
+    assert_equal hash, parsed
+  end
+
   def test_file
     path = File.join(File.dirname(__FILE__), 'example.toml')
     parsed = TOML.load_file(path)
@@ -34,12 +74,12 @@ class TomlTest < Test::Unit::TestCase
       },
 
       'clients' => {
-        'data' => [['gamma', 'delta'], [1, 2]],
-        'hosts' => ['alpha', 'omega']
+        'data' => [%w(gamma delta), [1, 2]],
+        'hosts' => %w(alpha omega)
       }
     }
 
-    assert_equal(hash, parsed)
+    assert_equal hash, parsed
   end
 
   def test_hard_example
@@ -98,8 +138,8 @@ class TomlTest < Test::Unit::TestCase
       },
 
       clients: {
-        data: [['gamma', 'delta'], [1, 2]],
-        hosts: ['alpha', 'omega']
+        data: [%w(gamma delta), [1, 2]],
+        hosts: %w(alpha omega)
       }
     }
 
@@ -108,6 +148,6 @@ class TomlTest < Test::Unit::TestCase
 
   def test_line_break
     parsed = TOML.parse("hello = 'world'\r\nline_break = true")
-    assert_equal({'hello' => 'world', 'line_break' => true}, parsed)
+    assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
   end
 end

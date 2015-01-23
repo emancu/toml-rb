@@ -23,7 +23,7 @@ module TOML
 
       # First add simple pairs, under the prefix
       simple_pairs.each do |key, val|
-        @toml_str << "#{key.to_s} = #{to_toml(val)}\n"
+        @toml_str << "#{key} = #{to_toml(val)}\n"
       end
 
       nested_pairs.each do |key, val|

@@ -1,7 +1,6 @@
 require_relative 'helper'
 
 class GrammarTest < Test::Unit::TestCase
-
   def test_comment
     match = Document.parse(' # A comment', root: :comment)
     assert_equal(nil, match.value)
@@ -15,7 +14,7 @@ class GrammarTest < Test::Unit::TestCase
     end
 
     match = Document.parse('[owner.emancu]', root: :keygroup)
-    assert_equal(['owner', 'emancu'],
+    assert_equal(%w(owner emancu),
                  match.value.instance_variable_get('@nested_keys'))
   end
 
@@ -33,6 +32,19 @@ class GrammarTest < Test::Unit::TestCase
   def test_string
     match = Document.parse('"TOML-Example, should work."', root: :string)
     assert_equal('TOML-Example, should work.', match.value)
+  end
+
+  def test_multiline_string
+    match = Document.parse('"""\tOne\nTwo"""', root: :multiline_string)
+    assert_equal "\tOne\nTwo", match.value
+
+    to_parse = '"""\
+    One \
+    Two\
+    """'
+
+    match = Document.parse(to_parse, root: :multiline_string)
+    assert_equal "One Two", match.value
   end
 
   def test_special_characters
@@ -96,14 +108,14 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([2.4, 4.72], match.value)
 
     match = Document.parse('[ "hey", "TOML"]', root: :array)
-    assert_equal(['hey', 'TOML'], match.value)
+    assert_equal(%w(hey TOML), match.value)
 
     match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
-    assert_equal([['hey', 'TOML'], [2, 4]], match.value)
+    assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     multiline_array = "[ \"hey\",\n   \"ho\",\n\t \"lets\", \"go\",\n ]"
     match = Document.parse(multiline_array, root: :array)
-    assert_equal(['hey', 'ho', 'lets', 'go'], match.value)
+    assert_equal(%w(hey ho lets go), match.value)
   end
 
   def test_datetime
@@ -120,4 +132,3 @@ class GrammarTest < Test::Unit::TestCase
     end
   end
 end
-
