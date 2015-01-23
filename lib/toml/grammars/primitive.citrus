@@ -6,15 +6,23 @@ grammar Primitive
   end
 
   rule strings
-    multiline_string | string
+    multiline_string | multiline_literal | string | literal
   end
 
   rule string
-    (/(["'])(?:\\?.)*?\1/ space) <TomlString>
+    (/(["])(?:\\?.)*?\1/ space) <TomlString>
+  end
+
+  rule literal
+    (/(['])(?:\\?.)*?\1/ space) <TomlLiteral>
   end
 
   rule multiline_string
     ('"""' line_break* text:~'"""' '"""' space) <TomlMultilineString>
+  end
+
+  rule multiline_literal
+    ("'''" line_break* text:~"'''" "'''" space) <TomlMultilineLiteral>
   end
 
   rule bool

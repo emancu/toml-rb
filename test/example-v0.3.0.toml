@@ -54,3 +54,42 @@ key3 = """\
        fox jumps over \
        the lazy dog.\
        """
+
+[String.Literal]
+
+# What you see is what you get.
+winpath  = 'C:\Users\nodejs\templates'
+winpath2 = '\\ServerX\admin$\system32\'
+quoted   = 'Tom "Dubs" Preston-Werner'
+regex    = '<\i\c*\s*>'
+
+[String.Literal.Multiline]
+
+regex2 = '''I [dw]on't need \d{2} apples'''
+lines  = '''
+The first newline is
+trimmed in raw strings.
+   All other whitespace
+   is preserved.
+'''
+
+# Integer
+# Integers are whole numbers. Positive numbers may be prefixed with a plus sign.
+# Negative numbers are prefixed with a minus sign.
+
+[Integer]
+key1 = +99
+key2 = 42
+key3 = 0
+key4 = -17
+
+# Float
+# A float consists of an integer part (which may be prefixed with a plus or minus sign)
+# followed by a fractional part and/or an exponent part.
+
+[Float.fractional]
+
+# fractional
+key1 = +1.0
+key2 = 3.1415
+key3 = -0.01
