@@ -2,7 +2,7 @@ require_relative 'helper'
 
 class TomlTest < Test::Unit::TestCase
   def test_file_v_0_3_1
-    path = File.join(File.dirname(__FILE__), 'example-v0.3.0.toml')
+    path = File.join(File.dirname(__FILE__), 'example-v0.3.1.toml')
     parsed = TOML.load_file(path)
 
     hash = {
