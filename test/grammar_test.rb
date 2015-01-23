@@ -35,6 +35,19 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal('TOML-Example, should work.', match.value)
   end
 
+  def test_multiline_string
+    match = Document.parse('"""\tOne\nTwo"""', root: :multiline_string)
+    assert_equal "\tOne\nTwo", match.value
+
+    to_parse = '"""\
+    One \
+    Two\
+    """'
+
+    match = Document.parse(to_parse, root: :multiline_string)
+    assert_equal "One Two", match.value
+  end
+
   def test_special_characters
     match = Document.parse('"\0 \" \t \n \r"', root: :string)
     assert_equal("\0 \" \t \n \r", match.value)
