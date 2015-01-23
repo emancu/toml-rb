@@ -1,0 +1,38 @@
+LineLength:
+  Description: 'Limit lines to 90 characters.'
+  Max: 90
+
+StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  Enabled: false
+
+Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+MethodLength:
+  Description: Avoid methods longer than 25 lines of code.
+  Enabled: true
+  CountComments: false
+  Max: 25
+
+ClassAndModuleChildren:
+  Description: Checks style of children classes and modules.
+  Enabled: false
+  EnforcedStyle: nested
+
+AlignParameters:
+  Enabled: false
+
+GuardClause:
+  Enabled: false
+
+DoubleNegation:
+  Enabled: false
+
+CyclomaticComplexity:
+  Max: 10
+
+DotPosition:
+  Description: 'Checks the position of the dot in multi-line method calls.'
+  Enabled: false #Disabled because hound != rubocop

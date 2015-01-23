@@ -1,0 +1,55 @@
+Metrics/LineLength:
+  Description: 'Limit lines to 80 characters.'
+  Max: 80
+  Exclude:
+    - test/*.rb
+
+Metrics/MethodLength:
+  Description: Avoid methods longer than 25 lines of code.
+  Enabled: true
+  CountComments: false
+  Max: 25
+  Exclude:
+    - test/*.rb
+
+Metrics/ClassLength:
+  Exclude:
+    - test/*.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/RaiseArgs:
+  Description: 'Check if exceptions are raised in a particular way'
+  Enabled: false
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Description: Checks style of children classes and modules.
+  Enabled: false
+  EnforcedStyle: nested
+
+Style/AlignParameters:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false

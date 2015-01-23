@@ -1,7 +1,6 @@
 require_relative '../init'
 
 module TOML
-
   # Public: Returns a hash from *TOML* content.
   #
   # content - TOML string to be parsed.
@@ -55,7 +54,6 @@ module TOML
   def self.load_file(path, options = {})
     TOML.parse(File.read(path), options)
   end
-
 
   # Public: Returns a *TOML* string from a Ruby Hash.
   #

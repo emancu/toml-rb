@@ -6,33 +6,33 @@ class TomlTest < Test::Unit::TestCase
     parsed = TOML.load_file(path)
 
     hash = {
-      "Table" => {
-        "key" => "value"
+      'Table' => {
+        'key' => 'value'
       },
-      "dog" => {
-        "tater" => {
-          "type" => "pug"
+      'dog' => {
+        'tater' => {
+          'type' => 'pug'
         }
       },
-      "x" => {
-        "y" => {
-          "z" => {
-            "w" => {}
+      'x' => {
+        'y' => {
+          'z' => {
+            'w' => {}
           }
         }
       },
-     "String" => {
-        "basic" => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF.",
-        "Multiline" => {
-          "key1" => "One\nTwo",
-          "key2" => "One\nTwo",
-          "key3" => "One\nTwo"
+      'String' => {
+        'basic' => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF.",
+        'Multiline' => {
+          'key1' => "One\nTwo",
+          'key2' => "One\nTwo",
+          'key3' => "One\nTwo"
         },
-       "Multilined" => {
-          "Singleline" => {
-            "key1" => "The quick brown fox jumps over the lazy dog.",
-            "key2" => "The quick brown fox jumps over the lazy dog.",
-            "key3" => "The quick brown fox jumps over the lazy dog."
+        'Multilined' => {
+          'Singleline' => {
+            'key1' => 'The quick brown fox jumps over the lazy dog.',
+            'key2' => 'The quick brown fox jumps over the lazy dog.',
+            'key3' => 'The quick brown fox jumps over the lazy dog.'
           }
         }
       }
@@ -74,8 +74,8 @@ class TomlTest < Test::Unit::TestCase
       },
 
       'clients' => {
-        'data' => [['gamma', 'delta'], [1, 2]],
-        'hosts' => ['alpha', 'omega']
+        'data' => [%w(gamma delta), [1, 2]],
+        'hosts' => %w(alpha omega)
       }
     }
 
@@ -138,8 +138,8 @@ class TomlTest < Test::Unit::TestCase
       },
 
       clients: {
-        data: [['gamma', 'delta'], [1, 2]],
-        hosts: ['alpha', 'omega']
+        data: [%w(gamma delta), [1, 2]],
+        hosts: %w(alpha omega)
       }
     }
 
@@ -148,6 +148,6 @@ class TomlTest < Test::Unit::TestCase
 
   def test_line_break
     parsed = TOML.parse("hello = 'world'\r\nline_break = true")
-    assert_equal({'hello' => 'world', 'line_break' => true}, parsed)
+    assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
   end
 end
