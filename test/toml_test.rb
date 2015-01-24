@@ -2,7 +2,7 @@ require_relative 'helper'
 
 class TomlTest < Test::Unit::TestCase
   def test_file_v_0_3_1
-    path = File.join(File.dirname(__FILE__), 'example-v0.3.0.toml')
+    path = File.join(File.dirname(__FILE__), 'example-v0.3.1.toml')
     parsed = TOML.load_file(path)
 
     hash = {
@@ -34,6 +34,29 @@ class TomlTest < Test::Unit::TestCase
             'key2' => 'The quick brown fox jumps over the lazy dog.',
             'key3' => 'The quick brown fox jumps over the lazy dog.'
           }
+        },
+        'Literal' => {
+          'winpath' => 'C:\\Users\nodejs\templates',
+          'winpath2' => "\\\\ServerX\\admin$\\system32\\",
+          'quoted' => 'Tom "Dubs" Preston-Werner',
+          'regex' => '<\i\c*\s*>',
+          'Multiline' => {
+            "regex2" => "I [dw]on't need \\d{2} apples",
+            "lines" => "The first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
+          }
+        }
+      },
+      "Integer" => {
+        "key1" => 99,
+        "key2" => 42,
+        "key3" => 0,
+        "key4" => -17
+      },
+      "Float" => {
+        "fractional" => {
+          "key1" => 1.0,
+          "key2" => 3.1415,
+          "key3" => -0.01
         }
       }
     }
