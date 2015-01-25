@@ -87,7 +87,6 @@ grammar Primitive
     true | false
   end
 
-
   rule true
     'true' { true }
   end
@@ -101,7 +100,14 @@ grammar Primitive
   ##
 
   rule key
-    [a-zA-Z_] [a-zA-Z_0-9#?]*
+    quoted_key | bare_key
   end
 
+  rule bare_key
+    [a-zA-Z_] [a-zA-Z_0-9_-]*
+  end
+
+  rule quoted_key
+    string
+  end
 end

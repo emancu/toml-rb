@@ -7,7 +7,7 @@ grammar Document
   end
 
   rule keygroup
-    (space? '[' nested_keys:(key "."?)+ ']' space? comment?) <Keygroup>
+    (space? '[' nested_keys:(space? key space? "."?)+ ']' space? comment?) <Keygroup>
   end
 
   rule keyvalue

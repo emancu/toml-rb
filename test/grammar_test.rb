@@ -1,9 +1,18 @@
+# encoding: utf-8
 require_relative 'helper'
 
 class GrammarTest < Test::Unit::TestCase
   def test_comment
     match = Document.parse(' # A comment', root: :comment)
     assert_equal(nil, match.value)
+  end
+
+  def test_key
+    match = Document.parse('bad_key-', root: :key)
+    assert_equal('bad_key-', match.value)
+
+    match = Document.parse('"123.ʎǝʞ.#?"', root: :key)
+    assert_equal('123.ʎǝʞ.#?', match.value)
   end
 
   def test_keygroup
@@ -14,6 +23,14 @@ class GrammarTest < Test::Unit::TestCase
     end
 
     match = Document.parse('[owner.emancu]', root: :keygroup)
+    assert_equal(%w(owner emancu),
+                 match.value.instance_variable_get('@nested_keys'))
+
+    match = Document.parse('["owner.emancu"]', root: :keygroup)
+    assert_equal(%w(owner.emancu),
+                 match.value.instance_variable_get('@nested_keys'))
+
+    match = Document.parse('[ owner . emancu ]', root: :keygroup)
     assert_equal(%w(owner emancu),
                  match.value.instance_variable_get('@nested_keys'))
   end
