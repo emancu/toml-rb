@@ -36,7 +36,7 @@ grammar Primitive
   rule datetime
     (date_skeleton ("Z" | date_offset | [,\.] frac:(/\d/1*6) date_offset)) {
       skeleton = captures[:date_skeleton].first
-      y,m,d,h,mi,s = [:y,:m,:d,:h,:mi,:s].map{ |s| skeleton.capture(s).value }
+      y,m,d,h,mi,s = skeleton.value
       offset = captures[:date_offset].first || "+00:00"
       sec_frac = captures[:frac].first || 0
       s = "#{s}.#{sec_frac}".to_f
@@ -46,7 +46,9 @@ grammar Primitive
   end
 
   rule date_skeleton
-    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/)
+    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/) {
+      [:y,:m,:d,:h,:mi,:s].map{ |s| capture(s).value }
+    }
   end
 
   rule date_offset
