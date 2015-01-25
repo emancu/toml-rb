@@ -57,7 +57,19 @@ class TomlTest < Test::Unit::TestCase
           "key1" => 1.0,
           "key2" => 3.1415,
           "key3" => -0.01
+        },
+        "both" => {
+          "key"=>6.626e-34
+        },
+        "exponent" => {
+          "key1" => 5.0e+22,
+          "key2" => 1000000.0,
+          "key3" => -0.02
         }
+      },
+      "Booleans" => {
+        "True" => true,
+        "False" => false
       }
     }
 

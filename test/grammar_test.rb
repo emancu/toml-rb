@@ -71,6 +71,12 @@ class GrammarTest < Test::Unit::TestCase
   def test_float
     match = Document.parse('1.69', root: :number)
     assert_equal(1.69, match.value)
+
+    match = Document.parse('1e6', root: :number)
+    assert_equal(1e6, match.value)
+
+    match = Document.parse('1.02e-46', root: :number)
+    assert_equal(1.02e-46, match.value)
   end
 
   def test_signed_numbers

@@ -38,11 +38,15 @@ grammar Primitive
   end
 
   rule number
-    float | integer
+     exponent | float | integer
   end
 
   rule float
     (integer '.' integer) { to_str.to_f }
+  end
+
+  rule exponent
+    ( (float | integer) [eE] integer) { to_str.to_f }
   end
 
   rule integer

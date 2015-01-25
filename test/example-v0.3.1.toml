@@ -93,3 +93,22 @@ key4 = -17
 key1 = +1.0
 key2 = 3.1415
 key3 = -0.01
+
+[Float.exponent]
+
+# exponent
+key1 = 5e+22
+key2 = 1e6
+key3 = -2E-2
+
+[Float.both]
+
+# both
+key = 6.626e-34
+
+# Boolean
+# Booleans are just the tokens you're used to. Always lowercase.
+
+[Booleans]
+True = true
+False = false
