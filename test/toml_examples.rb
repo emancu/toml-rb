@@ -1,5 +1,4 @@
 class TomlExamples
-
   def self.example_v_0_3_1
     {
       'Table' => {

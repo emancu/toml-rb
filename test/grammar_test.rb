@@ -1,3 +1,4 @@
+# encoding: utf-8
 require_relative 'helper'
 
 class GrammarTest < Test::Unit::TestCase
