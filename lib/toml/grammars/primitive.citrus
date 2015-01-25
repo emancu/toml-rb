@@ -5,6 +5,10 @@ grammar Primitive
     string | bool | datetime | number
   end
 
+  ##
+  # String rules
+  ##
+
   rule string
     multiline_string | multiline_literal | basic_string | literal_string
   end
@@ -25,17 +29,33 @@ grammar Primitive
     ("'''" line_break* text:~"'''" "'''" space) <TomlMultilineLiteral>
   end
 
-  rule bool
-    true | false
-  end
+  ##
+  # Date time rules
+  ##
 
-  # Full Zulu form
   rule datetime
-    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/ "Z") {
-      y,m,d,h,mi,s = [:y,:m,:d,:h,:mi,:s].map{|s| capture(s) }
-      Time.utc(*[y,m,d,h,mi,s].map(&:value))
+    (date_skeleton ("Z" | date_offset | [,\.] frac:(/\d/1*6) date_offset)) {
+      skeleton = captures[:date_skeleton].first
+      y,m,d,h,mi,s = [:y,:m,:d,:h,:mi,:s].map{ |s| skeleton.capture(s).value }
+      offset = captures[:date_offset].first || "+00:00"
+      sec_frac = captures[:frac].first || 0
+      s = "#{s}.#{sec_frac}".to_f
+
+      Time.new(*[y,m,d,h,mi,s,offset.to_s])
     }
   end
+
+  rule date_skeleton
+    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/)
+  end
+
+  rule date_offset
+    offset:(sign /\d\d/ ":" /\d\d/)
+  end
+
+  ##
+  # Number rules
+  ##
 
   rule number
      exponent | float | integer
@@ -57,9 +77,14 @@ grammar Primitive
     '+' | '-'
   end
 
-  rule key
-    [a-zA-Z_] [a-zA-Z_0-9#?]*
+  ##
+  # Boolean rules
+  ##
+
+  rule bool
+    true | false
   end
+
 
   rule true
     'true' { true }
@@ -68,4 +93,13 @@ grammar Primitive
   rule false
     'false' { false }
   end
+
+  ##
+  # Key rules
+  ##
+
+  rule key
+    [a-zA-Z_] [a-zA-Z_0-9#?]*
+  end
+
 end
