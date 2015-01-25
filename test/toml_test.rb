@@ -59,7 +59,7 @@ class TomlTest < Test::Unit::TestCase
           "key3" => -0.01
         },
         "both" => {
-          "key"=>6.626e-34
+          "key" => 6.626e-34
         },
         "exponent" => {
           "key1" => 5.0e+22,
@@ -70,6 +70,11 @@ class TomlTest < Test::Unit::TestCase
       "Booleans" => {
         "True" => true,
         "False" => false
+      },
+      "Datetime" => {
+        "key1" => Time.utc(1979, 05, 27, 07, 32, 0),
+        "key2" => Time.new(1979, 05, 27, 00, 32, 0, '-07:00'),
+        "key3" => Time.new(1979, 05, 27, 00, 32, 0.999999, '-07:00')
       }
     }
 

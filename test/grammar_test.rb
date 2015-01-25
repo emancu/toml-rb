@@ -127,6 +127,12 @@ class GrammarTest < Test::Unit::TestCase
   def test_datetime
     match = Document.parse('1986-08-28T15:15:00Z', root: :datetime)
     assert_equal(Time.utc(1986, 8, 28, 15, 15), match.value)
+
+    match = Document.parse('1986-08-28T15:15:00-03:00', root: :datetime)
+    assert_equal(Time.utc(1986, 8, 28, 18, 15), match.value)
+
+    match = Document.parse('1986-08-28T15:15:00.123-03:00', root: :datetime)
+    assert_equal(Time.utc(1986, 8, 28, 18, 15, 0.123), match.value)
   end
 
   private
