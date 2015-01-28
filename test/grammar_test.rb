@@ -139,6 +139,10 @@ class GrammarTest < Test::Unit::TestCase
     multiline_array = "[ \"hey\",\n   \"ho\",\n\t \"lets\", \"go\",\n ]"
     match = Document.parse(multiline_array, root: :array)
     assert_equal(%w(hey ho lets go), match.value)
+
+    multiline_array = "[\n1,\n# 2,\n# 3\n]"
+    match = Document.parse(multiline_array, root: :array)
+    assert_equal([1], match.value)
   end
 
   def test_datetime

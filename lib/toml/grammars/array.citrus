@@ -10,26 +10,26 @@ grammar TomlArray
   end
 
   rule float_array
-    (float ("," indent? float)*)
+    (float ("," indent? (float | comment))*)
   end
 
   rule string_array
-    (string ("," indent? string)*)
+    (string ("," indent? (string | comment))*)
   end
 
   rule array_array
-    (array ("," indent? array)*)
+    (array ("," indent? (array | comment))*)
   end
 
   rule integer_array
-    (integer ("," indent? integer)*)
+    (integer ("," indent? (integer | comment))*)
   end
 
   rule datetime_array
-    (datetime ("," indent? datetime)*)
+    (datetime ("," indent? (datetime | comment))*)
   end
 
   rule bool_array
-    (bool ("," indent? bool)*)
+    (bool ("," indent? (bool | comment))*)
   end
 end
