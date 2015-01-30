@@ -57,5 +57,9 @@ class DumperTest < Test::Unit::TestCase
     hash = { non: { 'bare."keys"' => { "works" => true } } }
     dumped = TOML.dump(hash)
     assert_equal("[non.\"bare.\\\"keys\\\"\"]\nworks = true\n", dumped)
+
+    hash = { hola: [{ chau: 4 }, { chau: 3 }] }
+    dumped = TOML.dump(hash)
+    assert_equal("[[hola]]\nchau = 4\n[[hola]]\nchau = 3\n", dumped)
   end
 end

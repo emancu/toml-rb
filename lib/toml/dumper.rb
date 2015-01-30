@@ -5,21 +5,32 @@ module TOML
     def initialize(hash)
       @toml_str = ''
 
-      visit(hash, '')
+      visit(hash, [])
     end
 
     private
 
-    def visit(hash, prefix)
+    def visit(hash, prefix, extra_brackets = false)
       nested_pairs = []
       simple_pairs = []
+      table_array_pairs = []
 
       hash.keys.sort.each do |key|
         val = hash[key]
-        (val.is_a?(Hash) ? nested_pairs : simple_pairs) << [key, val]
+        element = [key, val]
+
+        if val.is_a? Hash
+          nested_pairs << element
+        elsif val.is_a?(Array) && val.first.is_a?(Hash)
+          table_array_pairs << element
+        else
+          simple_pairs << element
+        end
       end
 
-      @toml_str += "[#{prefix}]\n" unless prefix.empty? || simple_pairs.empty?
+      unless prefix.empty? || simple_pairs.empty?
+        print_prefix prefix, extra_brackets
+      end
 
       # First add simple pairs, under the prefix
       simple_pairs.each do |key, val|
@@ -29,13 +40,33 @@ module TOML
 
       nested_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
-        visit(val, prefix.empty? ? key.to_s : [prefix, key].join('.'))
+
+        visit val, prefix + [key], false
+      end
+
+      table_array_pairs.each do |key, val|
+        key = quote_key(key) unless bare_key? key
+        aux_prefix = prefix + [key]
+
+        val.each do |child|
+          if child.empty?
+            print_prefix aux_prefix, true
+          else
+            visit child, aux_prefix, true
+          end
+        end
       end
     end
 
+    def print_prefix(prefix, extra_brackets = false)
+      new_prefix = prefix.join('.')
+      new_prefix = '[' + new_prefix + ']' if extra_brackets
+
+      @toml_str += "[" + new_prefix + "]\n"
+    end
+
     def to_toml(obj)
-      case
-      when obj.is_a?(Time)
+      if obj.is_a? Time
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
       else
         obj.inspect
@@ -47,7 +78,7 @@ module TOML
     end
 
     def quote_key(key)
-      '"' + key.gsub('"','\\"') + '"'
+      '"' + key.gsub('"', '\\"') + '"'
     end
   end
 end
