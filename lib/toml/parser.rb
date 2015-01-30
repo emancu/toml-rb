@@ -19,8 +19,8 @@ module TOML
 
     # Read about the Visitor pattern
     # http://en.wikipedia.org/wiki/Visitor_pattern
-    def visit_array_tables(array_tables)
-      @current = array_tables.navigate_keys @hash, @symbolize_keys
+    def visit_table_array(table_array)
+      @current = table_array.navigate_keys @hash, @symbolize_keys
     end
 
     def visit_keygroup(keygroup)

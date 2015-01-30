@@ -1,5 +1,5 @@
 module TOML
-  class ArrayTables
+  class TableArray
     def initialize(nested_keys)
       @nested_keys = nested_keys
     end
@@ -8,7 +8,7 @@ module TOML
       @nested_keys.each do |key|
         key = symbolize_keys ? key.to_sym : key
         hash[key] = [] unless hash[key]
-        hash[key] << {} if @nested_keys.last == key.to_s
+        hash[key] << {} if @nested_keys.last == key.to_s || hash[key].last.nil?
         hash = hash[key].last
       end
 
@@ -16,14 +16,14 @@ module TOML
     end
 
     def accept_visitor(parser)
-      parser.visit_array_tables self
+      parser.visit_table_array self
     end
   end
 end
 
 # Used in document.citrus
-module ArrayTables
+module TableArray
   def value
-    TOML::ArrayTables.new(captures[:key].map(&:value))
+    TOML::TableArray.new(captures[:key].map(&:value))
   end
 end

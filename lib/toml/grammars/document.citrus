@@ -3,11 +3,11 @@ grammar Document
   include TomlArray
 
   rule document
-    (comment | array_tables | keygroup | keyvalue | line_break)*
+    (comment | table_array | keygroup | keyvalue | line_break)*
   end
 
-  rule array_tables
-    (space? '[[' (space? key space? "."?)+ ']]' space? comment?) <ArrayTables>
+  rule table_array
+    (space? '[[' (space? key space? "."?)+ ']]' space? comment?) <TableArray>
   end
 
   rule keygroup
