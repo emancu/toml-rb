@@ -8,14 +8,15 @@ module TOML
       @nested_keys.each do |key|
         key = symbolize_keys ? key.to_sym : key
         hash[key] = {} unless hash[key]
-        hash = hash[key]
+        element = hash[key]
+        hash = element.is_a?(Array) ? element.last : element
       end
 
       hash
     end
 
     def accept_visitor(parser)
-      parser.visit_keygroup(self)
+      parser.visit_keygroup self
     end
   end
 end
