@@ -27,4 +27,3 @@ module ArrayTables
     TOML::ArrayTables.new(captures[:key].map(&:value))
   end
 end
-
