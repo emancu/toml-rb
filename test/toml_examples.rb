@@ -156,7 +156,16 @@ class TomlExamples
             'multi_line_array' => [']']
           }
         }
-      }
+      },
+      "nested" => [
+        {
+          "table" => [
+            {
+              "array" => [ {} ]
+            }
+          ]
+        }
+      ]
     }
   end
 end
