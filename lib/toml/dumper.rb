@@ -23,12 +23,12 @@ module TOML
 
       # First add simple pairs, under the prefix
       simple_pairs.each do |key, val|
-        key = "\"#{key}\"" unless key.to_s.match /^[a-zA-Z0-9_-]*$/
+        key = "\"#{key}\"" unless bare_key? key
         @toml_str << "#{key} = #{to_toml(val)}\n"
       end
 
       nested_pairs.each do |key, val|
-        key = "\"#{key}\"" unless key.to_s.match /^[a-zA-Z0-9_-]*$/
+        key = "\"#{key}\"" unless bare_key? key
         visit(val, prefix.empty? ? key.to_s : [prefix, key].join('.'))
       end
     end
@@ -40,6 +40,10 @@ module TOML
       else
         obj.inspect
       end
+    end
+
+    def bare_key?(key)
+      !!key.to_s.match(/^[a-zA-Z0-9_-]*$/)
     end
   end
 end
