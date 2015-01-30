@@ -8,7 +8,7 @@ module TOML
       @nested_keys.each do |key|
         key = symbolize_keys ? key.to_sym : key
         hash[key] = [] unless hash[key]
-        hash[key] << {} if @nested_keys.last == key.to_s || hash[key].last.nil?
+        hash[key] << {} if @nested_keys.last == key.to_s || hash[key].empty?
         hash = hash[key].last
       end
 
