@@ -6,7 +6,7 @@ grammar TomlArray
   end
 
   rule elements
-    float_array | string_array | array_array | integer_array | datetime_array | bool_array
+    comment | float_array | string_array | array_array | integer_array | datetime_array | bool_array
   end
 
   rule float_array
