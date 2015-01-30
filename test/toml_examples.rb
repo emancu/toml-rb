@@ -161,7 +161,7 @@ class TomlExamples
         {
           "table" => [
             {
-              "array" => [ {} ]
+              "array" => [{}]
             }
           ]
         }
