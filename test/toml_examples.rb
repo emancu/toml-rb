@@ -78,7 +78,31 @@ class TomlExamples
         "key4" => [[1, 2], %w(a b c)],
         "key5" => [1, 2, 3],
         "key6" => [1, 2]
-      }
+      },
+      "products" => [
+        { "name" => "Hammer", "sku" => 738594937 },
+        {},
+        { "name" => "Nail", "sku" => 284758393, "color" => "gray" }
+      ],
+      "fruit" => [
+        {
+          "name" => "apple",
+          "physical" => {
+            "color" => "red",
+            "shape" => "round"
+          },
+          "variety" => [
+            { "name" => "red delicious" },
+            { "name" => "granny smith" }
+          ]
+        },
+        {
+          "name" => "banana",
+          "variety" => [
+            { "name" => "plantain" }
+          ]
+        }
+      ]
     }
   end
 
@@ -132,7 +156,16 @@ class TomlExamples
             'multi_line_array' => [']']
           }
         }
-      }
+      },
+      "nested" => [
+        {
+          "table" => [
+            {
+              "array" => [{}]
+            }
+          ]
+        }
+      ]
     }
   end
 end

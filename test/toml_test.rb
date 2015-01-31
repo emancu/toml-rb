@@ -14,6 +14,8 @@ class TomlTest < Test::Unit::TestCase
     assert_equal hash['Integer'], parsed['Integer']
     assert_equal hash['String'], parsed['String']
     assert_equal hash['Table'], parsed['Table']
+    assert_equal hash['products'], parsed['products']
+    assert_equal hash['fruit'], parsed['fruit']
   end
 
   def test_file

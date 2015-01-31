@@ -140,3 +140,41 @@ key6 = [
   1,
   2, # this is ok
 ]
+
+# Array of Tables
+# These can be expressed by using a table name in double brackets.
+# Each table with the same double bracketed name will be an element in the array.
+# The tables are inserted in the order encountered.
+
+[[products]]
+name = "Hammer"
+sku = 738594937
+
+[[products]]
+
+[[products]]
+name = "Nail"
+sku = 284758393
+color = "gray"
+
+
+# You can create nested arrays of tables as well.
+
+[[fruit]]
+  name = "apple"
+
+  [fruit.physical]
+    color = "red"
+    shape = "round"
+
+  [[fruit.variety]]
+    name = "red delicious"
+
+  [[fruit.variety]]
+    name = "granny smith"
+
+[[fruit]]
+  name = "banana"
+
+  [[fruit.variety]]
+    name = "plantain"
