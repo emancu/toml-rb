@@ -1,12 +1,14 @@
 toml-rb
 =======
 
-A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
-
 [![Gem Version](https://badge.fury.io/rb/toml-rb.svg)](http://badge.fury.io/rb/toml-rb)
 [![Build Status](https://travis-ci.org/emancu/toml-rb.svg)](https://travis-ci.org/emancu/toml-rb)
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb/badges/gpa.svg)](https://codeclimate.com/github/emancu/toml-rb)
 [![Dependency Status](https://gemnasium.com/emancu/toml-rb.svg)](https://gemnasium.com/emancu/toml-rb)
+
+A [TOML](https://github.com/mojombo/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
+
+TOML specs supported: `0.3.1`
 
 Installation
 ------------
