@@ -20,7 +20,14 @@ test_string = "You'll hate me after this - #"          # " Annoying, isn't it?
             # ] Oh yes I did
             ]
 
-[[nested.table.array]]
+[parent.child1]
+key = 'value'
+
+[[parent.child2]]
+key2 = 'value'
+
+[[parent.child2]]
+key3 = 'value'
 
 # Each of the following keygroups/key value pairs should produce an error. Uncomment to them to test
 

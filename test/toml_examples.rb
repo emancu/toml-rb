@@ -157,15 +157,13 @@ class TomlExamples
           }
         }
       },
-      "nested" => [
-        {
-          "table" => [
-            {
-              "array" => [{}]
-            }
-          ]
-        }
-      ]
+      'parent' => {
+        'child1' => { 'key' => 'value' },
+        'child2' => [
+          { 'key2' => 'value' },
+          { 'key3' => 'value' }
+        ]
+      }
     }
   end
 end
