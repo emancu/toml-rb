@@ -109,7 +109,6 @@ class TomlExamples
   def self.example
     {
       'title' => 'TOML Example',
-
       'owner' => {
         'name' => 'Tom Preston-Werner',
         'organization' => 'GitHub',
@@ -123,7 +122,6 @@ class TomlExamples
         'connection_max' => 5000,
         'enabled' => true
       },
-
       'servers' => {
         'alpha' => {
           'ip' => '10.0.0.1',
@@ -134,7 +132,6 @@ class TomlExamples
           'dc' => 'eqdc10'
         }
       },
-
       'clients' => {
         'data' => [%w(gamma delta), [1, 2]],
         'hosts' => %w(alpha omega)
@@ -162,6 +159,11 @@ class TomlExamples
         'child2' => [
           { 'key2' => 'value' },
           { 'key3' => 'value' }
+        ]
+      },
+      'a' => {
+        'b' => [
+          { 'c' => 3 }
         ]
       }
     }

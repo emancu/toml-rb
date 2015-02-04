@@ -5,14 +5,26 @@ module TOML
     end
 
     def navigate_keys(hash, symbolize_keys = false)
+      last_key = @nested_keys.pop
+
+      # Go over the parent keys
       @nested_keys.each do |key|
         key = symbolize_keys ? key.to_sym : key
-        hash[key] = [] unless hash[key]
-        hash[key] << {} if @nested_keys.last == key.to_s || hash[key].empty?
-        hash = hash[key].is_a?(Array) ? hash[key].last : hash[key]
+        hash[key] = {} unless hash[key]
+
+        if hash[key].is_a? Array
+          hash[key] << {} if hash[key].empty?
+          hash = hash[key].last
+        else
+          hash = hash[key]
+        end
       end
 
-      hash
+      # Define Table Array
+      hash[last_key] = [] unless hash[last_key]
+      hash[last_key] << {}
+
+      hash[last_key].last
     end
 
     def accept_visitor(parser)
