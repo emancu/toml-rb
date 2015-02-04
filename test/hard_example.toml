@@ -29,6 +29,9 @@ key2 = 'value'
 [[parent.child2]]
 key3 = 'value'
 
+[[a.b]]
+c = 3
+
 # Each of the following keygroups/key value pairs should produce an error. Uncomment to them to test
 
 #[error]   if you didn't catch this, your parser is broken
