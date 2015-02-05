@@ -11,6 +11,19 @@ module TOML
     private
 
     def visit(hash, prefix, extra_brackets = false)
+      simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
+
+      unless prefix.empty? || simple_pairs.empty?
+        print_prefix prefix, extra_brackets
+      end
+
+      # First add simple pairs, under the prefix
+      dump_simple_pairs simple_pairs
+      dump_nested_pairs nested_pairs, prefix
+      dump_table_array_pairs table_array_pairs, prefix
+    end
+
+    def sort_pairs(hash)
       nested_pairs = []
       simple_pairs = []
       table_array_pairs = []
@@ -28,22 +41,25 @@ module TOML
         end
       end
 
-      unless prefix.empty? || simple_pairs.empty?
-        print_prefix prefix, extra_brackets
-      end
+      return simple_pairs, nested_pairs, table_array_pairs
+    end
 
-      # First add simple pairs, under the prefix
+    def dump_simple_pairs(simple_pairs)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
         @toml_str << "#{key} = #{to_toml(val)}\n"
       end
+    end
 
+    def dump_nested_pairs(nested_pairs, prefix)
       nested_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
 
         visit val, prefix + [key], false
       end
+    end
 
+    def dump_table_array_pairs(table_array_pairs, prefix)
       table_array_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
         aux_prefix = prefix + [key]
