@@ -72,7 +72,7 @@ grammar Primitive
   end
 
   rule integer
-    (sign? [0-9]+) { to_str.to_i }
+    (sign? [0-9_]+) { to_str.to_i }
   end
 
   rule sign

@@ -83,17 +83,26 @@ class GrammarTest < Test::Unit::TestCase
   def test_integer
     match = Document.parse('26', root: :number)
     assert_equal(26, match.value)
+
+    match = Document.parse('1_200_000_999', root: :number)
+    assert_equal(1_200_000_999, match.value)
   end
 
   def test_float
     match = Document.parse('1.69', root: :number)
     assert_equal(1.69, match.value)
 
+    match = Document.parse('1_000.69', root: :number)
+    assert_equal(1000.69, match.value)
+
     match = Document.parse('1e6', root: :number)
     assert_equal(1e6, match.value)
 
     match = Document.parse('1.02e-46', root: :number)
     assert_equal(1.02e-46, match.value)
+
+    match = Document.parse('+1e4_000_000', root: :number)
+    assert_equal(1e4_000_000, match.value)
   end
 
   def test_signed_numbers
