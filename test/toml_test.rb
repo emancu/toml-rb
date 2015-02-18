@@ -2,10 +2,10 @@ require_relative 'helper'
 require_relative 'toml_examples'
 
 class TomlTest < Test::Unit::TestCase
-  def test_file_v_0_3_1
-    path = File.join(File.dirname(__FILE__), 'example-v0.3.1.toml')
+  def test_file_v_0_4_0
+    path = File.join(File.dirname(__FILE__), 'example-v0.4.0.toml')
     parsed = TOML.load_file(path)
-    hash = TomlExamples.example_v_0_3_1
+    hash = TomlExamples.example_v_0_4_0
 
     assert_equal hash['Array'], parsed['Array']
     assert_equal hash['Booleans'], parsed['Booleans']
