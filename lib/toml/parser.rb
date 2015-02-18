@@ -24,11 +24,15 @@ module TOML
     end
 
     def visit_keygroup(keygroup)
-      @current = keygroup.navigate_keys(@hash, @symbolize_keys)
+      @current = keygroup.navigate_keys @hash, @symbolize_keys
     end
 
     def visit_keyvalue(keyvalue)
-      keyvalue.assign(@current, @symbolize_keys)
+      keyvalue.assign @current, @symbolize_keys
+    end
+
+    def visit_inline_table(inline_table)
+      inline_table.assign @current, @symbolize_keys
     end
   end
 end

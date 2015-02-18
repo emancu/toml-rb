@@ -15,6 +15,10 @@ grammar Document
   end
 
   rule keyvalue
-    (space? key space? '=' space? v:(primitive | array) comment?) <Keyvalue>
+    (space? key space? '=' space? v:(primitive | inline_table | array) comment?) <Keyvalue>
+  end
+
+  rule inline_table
+    (space? '{' (keyvalue (',' keyvalue)*)? space? '}' ) <InlineTable>
   end
 end

@@ -104,7 +104,7 @@ grammar Primitive
   end
 
   rule bare_key
-    [a-zA-Z_] [a-zA-Z_0-9_-]*
+    [a-zA-Z_] [a-zA-Z0-9_-]*
   end
 
   rule quoted_key
