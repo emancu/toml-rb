@@ -1,77 +1,98 @@
 class TomlExamples
-  def self.example_v_0_3_1
+  def self.example_v_0_4_0
     {
-      'Table' => {
-        'key' => 'value'
-      },
-      'dog' => {
-        'tater' => {
-          'type' => 'pug'
-        }
-      },
-      'x' => {
-        'y' => {
-          'z' => {
-            'w' => {}
-          }
-        }
-      },
-      'String' => {
-        'basic' => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF.",
-        'Multiline' => {
-          'key1' => "One\nTwo",
-          'key2' => "One\nTwo",
-          'key3' => "One\nTwo"
+      "table" => {
+        "key" => "value",
+        "subtable" => {
+          "key" => "another value"
         },
-        'Multilined' => {
-          'Singleline' => {
-            'key1' => 'The quick brown fox jumps over the lazy dog.',
-            'key2' => 'The quick brown fox jumps over the lazy dog.',
-            'key3' => 'The quick brown fox jumps over the lazy dog.'
-          }
-        },
-        'Literal' => {
-          'winpath' => 'C:\\Users\nodejs\templates',
-          'winpath2' => "\\\\ServerX\\admin$\\system32\\",
-          'quoted' => 'Tom "Dubs" Preston-Werner',
-          'regex' => '<\i\c*\s*>',
-          'Multiline' => {
-            "regex2" => "I [dw]on't need \\d{2} apples",
-            "lines" => "The first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
+        "inline" => {
+          "name" => {
+            "first" => "Tom",
+            "last" => "Preston-Werner"
+          },
+          "point" => {
+            "x" => 1,
+            "y" => 2
           }
         }
       },
-      "Integer" => {
+      "x" => {
+        "y" => {
+          "z" => {
+            "w" => {}
+          }
+        }
+      },
+      "string" => {
+        "basic" => {
+          "basic" => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF."
+        },
+        "multiline" => {
+          "key1" => "One\nTwo",
+          "key2" => "One\nTwo",
+          "key3" => "One\nTwo",
+          "continued" => {
+            "key1" => "The quick brown fox jumps over the lazy dog.",
+            "key2" => "The quick brown fox jumps over the lazy dog.",
+            "key3" => "The quick brown fox jumps over the lazy dog."
+          }
+        },
+        "literal" => {
+          "winpath" => "C:\\Users\\nodejs\\templates",
+          "winpath2" => "\\\\ServerX\\admin$\\system32\\",
+          "quoted" => "Tom\"Dubs\"Preston-Werner",
+          "regex" => "<\\i\\c*\\s*>",
+          "multiline" => {
+            "regex2" => "I[
+                dw
+            ]on'tneed\\d{
+                2
+            }apples",
+            "lines" => "Thefirstnewlineis\ntrimmedinrawstrings.\nAllotherwhitespace\nispreserved.\n"
+          }
+        }
+      },
+      "integer" => {
         "key1" => 99,
         "key2" => 42,
         "key3" => 0,
-        "key4" => -17
+        "key4" => -17,
+        "underscores" => {
+          "key1" => 1000,
+          "key2" => 5349221,
+          "key3" => 12345
+        }
       },
-      "Float" => {
+      "float" => {
         "fractional" => {
           "key1" => 1.0,
           "key2" => 3.1415,
           "key3" => -0.01
         },
-        "both" => {
-          "key" => 6.626e-34
-        },
         "exponent" => {
           "key1" => 5.0e+22,
           "key2" => 1000000.0,
           "key3" => -0.02
+        },
+        "both" => {
+          "key" => 6.626e-34
+        },
+        "underscores" => {
+          "key1" => 9224617.445991227,
+          "key2" => 1e1_000
         }
       },
-      "Booleans" => {
+      "boolean" => {
         "True" => true,
         "False" => false
       },
-      "Datetime" => {
+      "datetime" => {
         "key1" => Time.utc(1979, 05, 27, 07, 32, 0),
         "key2" => Time.new(1979, 05, 27, 00, 32, 0, '-07:00'),
         "key3" => Time.new(1979, 05, 27, 00, 32, 0.999999, '-07:00')
       },
-      "Array" => {
+      "array" => {
         "key1" => [1, 2, 3],
         "key2" => %w(red yellow green),
         "key3" => [[1, 2], [3, 4, 5]],

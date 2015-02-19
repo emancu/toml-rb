@@ -2,6 +2,8 @@ module TOML
   class ValueOverwriteError < StandardError; end
 
   class Keyvalue
+    attr_reader :key, :value
+
     def initialize(key, value)
       @key, @value = key, value
     end
@@ -13,7 +15,7 @@ module TOML
     end
 
     def accept_visitor(parser)
-      parser.visit_keyvalue(self)
+      parser.visit_keyvalue self
     end
   end
 end

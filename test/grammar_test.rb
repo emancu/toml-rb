@@ -83,17 +83,26 @@ class GrammarTest < Test::Unit::TestCase
   def test_integer
     match = Document.parse('26', root: :number)
     assert_equal(26, match.value)
+
+    match = Document.parse('1_200_000_999', root: :number)
+    assert_equal(1_200_000_999, match.value)
   end
 
   def test_float
     match = Document.parse('1.69', root: :number)
     assert_equal(1.69, match.value)
 
+    match = Document.parse('1_000.69', root: :number)
+    assert_equal(1000.69, match.value)
+
     match = Document.parse('1e6', root: :number)
     assert_equal(1e6, match.value)
 
     match = Document.parse('1.02e-46', root: :number)
     assert_equal(1.02e-46, match.value)
+
+    match = Document.parse('+1e4_000_000', root: :number)
+    assert_equal(1e4_000_000, match.value)
   end
 
   def test_signed_numbers
@@ -135,6 +144,10 @@ class GrammarTest < Test::Unit::TestCase
 
     match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
     assert_equal([%w(hey TOML), [2, 4]], match.value)
+
+    match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
+                           root: :inline_table_array)
+    assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
   def test_multiline_array
@@ -160,6 +173,17 @@ class GrammarTest < Test::Unit::TestCase
 
     match = Document.parse('1986-08-28T15:15:00.123-03:00', root: :datetime)
     assert_equal(Time.utc(1986, 8, 28, 18, 15, 0.123), match.value)
+  end
+
+  def test_inline_table
+    match = Document.parse('{ }', root: :inline_table)
+    assert_equal({}, match.value)
+
+    match = Document.parse('{ simple = true, params = 2 }', root: :inline_table)
+    assert_equal({ 'simple' => true, 'params' => 2 }, match.value)
+
+    match = Document.parse('{ nest = { hard = true } }', root: :inline_table)
+    assert_equal({ 'nest' => { 'hard' => true } }, match.value)
   end
 
   private

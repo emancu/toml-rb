@@ -15,6 +15,24 @@ grammar Document
   end
 
   rule keyvalue
-    (space? key space? '=' space? v:(primitive | array) comment?) <Keyvalue>
+    (space? key space? '=' space? v:(toml_values) comment?) <Keyvalue>
   end
+
+  rule inline_table
+    (space? '{' (keyvalue (',' keyvalue)*)? space? '}' ) <InlineTable>
+  end
+
+  rule inline_table_array
+    ("[" indent? (hash_array)* ","? indent? comment? indent? "]" indent?) <InlineTableArray>
+  end
+
+  rule hash_array
+    comment | (inline_table ("," indent? (inline_table | comment))*)
+  end
+
+  rule toml_values
+    primitive | inline_table_array | inline_table | array
+  end
+
+
 end

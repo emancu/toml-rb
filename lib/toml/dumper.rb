@@ -41,7 +41,7 @@ module TOML
         end
       end
 
-      return simple_pairs, nested_pairs, table_array_pairs
+      [simple_pairs, nested_pairs, table_array_pairs]
     end
 
     def dump_simple_pairs(simple_pairs)
