@@ -171,6 +171,17 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal(Time.utc(1986, 8, 28, 18, 15, 0.123), match.value)
   end
 
+  def test_inline_table
+    match = Document.parse('{ }', root: :inline_table)
+    assert_equal({ }, match.value)
+
+    match = Document.parse('{ simple = true, params = 2 }', root: :inline_table)
+    assert_equal({ 'simple' => true, 'params' => 2 }, match.value)
+
+    match = Document.parse('{ nest = { hard = true } }', root: :inline_table)
+    assert_equal({ 'nest' => { 'hard' => true}}, match.value)
+  end
+
   private
 
   # Creates all the alternatives of valid indentations to test
