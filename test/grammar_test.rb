@@ -144,6 +144,9 @@ class GrammarTest < Test::Unit::TestCase
 
     match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
     assert_equal([%w(hey TOML), [2, 4]], match.value)
+
+    match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]', root: :inline_table_array)
+    assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
   def test_multiline_array
