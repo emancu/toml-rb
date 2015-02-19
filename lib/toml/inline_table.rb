@@ -8,8 +8,7 @@ end
 
 module InlineTableArray
   def value
-    tables = []
-    tables = captures[:hash_array].map{ |x| x.captures[:inline_table] }
+    tables = captures[:hash_array].map { |x| x.captures[:inline_table] }
 
     tables.flatten.map(&:value)
   end

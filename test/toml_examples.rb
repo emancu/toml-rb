@@ -43,7 +43,7 @@ class TomlExamples
           "winpath2" => "\\\\ServerX\\admin$\\system32\\",
           "quoted" => "Tom\"Dubs\"Preston-Werner",
           "regex" => "<\\i\\c*\\s*>",
-          "multiline" =>  {
+          "multiline" => {
             "regex2" => "I[
                 dw
             ]on'tneed\\d{
@@ -92,7 +92,7 @@ class TomlExamples
         "key2" => Time.new(1979, 05, 27, 00, 32, 0, '-07:00'),
         "key3" => Time.new(1979, 05, 27, 00, 32, 0.999999, '-07:00')
       },
-      "array" =>  {
+      "array" => {
         "key1" => [1, 2, 3],
         "key2" => %w(red yellow green),
         "key3" => [[1, 2], [3, 4, 5]],

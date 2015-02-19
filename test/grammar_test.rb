@@ -145,7 +145,8 @@ class GrammarTest < Test::Unit::TestCase
     match = Document.parse('[ ["hey", "TOML"], [2,4] ]', root: :array)
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
-    match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]', root: :inline_table_array)
+    match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
+                           root: :inline_table_array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
@@ -176,13 +177,13 @@ class GrammarTest < Test::Unit::TestCase
 
   def test_inline_table
     match = Document.parse('{ }', root: :inline_table)
-    assert_equal({ }, match.value)
+    assert_equal({}, match.value)
 
     match = Document.parse('{ simple = true, params = 2 }', root: :inline_table)
     assert_equal({ 'simple' => true, 'params' => 2 }, match.value)
 
     match = Document.parse('{ nest = { hard = true } }', root: :inline_table)
-    assert_equal({ 'nest' => { 'hard' => true}}, match.value)
+    assert_equal({ 'nest' => { 'hard' => true } }, match.value)
   end
 
   private
