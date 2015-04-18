@@ -14,7 +14,7 @@ module TOML
         tuple = ->(kv) { [kv.key, visit_value(kv.value)] }
       end
 
-      Hash[@pairs.map &tuple]
+      Hash[@pairs.map(&tuple)]
     end
 
     def visit_inline_table(inline_table)
