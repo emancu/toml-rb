@@ -156,6 +156,12 @@ class TomlExamples
       'clients' => {
         'data' => [%w(gamma delta), [1, 2]],
         'hosts' => %w(alpha omega)
+      },
+      'amqp' => {
+        'exchange' => {
+          'durable' => true,
+          'auto_delete' => false
+        }
       }
     }
   end

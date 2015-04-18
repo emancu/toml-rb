@@ -146,7 +146,8 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                           root: :inline_table_array)
+                           root: :inline_table_array).value
+
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
@@ -177,13 +178,14 @@ class GrammarTest < Test::Unit::TestCase
 
   def test_inline_table
     match = Document.parse('{ }', root: :inline_table)
-    assert_equal({}, match.value)
+    assert_equal({}, match.value.value)
 
     match = Document.parse('{ simple = true, params = 2 }', root: :inline_table)
-    assert_equal({ 'simple' => true, 'params' => 2 }, match.value)
+    assert_equal({ 'simple' => true, 'params' => 2 }, match.value.value)
 
-    match = Document.parse('{ nest = { hard = true } }', root: :inline_table)
-    assert_equal({ 'nest' => { 'hard' => true } }, match.value)
+    match = Document.parse('{ nest = { really = { hard = true } } }', root: :inline_table)
+    assert_equal({ 'nest' => { 'really' => { 'hard' => true } } }, match.value.value)
+    assert_equal({ nest: { really: { hard: true } } }, match.value.value(true))
   end
 
   private
