@@ -30,9 +30,5 @@ module TOML
     def visit_keyvalue(keyvalue)
       keyvalue.assign @current, @symbolize_keys
     end
-
-    def visit_inline_table(inline_table)
-      inline_table.assign @current, @symbolize_keys
-    end
   end
 end
