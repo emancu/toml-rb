@@ -10,7 +10,7 @@ module TOML
 
     def assign(hash, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      fail ValueOverwriteError if hash[key]
+      fail ValueOverwriteError, "Key #{key.inspect} is defined more than once" if hash[key]
       hash[key] = visit_value @value
     end
 

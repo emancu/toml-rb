@@ -55,4 +55,10 @@ class ErrorsTest < Test::Unit::TestCase
     str = 'number = 3.14 pi <--again forgot the #'
     assert_raises(TOML::ParseError) { TOML.parse(str) }
   end
+
+  def test_value_overwrite
+    str = "a = 1\na = 2"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"a\" is defined more than once", e.message
+  end
 end
