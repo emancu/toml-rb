@@ -60,6 +60,7 @@ class ErrorsTest < Test::Unit::TestCase
     str = "a = 1\na = 2"
     e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
     assert_equal "Key \"a\" is defined more than once", e.message
+    assert_equal "a", e.key
 
     str = "a = false\na = true"
     assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
