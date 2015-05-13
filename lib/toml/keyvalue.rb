@@ -1,5 +1,12 @@
 module TOML
-  class ValueOverwriteError < StandardError; end
+  class ValueOverwriteError < StandardError
+    attr_accessor :key
+
+    def initialize(key)
+      self.key = key
+      super "Key #{key.inspect} is defined more than once"
+    end
+  end
 
   class Keyvalue
     attr_reader :value, :symbolize_keys
@@ -10,7 +17,7 @@ module TOML
 
     def assign(hash, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      fail ValueOverwriteError if hash[key]
+      fail ValueOverwriteError.new(key) if hash.key?(key)
       hash[key] = visit_value @value
     end
 
