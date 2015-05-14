@@ -146,8 +146,7 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                           root: :inline_table_array).value
-
+                           root: :inline_table_array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
