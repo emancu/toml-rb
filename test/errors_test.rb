@@ -65,4 +65,23 @@ class ErrorsTest < Test::Unit::TestCase
     str = "a = false\na = true"
     assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
   end
+
+  def test_table_overwrite
+    str = "[a]\nb=1\n[a]\nc=2"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"a\" is defined more than once", e.message
+
+    str = "[a]\nb=1\n[a]\nb=1"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"a\" is defined more than once", e.message
+
+    str = "[a]\nb=1\n[a.b]\nc=2"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"b\" is defined more than once", e.message
+
+    str = "[a]\nb=1\n[a.b.c]\nd=3"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"b\" is defined more than once", e.message
+  end
+
 end
