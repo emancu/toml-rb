@@ -169,11 +169,11 @@ class GrammarTest < Test::Unit::TestCase
     match = Document.parse(multiline_array, root: :array)
     assert_equal([4], match.value)
 
-    multiline_array = "[\n  1,\n  # 2,\n  3,\n]"
+    multiline_array = "[\n  1,\n  # 2,\n  3 ,\n]"
     match = Document.parse(multiline_array, root: :array)
     assert_equal([1, 3], match.value)
 
-    multiline_array = "[\n  1, # useless comment\n  # 2,\n  3 #other comment\n]"
+    multiline_array = "[\n  1 , # useless comment\n  # 2,\n  3 #other comment\n]"
     match = Document.parse(multiline_array, root: :array)
     assert_equal([1, 3], match.value)
   end
