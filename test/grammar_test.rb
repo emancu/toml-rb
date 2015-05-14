@@ -151,6 +151,12 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 
+  def test_empty_array
+    # test that [] is parsed as array and not as inline table array
+    match = Document.parse("a = []", root: :keyvalue).value
+    assert_equal [], match.value
+  end
+
   def test_multiline_array
     multiline_array = "[ \"hey\",\n   \"ho\",\n\t \"lets\", \"go\",\n ]"
     match = Document.parse(multiline_array, root: :array)

@@ -23,7 +23,7 @@ grammar Document
   end
 
   rule inline_table_array
-    ("[" indent? (hash_array)* ","? indent? comment? indent? "]" indent?) <InlineTableArray>
+    ("[" indent? (hash_array)+ ","? indent? comment? indent? "]" indent?) <InlineTableArray>
   end
 
   rule hash_array
