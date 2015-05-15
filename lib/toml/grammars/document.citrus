@@ -23,15 +23,15 @@ grammar Document
   end
 
   rule inline_table_array
-    ("[" indent? (hash_array)* ","? indent? comment? indent? "]" indent?) <InlineTableArray>
+    ("[" array_comments inline_table_array_elements space ","? array_comments "]" indent?) <InlineTableArray>
   end
 
-  rule hash_array
-    comment | (inline_table ("," indent? (inline_table | comment))*)
+  rule inline_table_array_elements
+    (inline_table (space "," array_comments inline_table)*)
   end
 
   rule toml_values
-    primitive | inline_table_array | inline_table | array
+    primitive | inline_table | array | inline_table_array
   end
 
 

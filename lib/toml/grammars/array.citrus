@@ -2,7 +2,7 @@ grammar TomlArray
   include Primitive
 
   rule array
-    ("[" array_comments (elements)* ","? array_comments "]" indent?) { eval(to_str) }
+    ("[" array_comments (elements)? space ","? array_comments "]" indent?) { eval(to_str) }
   end
 
   rule array_comments
@@ -14,26 +14,26 @@ grammar TomlArray
   end
 
   rule float_array
-    (float ("," array_comments float)*)
+    (float (space "," array_comments float)*)
   end
 
   rule string_array
-    (string ("," array_comments string)*)
+    (string (space "," array_comments string)*)
   end
 
   rule array_array
-    (array ("," array_comments array)*)
+    (array (space "," array_comments array)*)
   end
 
   rule integer_array
-    (integer ("," array_comments integer)*)
+    (integer (space "," array_comments integer)*)
   end
 
   rule datetime_array
-    (datetime ("," array_comments datetime)*)
+    (datetime (space "," array_comments datetime)*)
   end
 
   rule bool_array
-    (bool ("," array_comments bool)*)
+    (bool (space "," array_comments bool)*)
   end
 end

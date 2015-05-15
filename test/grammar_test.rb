@@ -146,9 +146,14 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     match = Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                           root: :inline_table_array).value
-
+                           root: :inline_table_array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
+  end
+
+  def test_empty_array
+    # test that [] is parsed as array and not as inline table array
+    match = Document.parse("a = []", root: :keyvalue).value
+    assert_equal [], match.value
   end
 
   def test_multiline_array
@@ -164,11 +169,11 @@ class GrammarTest < Test::Unit::TestCase
     match = Document.parse(multiline_array, root: :array)
     assert_equal([4], match.value)
 
-    multiline_array = "[\n  1,\n  # 2,\n  3,\n]"
+    multiline_array = "[\n  1,\n  # 2,\n  3 ,\n]"
     match = Document.parse(multiline_array, root: :array)
     assert_equal([1, 3], match.value)
 
-    multiline_array = "[\n  1, # useless comment\n  # 2,\n  3 #other comment\n]"
+    multiline_array = "[\n  1 , # useless comment\n  # 2,\n  3 #other comment\n]"
     match = Document.parse(multiline_array, root: :array)
     assert_equal([1, 3], match.value)
   end

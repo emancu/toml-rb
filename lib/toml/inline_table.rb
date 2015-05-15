@@ -63,8 +63,8 @@ end
 
 module InlineTableArray
   def value
-    tables = captures[:hash_array].map { |x| x.captures[:inline_table] }
+    tables = captures[:inline_table_array_elements].map { |x| x.captures[:inline_table] }
 
-    TOML::InlineTableArray.new tables.flatten.map(&:value)
+    TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
   end
 end
