@@ -1,29 +1,29 @@
-grammar Document
-  include Primitive
-  include TomlArray
+grammar TOML::Document
+  include TOML::Primitive
+  include TOML::Arrays
 
   rule document
     (comment | table_array | keygroup | keyvalue | line_break)*
   end
 
   rule table_array
-    (space? '[[' (space? key space? "."?)+ ']]' space? comment?) <TableArray>
+    (space? '[[' (space? key space? "."?)+ ']]' space? comment?) <TOML::TableArrayParser>
   end
 
   rule keygroup
-    (space? '[' (space? key space? "."?)+ ']' space? comment?) <Keygroup>
+    (space? '[' (space? key space? "."?)+ ']' space? comment?) <TOML::KeygroupParser>
   end
 
   rule keyvalue
-    (space? key space? '=' space? v:(toml_values) comment?) <Keyvalue>
+    (space? key space? '=' space? v:(toml_values) comment?) <TOML::KeyvalueParser>
   end
 
   rule inline_table
-    (space? '{' (keyvalue (',' keyvalue)*)? space? '}' ) <InlineTable>
+    (space? '{' (keyvalue (',' keyvalue)*)? space? '}' ) <TOML::InlineTableParser>
   end
 
   rule inline_table_array
-    ("[" array_comments inline_table_array_elements space ","? array_comments "]" indent?) <InlineTableArray>
+    ("[" array_comments inline_table_array_elements space ","? array_comments "]" indent?) <TOML::InlineTableArrayParser>
   end
 
   rule inline_table_array_elements

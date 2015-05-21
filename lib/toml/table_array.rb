@@ -31,11 +31,12 @@ module TOML
       parser.visit_table_array self
     end
   end
-end
 
-# Used in document.citrus
-module TableArray
-  def value
-    TOML::TableArray.new(captures[:key].map(&:value))
+  # Used in document.citrus
+  module TableArrayParser
+    def value
+      TOML::TableArray.new(captures[:key].map(&:value))
+    end
   end
 end
+

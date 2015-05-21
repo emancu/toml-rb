@@ -5,7 +5,7 @@ class TomlTest < Test::Unit::TestCase
   def test_file_v_0_4_0
     path = File.join(File.dirname(__FILE__), 'example-v0.4.0.toml')
     parsed = TOML.load_file(path)
-    hash = TomlExamples.example_v_0_4_0
+    hash = TOML::Examples.example_v_0_4_0
 
     assert_equal hash['Array'], parsed['Array']
     assert_equal hash['Booleans'], parsed['Booleans']
@@ -22,14 +22,14 @@ class TomlTest < Test::Unit::TestCase
     path = File.join(File.dirname(__FILE__), 'example.toml')
     parsed = TOML.load_file(path)
 
-    assert_equal TomlExamples.example, parsed
+    assert_equal TOML::Examples.example, parsed
   end
 
   def test_hard_example
     path = File.join(File.dirname(__FILE__), 'hard_example.toml')
     parsed = TOML.load_file(path)
 
-    assert_equal TomlExamples.hard_example, parsed
+    assert_equal TOML::Examples.hard_example, parsed
   end
 
   def test_symbolize_keys

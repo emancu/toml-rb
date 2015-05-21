@@ -53,18 +53,21 @@ module TOML
       @inline_tables.map { |it| it.value(symbolize_keys) }
     end
   end
-end
 
-module InlineTable
-  def value
-    TOML::InlineTable.new captures[:keyvalue].map(&:value)
+  module InlineTableParser
+    def value
+      TOML::InlineTable.new captures[:keyvalue].map(&:value)
+    end
+  end
+
+  module InlineTableArrayParser
+    def value
+      tables = captures[:inline_table_array_elements].map { |x| x.captures[:inline_table] }
+
+      TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
+    end
   end
 end
 
-module InlineTableArray
-  def value
-    tables = captures[:inline_table_array_elements].map { |x| x.captures[:inline_table] }
 
-    TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
-  end
-end
+

@@ -10,7 +10,7 @@ module TOML
       @symbolize_keys = options[:symbolize_keys]
 
       begin
-        parsed = Document.parse(content)
+        parsed = TOML::Document.parse(content)
         parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
       rescue Citrus::ParseError => e
         raise ParseError.new(e.message)

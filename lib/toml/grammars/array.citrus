@@ -1,5 +1,5 @@
-grammar TomlArray
-  include Primitive
+grammar TOML::Arrays
+  include TOML::Primitive
 
   rule array
     ("[" array_comments (elements)? space ","? array_comments "]" indent?) { eval(to_str) }
