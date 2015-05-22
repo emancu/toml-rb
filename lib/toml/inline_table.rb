@@ -8,7 +8,7 @@ module TOML
     end
 
     def value(symbolize_keys = false)
-      if @symbolize_keys = symbolize_keys
+      if (@symbolize_keys = symbolize_keys)
         tuple = ->(kv) { [kv.key.to_sym, visit_value(kv.value)] }
       else
         tuple = ->(kv) { [kv.key, visit_value(kv.value)] }

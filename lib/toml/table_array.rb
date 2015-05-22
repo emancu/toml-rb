@@ -39,4 +39,3 @@ module TOML
     end
   end
 end
-

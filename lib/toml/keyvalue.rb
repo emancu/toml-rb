@@ -12,7 +12,9 @@ module TOML
     attr_reader :value, :symbolize_keys
 
     def initialize(key, value)
-      @key, @value, @symbolize_keys = key, value, false
+      @key = key
+      @value = value
+      @symbolize_keys = false
     end
 
     def assign(hash, symbolize_keys = false)

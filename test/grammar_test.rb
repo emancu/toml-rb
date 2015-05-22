@@ -196,7 +196,8 @@ class GrammarTest < Test::Unit::TestCase
     match = TOML::Document.parse('{ simple = true, params = 2 }', root: :inline_table)
     assert_equal({ 'simple' => true, 'params' => 2 }, match.value.value)
 
-    match = TOML::Document.parse('{ nest = { really = { hard = true } } }', root: :inline_table)
+    match = TOML::Document.parse('{ nest = { really = { hard = true } } }',
+                                 root: :inline_table)
     assert_equal({ 'nest' => { 'really' => { 'hard' => true } } }, match.value.value)
     assert_equal({ nest: { really: { hard: true } } }, match.value.value(true))
   end
