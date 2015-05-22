@@ -8,13 +8,12 @@ module TOML
     end
 
     def self.transform_escaped_chars(str)
-      str
-          .gsub(/\\0/, "\0")
-          .gsub(/\\t/, "\t")
-          .gsub(/\\n/, "\n")
-          .gsub(/\\\"/, '"')
-          .gsub(/\\r/, "\r")
-          .gsub(/\\\\/, '\\')
+      str.gsub(/\\0/, "\0")
+        .gsub(/\\t/, "\t")
+        .gsub(/\\n/, "\n")
+        .gsub(/\\\"/, '"')
+        .gsub(/\\r/, "\r")
+        .gsub(/\\\\/, '\\')
     end
   end
 
@@ -42,5 +41,4 @@ module TOML
       aux.gsub(/\\\r?\n[\n\t\r ]*/, '')
     end
   end
-
 end

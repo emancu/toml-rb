@@ -62,12 +62,11 @@ module TOML
 
   module InlineTableArrayParser
     def value
-      tables = captures[:inline_table_array_elements].map { |x| x.captures[:inline_table] }
+      tables = captures[:inline_table_array_elements].map do |x|
+        x.captures[:inline_table]
+      end
 
       TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
     end
   end
 end
-
-
-
