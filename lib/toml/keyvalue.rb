@@ -12,7 +12,9 @@ module TOML
     attr_reader :value, :symbolize_keys
 
     def initialize(key, value)
-      @key, @value, @symbolize_keys = key, value, false
+      @key = key
+      @value = value
+      @symbolize_keys = false
     end
 
     def assign(hash, symbolize_keys = false)
@@ -47,11 +49,10 @@ module TOML
       a_value.accept_visitor self
     end
   end
-end
-
-# Used in document.citrus
-module Keyvalue
-  def value
-    TOML::Keyvalue.new(capture(:key).value, capture(:v).value)
+  # Used in document.citrus
+  module KeyvalueParser
+    def value
+      TOML::Keyvalue.new(capture(:key).value, capture(:v).value)
+    end
   end
 end

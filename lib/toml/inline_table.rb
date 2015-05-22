@@ -8,7 +8,7 @@ module TOML
     end
 
     def value(symbolize_keys = false)
-      if @symbolize_keys = symbolize_keys
+      if (@symbolize_keys = symbolize_keys)
         tuple = ->(kv) { [kv.key.to_sym, visit_value(kv.value)] }
       else
         tuple = ->(kv) { [kv.key, visit_value(kv.value)] }
@@ -53,18 +53,20 @@ module TOML
       @inline_tables.map { |it| it.value(symbolize_keys) }
     end
   end
-end
 
-module InlineTable
-  def value
-    TOML::InlineTable.new captures[:keyvalue].map(&:value)
+  module InlineTableParser
+    def value
+      TOML::InlineTable.new captures[:keyvalue].map(&:value)
+    end
   end
-end
 
-module InlineTableArray
-  def value
-    tables = captures[:inline_table_array_elements].map { |x| x.captures[:inline_table] }
+  module InlineTableArrayParser
+    def value
+      tables = captures[:inline_table_array_elements].map do |x|
+        x.captures[:inline_table]
+      end
 
-    TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
+      TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
+    end
   end
 end

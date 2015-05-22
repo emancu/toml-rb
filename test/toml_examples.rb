@@ -1,4 +1,4 @@
-class TomlExamples
+class TOML::Examples
   def self.example_v_0_4_0
     {
       "table" => {

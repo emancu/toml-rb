@@ -26,11 +26,10 @@ module TOML
       parser.visit_keygroup self
     end
   end
-end
-
-# Used in document.citrus
-module Keygroup
-  def value
-    TOML::Keygroup.new(captures[:key].map(&:value))
+  # Used in document.citrus
+  module KeygroupParser
+    def value
+      TOML::Keygroup.new(captures[:key].map(&:value))
+    end
   end
 end
