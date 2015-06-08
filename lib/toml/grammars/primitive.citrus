@@ -22,11 +22,11 @@ grammar TOML::Primitive
   end
 
   rule multiline_string
-    ('"""' line_break* text:~'"""' '"""' space) <TOML::MultilineString>
+    ('"""' line_break* (text:~'"""'|'') '"""' space) <TOML::MultilineString>
   end
 
   rule multiline_literal
-    ("'''" line_break* text:~"'''" "'''" space) <TOML::MultilineLiteral>
+    ("'''" line_break* (text:~"'''"|'') "'''" space) <TOML::MultilineLiteral>
   end
 
   ##

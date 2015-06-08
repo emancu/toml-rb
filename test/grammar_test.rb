@@ -62,6 +62,15 @@ class GrammarTest < Minitest::Test
 
     match = TOML::Document.parse(to_parse, root: :multiline_string)
     assert_equal "One Two", match.value
+
+
+  end
+
+  def test_empty_multiline_string
+    to_parse = '""""""'
+
+    match = TOML::Document.parse(to_parse, root: :multiline_string)
+    assert_equal '', match.value
   end
 
   def test_special_characters
@@ -146,7 +155,7 @@ class GrammarTest < Minitest::Test
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     match = TOML::Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                           root: :inline_table_array)
+                                 root: :inline_table_array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 

@@ -86,8 +86,9 @@ class TomlTest < Minitest::Test
     assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
   end
 
-  def list_toml_files(state, &block)
-    Dir["test/examples/#{state}/*.json"].each do |json_file|
+  def list_toml_files(state, file= nil, &block)
+    file ||= '*'
+    Dir["test/examples/#{state}/#{file}.json"].each do |json_file|
       toml_file = File.join(File.dirname(json_file), File.basename(json_file, '.json')) + '.toml'
       begin
         toml = TOML.load_file(toml_file)
