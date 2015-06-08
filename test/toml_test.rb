@@ -1,7 +1,6 @@
 require_relative 'helper'
 require_relative 'toml_examples'
 require 'json'
-require 'pp'
 
 class TomlTest < Minitest::Test
   def test_file_v_0_4_0
