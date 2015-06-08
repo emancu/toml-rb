@@ -89,7 +89,8 @@ class TomlTest < Minitest::Test
   def compare_toml_files(folder, file = nil, &block)
     file ||= '*'
     Dir["test/examples/#{folder}/#{file}.json"].each do |json_file|
-      toml_file = File.join(File.dirname(json_file), File.basename(json_file, '.json')) + '.toml'
+      toml_file = File.join(File.dirname(json_file),
+                            File.basename(json_file, '.json')) + '.toml'
       begin
         toml = TOML.load_file(toml_file)
       rescue TOML::Error => e
