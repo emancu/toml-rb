@@ -86,13 +86,14 @@ class TomlTest < Minitest::Test
     assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
   end
 
-  def list_toml_files(state, file = nil, &block)
+  def compare_toml_files(folder, file = nil, &block)
     file ||= '*'
-    Dir["test/examples/#{state}/#{file}.json"].each do |json_file|
+    Dir["test/examples/#{folder}/#{file}.json"].each do |json_file|
       toml_file = File.join(File.dirname(json_file), File.basename(json_file, '.json')) + '.toml'
       begin
         toml = TOML.load_file(toml_file)
       rescue TOML::Error => e
+        fail e
         assert false, "Error: #{e} in #{toml_file}"
       end
       json = JSON.parse(File.read(json_file))
@@ -101,8 +102,18 @@ class TomlTest < Minitest::Test
   end
 
   def test_valid_cases
-    list_toml_files 'valid' do |json, toml, file|
+    compare_toml_files 'valid', 'implicit-and-explicit-after' do |json, toml, file|
       assert_equal json, toml, "In file '#{file}'"
+    end
+  end
+
+  def test_invalid_cases
+    file = '*'
+    file = 'duplicate-tables'
+    Dir["test/examples/invalid/#{file}.toml"].each do |toml_file|
+      assert_raises(TOML::Error, "For file #{toml_file}") do
+        TOML.load_file(toml_file)
+      end
     end
   end
 end

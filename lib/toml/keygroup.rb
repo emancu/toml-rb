@@ -4,14 +4,12 @@ module TOML
       @nested_keys = nested_keys
     end
 
-    def navigate_keys(hash, symbolize_keys = false)
-      last_index = @nested_keys.length - 1
+    def navigate_keys(hash, visited_keys, symbolize_keys = false)
+      fail ValueOverwriteError.new(full_key) if visited_keys.include?(full_key)
+      visited_keys << full_key
       @nested_keys.each_with_index do |key, i|
         key = symbolize_keys ? key.to_sym : key
         # do not allow to define more than once just the last key
-        if i == last_index && hash.key?(key)
-          # fail ValueOverwriteError.new(key)
-        end
         hash[key] = {} unless hash.key?(key)
         element = hash[key]
         hash = element.is_a?(Array) ? element.last : element
@@ -24,6 +22,10 @@ module TOML
 
     def accept_visitor(parser)
       parser.visit_keygroup self
+    end
+
+    def full_key
+      @nested_keys.join('.')
     end
   end
   # Used in document.citrus

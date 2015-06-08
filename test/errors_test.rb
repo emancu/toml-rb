@@ -7,7 +7,7 @@ class ErrorsTest < Minitest::Test
   end
 
   def test_text_after_string
-    str =  'string = "Anything other than tabs, spaces and newline after a '
+    str = 'string = "Anything other than tabs, spaces and newline after a '
     str += 'keygroup or key value pair has ended should produce an error '
     str += 'unless it is a comment" like this'
 
@@ -67,13 +67,13 @@ class ErrorsTest < Minitest::Test
   end
 
   def test_table_overwrite
-    # str = "[a]\nb=1\n[a]\nc=2"
-    # e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
-    # assert_equal "Key \"a\" is defined more than once", e.message
-    #
-    # str = "[a]\nb=1\n[a]\nb=1"
-    # e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
-    # assert_equal "Key \"a\" is defined more than once", e.message
+    str = "[a]\nb=1\n[a]\nc=2"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"a\" is defined more than once", e.message
+
+    str = "[a]\nb=1\n[a]\nb=1"
+    e = assert_raises(TOML::ValueOverwriteError) { TOML.parse(str) }
+    assert_equal "Key \"a\" is defined more than once", e.message
   end
 
   def test_value_overwrite_with_table
