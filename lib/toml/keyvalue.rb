@@ -1,13 +1,4 @@
 module TOML
-  class ValueOverwriteError < StandardError
-    attr_accessor :key
-
-    def initialize(key)
-      self.key = key
-      super "Key #{key.inspect} is defined more than once"
-    end
-  end
-
   class Keyvalue
     attr_reader :value, :symbolize_keys
 

@@ -1,7 +1,7 @@
 # encoding: utf-8
 require_relative 'helper'
 
-class GrammarTest < Test::Unit::TestCase
+class GrammarTest < Minitest::Test
   def test_comment
     match = TOML::Document.parse(' # A comment', root: :comment)
     assert_equal(nil, match.value)
