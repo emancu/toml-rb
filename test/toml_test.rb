@@ -1,6 +1,7 @@
 require_relative 'helper'
 require_relative 'toml_examples'
 require 'json'
+require 'pp'
 
 class TomlTest < Minitest::Test
   def test_file_v_0_4_0
@@ -102,7 +103,7 @@ class TomlTest < Minitest::Test
   end
 
   def test_valid_cases
-    compare_toml_files 'valid', 'table-whitespace' do |json, toml, file|
+    compare_toml_files 'valid' do |json, toml, file|
       assert_equal json, toml, "In file '#{file}'"
     end
   end
