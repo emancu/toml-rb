@@ -62,8 +62,6 @@ class GrammarTest < Minitest::Test
 
     match = TOML::Document.parse(to_parse, root: :multiline_string)
     assert_equal "One Two", match.value
-
-
   end
 
   def test_empty_multiline_string
