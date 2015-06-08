@@ -21,6 +21,10 @@ module TOML
       end
 
       # Define Table Array
+      if hash[last_key].is_a? Hash
+        fail TOML::ParseError,
+             "#{last_key} was defined as hash but is now redefined as a table!"
+      end
       hash[last_key] = [] unless hash[last_key]
       hash[last_key] << {}
 

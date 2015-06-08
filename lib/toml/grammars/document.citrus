@@ -7,11 +7,11 @@ grammar TOML::Document
   end
 
   rule table_array
-    (space? '[[' (space? key space? "."?)+ ']]' space? comment?) <TOML::TableArrayParser>
+    (space? '[[' ((key "."?)+|'"'(space? key space? "."?)+'"') ']]' space? comment?) <TOML::TableArrayParser>
   end
 
   rule keygroup
-    (space? '[' (space? key space? "."?)+ ']' space? comment?) <TOML::KeygroupParser>
+    (space? '[' ((key "."?)+|'"'(space? key space? "."?)+'"') ']' space? comment?) <TOML::KeygroupParser>
   end
 
   rule keyvalue

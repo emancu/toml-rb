@@ -41,7 +41,7 @@ module TOML
 
   module MultilineString
     def value
-      return '' if  captures[:text].empty?
+      return '' if captures[:text].empty?
       aux = captures[:text].first.value
 
       # Remove spaces on multilined Singleline strings
@@ -53,7 +53,7 @@ module TOML
 
   module MultilineLiteral
     def value
-      return '' if  captures[:text].empty?
+      return '' if captures[:text].empty?
       aux = captures[:text].first.value
 
       aux.gsub(/\\\r?\n[\n\t\r ]*/, '')

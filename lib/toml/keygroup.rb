@@ -7,7 +7,7 @@ module TOML
     def navigate_keys(hash, visited_keys, symbolize_keys = false)
       fail ValueOverwriteError.new(full_key) if visited_keys.include?(full_key)
       visited_keys << full_key
-      @nested_keys.each_with_index do |key, i|
+      @nested_keys.each do |key|
         key = symbolize_keys ? key.to_sym : key
         # do not allow to define more than once just the last key
         hash[key] = {} unless hash.key?(key)
