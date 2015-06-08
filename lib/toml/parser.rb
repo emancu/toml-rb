@@ -1,6 +1,4 @@
 module TOML
-  class ParseError < StandardError; end
-
   class Parser
     attr_reader :hash
 
@@ -13,7 +11,7 @@ module TOML
         parsed = TOML::Document.parse(content)
         parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
       rescue Citrus::ParseError => e
-        raise ParseError.new(e.message)
+        raise TOML::ParseError.new(e.message)
       end
     end
 

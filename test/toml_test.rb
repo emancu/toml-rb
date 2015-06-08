@@ -1,7 +1,8 @@
 require_relative 'helper'
 require_relative 'toml_examples'
+require 'json'
 
-class TomlTest < Test::Unit::TestCase
+class TomlTest < Minitest::Test
   def test_file_v_0_4_0
     path = File.join(File.dirname(__FILE__), 'example-v0.4.0.toml')
     parsed = TOML.load_file(path)
@@ -83,5 +84,24 @@ class TomlTest < Test::Unit::TestCase
   def test_line_break
     parsed = TOML.parse("hello = 'world'\r\nline_break = true")
     assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
+  end
+
+  def list_toml_files(state, &block)
+    Dir["test/examples/#{state}/*.json"].each do |json_file|
+      toml_file = File.join(File.dirname(json_file), File.basename(json_file, '.json')) + '.toml'
+      begin
+        toml = TOML.load_file(toml_file)
+      rescue TOML::Error => e
+        assert false, "Error: #{e} in #{toml_file}"
+      end
+      json = JSON.parse(File.read(json_file))
+      block.call(json, toml, toml_file)
+    end
+  end
+
+  def test_valid_cases
+    list_toml_files 'valid' do |json, toml, file|
+      assert_equal json, toml, "In file '#{file}'"
+    end
   end
 end

@@ -10,7 +10,7 @@ module TOML
         key = symbolize_keys ? key.to_sym : key
         # do not allow to define more than once just the last key
         if i == last_index && hash.key?(key)
-          fail ValueOverwriteError.new(key)
+          # fail ValueOverwriteError.new(key)
         end
         hash[key] = {} unless hash.key?(key)
         element = hash[key]
