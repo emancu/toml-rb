@@ -1,7 +1,7 @@
 # encoding: utf-8
 require_relative 'helper'
 
-class GrammarTest < Test::Unit::TestCase
+class GrammarTest < Minitest::Test
   def test_comment
     match = TOML::Document.parse(' # A comment', root: :comment)
     assert_equal(nil, match.value)
@@ -30,9 +30,13 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal(%w(owner.emancu),
                  match.value.instance_variable_get('@nested_keys'))
 
-    match = TOML::Document.parse('[ owner . emancu ]', root: :keygroup)
-    assert_equal(%w(owner emancu),
+    match = TOML::Document.parse('["first key"."second key"]', root: :keygroup)
+    assert_equal(['first key', 'second key'],
                  match.value.instance_variable_get('@nested_keys'))
+
+    assert_raises Citrus::ParseError do
+      TOML::Document.parse('[ owner . emancu ]', root: :keygroup)
+    end
   end
 
   def test_keyvalue
@@ -62,6 +66,13 @@ class GrammarTest < Test::Unit::TestCase
 
     match = TOML::Document.parse(to_parse, root: :multiline_string)
     assert_equal "One Two", match.value
+  end
+
+  def test_empty_multiline_string
+    to_parse = '""""""'
+
+    match = TOML::Document.parse(to_parse, root: :multiline_string)
+    assert_equal '', match.value
   end
 
   def test_special_characters
@@ -146,7 +157,7 @@ class GrammarTest < Test::Unit::TestCase
     assert_equal([%w(hey TOML), [2, 4]], match.value)
 
     match = TOML::Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                           root: :inline_table_array)
+                                 root: :inline_table_array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 

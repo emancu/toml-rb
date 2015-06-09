@@ -1,13 +1,13 @@
 require_relative 'helper'
 
-class ErrorsTest < Test::Unit::TestCase
+class ErrorsTest < Minitest::Test
   def test_text_after_keygroup
     str = "[error] if you didn't catch this, your parser is broken"
     assert_raises(TOML::ParseError) { TOML.parse(str) }
   end
 
   def test_text_after_string
-    str =  'string = "Anything other than tabs, spaces and newline after a '
+    str = 'string = "Anything other than tabs, spaces and newline after a '
     str += 'keygroup or key value pair has ended should produce an error '
     str += 'unless it is a comment" like this'
 

@@ -1,6 +1,6 @@
 require_relative 'helper'
 
-class DumperTest < Test::Unit::TestCase
+class DumperTest < Minitest::Test
   def test_dump_empty
     dumped = TOML.dump({})
     assert_equal('', dumped)

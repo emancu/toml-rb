@@ -1,0 +1,5 @@
+{
+  "oneline": "This string has a ' quote character.",
+  "firstnl": "This string has a ' quote character.",
+  "multiline": "This string\nhas ' a quote character\nand more than\none newline\nin it."
+}
