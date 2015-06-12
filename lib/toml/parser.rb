@@ -4,7 +4,7 @@ module TOML
 
     def initialize(content, options = {})
       @hash = {}
-      @visited_keys = Set.new
+      @visited_keys = []
       @current = @hash
       @symbolize_keys = options[:symbolize_keys]
 
