@@ -62,4 +62,18 @@ class DumperTest < Minitest::Test
     dumped = TOML.dump(hash)
     assert_equal("[[hola]]\nchau = 4\n[[hola]]\nchau = 3\n", dumped)
   end
+
+  def test_print_empty_tables
+    hash = { plugins: { cpu: { foo: "bar", baz: 1234 }, disk: {}, io: {} } }
+    dumped = TOML.dump(hash)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      [plugins.cpu]
+      baz = 1234
+      foo = "bar"
+      [plugins.disk]
+      [plugins.io]
+    EOS
+
+    assert_equal toml, dumped
+  end
 end
