@@ -11,16 +11,20 @@ module TOML
     private
 
     def visit(hash, prefix, extra_brackets = false)
-      simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
-
-      unless prefix.empty? || simple_pairs.empty?
+      if hash.empty? && !prefix.empty?
         print_prefix prefix, extra_brackets
-      end
+      else
+        simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
 
-      # First add simple pairs, under the prefix
-      dump_simple_pairs simple_pairs
-      dump_nested_pairs nested_pairs, prefix
-      dump_table_array_pairs table_array_pairs, prefix
+        unless prefix.empty? || simple_pairs.empty?
+          print_prefix prefix, extra_brackets
+        end
+
+        # First add simple pairs, under the prefix
+        dump_simple_pairs simple_pairs
+        dump_nested_pairs nested_pairs, prefix
+        dump_table_array_pairs table_array_pairs, prefix
+      end
     end
 
     def sort_pairs(hash)
