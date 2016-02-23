@@ -14,13 +14,4 @@ module TOML
       super "Key #{key.inspect} is defined more than once"
     end
   end
-
-  class EscapeSequenceReserved < Error
-    attr_accessor :sequence
-
-    def initialize(sequence)
-      @sequence = sequence
-      super "Escape sequence `#{sequence}` is reserved"
-    end
-  end
 end
