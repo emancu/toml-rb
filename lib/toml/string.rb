@@ -10,26 +10,45 @@ module TOML
     # Replace the unicode escaped characters with the corresponding character
     # e.g. \u03B4 => ?
     def self.decode_unicode(str)
-      str.gsub(/([^\\](?:\\\\)*\\u[\da-f]{4})/i) do |m|
-        m[0...-6] + [m[-4..-1].to_i(16)].pack('U')
+      str.gsub(/\\u([\da-f]{4,6})/i) do |m|
+        [m[2..-1].to_i(16)].pack('U')
       end
     end
 
     # Replace special characters such as line feed and tabs.
     def self.decode_special_char(str)
-      str.gsub(/\\0/, "\0")
-        .gsub(/\\t/, "\t")
-        .gsub(/\\b/, "\b")
-        .gsub(/\\f/, "\f")
-        .gsub(/\\n/, "\n")
-        .gsub(/\\\"/, '"')
-        .gsub(/\\r/, "\r")
+      str.gsub(/\\+(\"|.)/) do |m|
+        backslashes = "\\" * ((m.size - 1) / 2)
+
+        if m.size.even?
+          sequence = m[-2..-1]
+          sc = special_chars[sequence]
+
+          fail EscapeSequenceReserved.new(sequence) unless sc
+
+          backslashes + sc
+        else
+          backslashes + m[-1]
+        end
+      end
     end
 
     def self.transform_escaped_chars(str)
-      str = decode_special_char(str)
       str = decode_unicode(str)
-      str.gsub(/\\\\/, '\\').encode('utf-8')
+      str = decode_special_char(str)
+      str.encode('utf-8')
+    end
+
+    def self.special_chars
+      @special_chars ||= {
+        '\\0' => "\0",
+        '\\t' => "\t",
+        '\\b' => "\b",
+        '\\f' => "\f",
+        '\\n' => "\n",
+        '\\r' => "\r",
+        '\\"' => '"'
+      }
     end
   end
 
