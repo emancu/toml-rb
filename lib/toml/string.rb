@@ -10,7 +10,7 @@ module TOML
       '\\r'  => "\r",
       '\\"'  => '"',
       '\\\\' => '\\'
-    }
+    }.freeze
 
     def value
       aux = TOML::BasicString.transform_escaped_chars first.value
