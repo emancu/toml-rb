@@ -79,8 +79,8 @@ class GrammarTest < Minitest::Test
     match = TOML::Document.parse('"\0 \" \t \n \r"', root: :string)
     assert_equal("\0 \" \t \n \r", match.value)
 
-    match = TOML::Document.parse('"C:\\Documents\\virus.exe"', root: :string)
-    assert_equal('C:\\Documents\\virus.exe', match.value)
+    match = TOML::Document.parse('"C:\\\\Documents\\\\nada.exe"', root: :string)
+    assert_equal('C:\\Documents\\nada.exe', match.value)
   end
 
   def test_bool
