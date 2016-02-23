@@ -1,6 +1,17 @@
 module TOML
   # Used in primitive.citrus
   module BasicString
+    SPECIAL_CHARS = {
+      '\\0'  => "\0",
+      '\\t'  => "\t",
+      '\\b'  => "\b",
+      '\\f'  => "\f",
+      '\\n'  => "\n",
+      '\\r'  => "\r",
+      '\\"'  => '"',
+      '\\\\' => '\\'
+    }.freeze
+
     def value
       aux = TOML::BasicString.transform_escaped_chars first.value
 
@@ -10,26 +21,21 @@ module TOML
     # Replace the unicode escaped characters with the corresponding character
     # e.g. \u03B4 => ?
     def self.decode_unicode(str)
-      str.gsub(/([^\\](?:\\\\)*\\u[\da-f]{4})/i) do |m|
-        m[0...-6] + [m[-4..-1].to_i(16)].pack('U')
-      end
-    end
-
-    # Replace special characters such as line feed and tabs.
-    def self.decode_special_char(str)
-      str.gsub(/\\0/, "\0")
-        .gsub(/\\t/, "\t")
-        .gsub(/\\b/, "\b")
-        .gsub(/\\f/, "\f")
-        .gsub(/\\n/, "\n")
-        .gsub(/\\\"/, '"')
-        .gsub(/\\r/, "\r")
+      [str[2..-1].to_i(16)].pack('U')
     end
 
     def self.transform_escaped_chars(str)
-      str = decode_special_char(str)
-      str = decode_unicode(str)
-      str.gsub(/\\\\/, '\\').encode('utf-8')
+      str.gsub(/\\(u[\da-fA-F]{4}|U[\da-fA-F]{8}|.)/) do |m|
+        if m.size == 2
+          SPECIAL_CHARS[m] || parse_error(m)
+        else
+          decode_unicode(m).force_encoding('UTF-8')
+        end
+      end
+    end
+
+    def self.parse_error(m)
+      fail ParseError.new "Escape sequence #{m} is reserved"
     end
   end
 
