@@ -7,15 +7,15 @@ grammar TOML::Document
   end
 
   rule table_array
-    (space? '[[' ((key "."?)+|'"'(space? key space? "."?)+'"') ']]' space? comment?) <TOML::TableArrayParser>
+    (space? '[[' stripped_key ("." stripped_key)* ']]' comment?) <TOML::TableArrayParser>
   end
 
   rule keygroup
-    (space? '[' ((key "."?)+|'"'(space? key space? "."?)+'"') ']' space? comment?) <TOML::KeygroupParser>
+    (space? '[' stripped_key ("." stripped_key)* ']' comment?) <TOML::KeygroupParser>
   end
 
   rule keyvalue
-    (space? key space? '=' space? v:(toml_values) comment?) <TOML::KeyvalueParser>
+    (stripped_key '=' space? v:(toml_values) comment?) <TOML::KeyvalueParser>
   end
 
   rule inline_table
@@ -34,5 +34,7 @@ grammar TOML::Document
     primitive | inline_table | array | inline_table_array
   end
 
-
+  rule stripped_key
+    (space? key space?) { captures[:key].first.value }
+  end
 end

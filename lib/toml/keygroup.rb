@@ -34,7 +34,7 @@ module TOML
   # Used in document.citrus
   module KeygroupParser
     def value
-      TOML::Keygroup.new(captures[:key].map(&:value))
+      TOML::Keygroup.new(captures[:stripped_key].map(&:value))
     end
   end
 end
