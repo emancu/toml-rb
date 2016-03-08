@@ -43,7 +43,7 @@ module TOML
   # Used in document.citrus
   module KeyvalueParser
     def value
-      TOML::Keyvalue.new(capture(:key).value, capture(:v).value)
+      TOML::Keyvalue.new(capture(:stripped_key).value, capture(:v).value)
     end
   end
 end

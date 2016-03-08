@@ -39,7 +39,7 @@ module TOML
   # Used in document.citrus
   module TableArrayParser
     def value
-      TOML::TableArray.new(captures[:key].map(&:value))
+      TOML::TableArray.new(captures[:stripped_key].map(&:value))
     end
   end
 end
