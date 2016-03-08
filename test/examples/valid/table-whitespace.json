@@ -1,3 +1,5 @@
 {
-    "valid key": {}
+    "valid key": {},
+    "also": { "valid": {} },
+    "apparently": { "this.is": { "valid": { "too": {} }}}
 }

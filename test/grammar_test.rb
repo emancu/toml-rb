@@ -34,8 +34,12 @@ class GrammarTest < Minitest::Test
     assert_equal(['first key', 'second key'],
                  match.value.instance_variable_get('@nested_keys'))
 
+    match = TOML::Document.parse('[ owner . emancu ]', root: :keygroup)
+    assert_equal(%w(owner emancu),
+                 match.value.instance_variable_get('@nested_keys'))
+
     assert_raises Citrus::ParseError do
-      TOML::Document.parse('[ owner . emancu ]', root: :keygroup)
+      TOML::Document.parse('[ owner emancu ]', root: :keygroup)
     end
   end
 
