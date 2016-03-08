@@ -34,8 +34,8 @@ grammar TOML::Primitive
   ##
 
   rule datetime
-    (date_skeleton ("Z" | date_offset | [,\.] frac:(/\d/1*6) date_offset)) {
-      skeleton = captures[:date_skeleton].first
+    ( skeleton:(datetime_skeleton | date_skeleton) ("Z" | date_offset | [,\.] frac:(/\d/1*6) date_offset?)? ) {
+      skeleton = captures[:skeleton].first
       y,m,d,h,mi,s = skeleton.value
       offset = captures[:date_offset].first || "+00:00"
       sec_frac = captures[:frac].first || 0
@@ -45,7 +45,7 @@ grammar TOML::Primitive
     }
   end
 
-  rule date_skeleton
+  rule datetime_skeleton
     (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/) {
       [:y,:m,:d,:h,:mi,:s].map{ |s| capture(s).value }
     }
@@ -53,6 +53,12 @@ grammar TOML::Primitive
 
   rule date_offset
     offset:(sign /\d\d/ ":" /\d\d/)
+  end
+
+  rule date_skeleton
+    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/) {
+      [:y,:m,:d].map{ |s| capture(s).value } + [0, 0, 0]
+    }
   end
 
   ##

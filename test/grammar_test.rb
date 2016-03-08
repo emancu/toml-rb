@@ -193,6 +193,8 @@ class GrammarTest < Minitest::Test
     assert_equal([1, 3], match.value)
   end
 
+  # Dates are really hard to test from JSON, due the imposibility to represent
+  # datetimes without quotes.
   def test_datetime
     match = TOML::Document.parse('1986-08-28T15:15:00Z', root: :datetime)
     assert_equal(Time.utc(1986, 8, 28, 15, 15), match.value)
@@ -202,6 +204,15 @@ class GrammarTest < Minitest::Test
 
     match = TOML::Document.parse('1986-08-28T15:15:00.123-03:00', root: :datetime)
     assert_equal(Time.utc(1986, 8, 28, 18, 15, 0.123), match.value)
+
+    match = TOML::Document.parse('1986-08-28', root: :datetime)
+    assert_equal(Time.utc(1986, 8, 28, 0, 0, 0), match.value)
+
+    match = TOML::Document.parse('1986-08-28T15:15:00', root: :datetime)
+    assert_equal(Time.utc(1986, 8, 28, 15, 15), match.value)
+
+    match = TOML::Document.parse('1986-08-28T15:15:00.999999', root: :datetime)
+    assert_equal(Time.utc(1986, 8, 28, 15, 15, 0.999999), match.value)
   end
 
   def test_inline_table
