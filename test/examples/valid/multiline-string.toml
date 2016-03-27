@@ -21,3 +21,6 @@ equivalent_three = """\
        fox jumps over \
        the lazy dog.\
        """
+
+issue_89 = """\"Hello
+World\""""

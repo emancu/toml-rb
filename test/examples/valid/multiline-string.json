@@ -5,5 +5,6 @@
   "multiline_empty_four": "",
   "equivalent_one": "The quick brown fox jumps over the lazy dog.",
   "equivalent_two": "The quick brown fox jumps over the lazy dog.",
-  "equivalent_three": "The quick brown fox jumps over the lazy dog."
+  "equivalent_three": "The quick brown fox jumps over the lazy dog.",
+  "issue_89": "\"Hello\nWorld\""
 }
