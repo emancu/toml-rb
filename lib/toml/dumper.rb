@@ -13,7 +13,7 @@ module TOML
     def visit(hash, prefix, extra_brackets = false)
       simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
 
-      if prefix.any? and (simple_pairs.any? or hash.empty?)
+      if prefix.any? && (simple_pairs.any? || hash.empty?)
         print_prefix prefix, extra_brackets
       end
 
@@ -70,7 +70,9 @@ module TOML
 
         val.each do |child|
           print_prefix aux_prefix, true
-          dump_pairs *(sort_pairs(child) << aux_prefix)
+          args = sort_pairs(child) << aux_prefix
+
+          dump_pairs(*args)
         end
       end
     end
