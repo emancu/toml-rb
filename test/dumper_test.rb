@@ -76,4 +76,19 @@ class DumperTest < Minitest::Test
 
     assert_equal toml, dumped
   end
+
+  def test_dump_array_tables
+    hash = { fruit: [{ physical: { color: "red" } }, { physical: { color: "blue" } }] }
+    dumped = TOML.dump(hash)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      [[fruit]]
+      [fruit.physical]
+      color = "red"
+      [[fruit]]
+      [fruit.physical]
+      color = "blue"
+    EOS
+
+    assert_equal toml, dumped
+  end
 end

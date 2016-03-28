@@ -11,20 +11,13 @@ module TOML
     private
 
     def visit(hash, prefix, extra_brackets = false)
-      if hash.empty? && !prefix.empty?
+      simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
+
+      if prefix.any? && (simple_pairs.any? || hash.empty?)
         print_prefix prefix, extra_brackets
-      else
-        simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
-
-        unless prefix.empty? || simple_pairs.empty?
-          print_prefix prefix, extra_brackets
-        end
-
-        # First add simple pairs, under the prefix
-        dump_simple_pairs simple_pairs
-        dump_nested_pairs nested_pairs, prefix
-        dump_table_array_pairs table_array_pairs, prefix
       end
+
+      dump_pairs simple_pairs, nested_pairs, table_array_pairs, prefix
     end
 
     def sort_pairs(hash)
@@ -48,6 +41,13 @@ module TOML
       [simple_pairs, nested_pairs, table_array_pairs]
     end
 
+    def dump_pairs(simple, nested, table_array, prefix = [])
+      # First add simple pairs, under the prefix
+      dump_simple_pairs simple
+      dump_nested_pairs nested, prefix
+      dump_table_array_pairs table_array, prefix
+    end
+
     def dump_simple_pairs(simple_pairs)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
@@ -69,11 +69,10 @@ module TOML
         aux_prefix = prefix + [key]
 
         val.each do |child|
-          if child.empty?
-            print_prefix aux_prefix, true
-          else
-            visit child, aux_prefix, true
-          end
+          print_prefix aux_prefix, true
+          args = sort_pairs(child) << aux_prefix
+
+          dump_pairs(*args)
         end
       end
     end
