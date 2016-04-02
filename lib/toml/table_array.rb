@@ -34,6 +34,10 @@ module TOML
     def accept_visitor(parser)
       parser.visit_table_array self
     end
+
+    def full_key
+      @nested_keys.join('.')
+    end
   end
 
   # Used in document.citrus
