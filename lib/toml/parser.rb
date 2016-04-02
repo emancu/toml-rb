@@ -19,6 +19,9 @@ module TOML
     # Read about the Visitor pattern
     # http://en.wikipedia.org/wiki/Visitor_pattern
     def visit_table_array(table_array)
+      table_array_key = table_array.full_key
+      @visited_keys.reject! { |k| k.start_with? table_array_key }
+
       @current = table_array.navigate_keys @hash, @symbolize_keys
     end
 

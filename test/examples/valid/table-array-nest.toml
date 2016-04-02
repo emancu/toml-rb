@@ -1,17 +1,21 @@
-[[albums]]
-name = "Born to Run"
+[[fruit]]
+  name = "apple"
 
-  [[albums.songs]]
-  name = "Jungleland"
+  [fruit.physical]
+    color = "red"
+    shape = "round"
 
-  [[albums.songs]]
-  name = "Meeting Across the River"
+  [[fruit.variety]]
+    name = "red delicious"
 
-[[albums]]
-name = "Born in the USA"
-  
-  [[albums.songs]]
-  name = "Glory Days"
+  [[fruit.variety]]
+    name = "granny smith"
 
-  [[albums.songs]]
-  name = "Dancing in the Dark"
+[[fruit]]
+  name = "banana"
+
+  [fruit.physical]
+    color = "yellow"
+
+  [[fruit.variety]]
+    name = "plantain"
