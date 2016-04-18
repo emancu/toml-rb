@@ -14,7 +14,7 @@ grammar TOML::Arrays
   end
 
   rule float_array
-    (float (space "," array_comments float)*)
+    ((exponent | float) (space "," array_comments (exponent | float))*)
   end
 
   rule string_array
