@@ -3,6 +3,7 @@ require 'citrus'
 ROOT = File.dirname(File.expand_path(__FILE__))
 
 require "#{ROOT}/lib/toml/errors"
+require "#{ROOT}/lib/toml/array"
 require "#{ROOT}/lib/toml/string"
 require "#{ROOT}/lib/toml/table_array"
 require "#{ROOT}/lib/toml/inline_table"
