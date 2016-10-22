@@ -31,6 +31,7 @@ module TOML
       @nested_keys.join('.')
     end
   end
+
   # Used in document.citrus
   module KeygroupParser
     def value
