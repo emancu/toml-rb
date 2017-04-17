@@ -1,3 +1,5 @@
+require 'set'
+
 module TOML
   class Parser
     attr_reader :hash
