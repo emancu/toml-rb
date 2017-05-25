@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   class Keyvalue
     attr_reader :value, :symbolize_keys
 
@@ -43,7 +43,7 @@ module TOML
   # Used in document.citrus
   module KeyvalueParser
     def value
-      TOML::Keyvalue.new(capture(:stripped_key).value, capture(:v).value)
+      TomlRB::Keyvalue.new(capture(:stripped_key).value, capture(:v).value)
     end
   end
 end

@@ -6,9 +6,9 @@ toml-rb
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb/badges/gpa.svg)](https://codeclimate.com/github/emancu/toml-rb)
 [![Dependency Status](https://gemnasium.com/emancu/toml-rb.svg)](https://gemnasium.com/emancu/toml-rb)
 
-A [TOML](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
+A [TomlRB](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
 
-TOML specs supported: `0.4.0`
+TomlRB specs supported: `0.4.0`
 
 Installation
 ------------
@@ -23,7 +23,7 @@ require 'toml'
 
 # From a file!
 path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
-TOML.load_file(path)
+TomlRB.load_file(path)
 
 # From a stream!
 stream = <<-EOS
@@ -33,12 +33,12 @@ stream = <<-EOS
     you    = true
     others = false
 EOS
-TOML.parse(stream)
+TomlRB.parse(stream)
 # => {"title"=>"wow!", "awesome"=>{"you"=>true, "others"=>false}}
 
 # You want symbols as your keys? No problem!
-TOML.load_file(path, symbolize_keys: true) 
-# Works the same for TOML.parse
+TomlRB.load_file(path, symbolize_keys: true) 
+# Works the same for TomlRB.parse
 ```
 
 Dumper Usage
@@ -48,7 +48,7 @@ Dumper Usage
 require 'toml'
 
 # Simple example
-TOML.dump( simple: true)
+TomlRB.dump( simple: true)
 # => "simple = true\n"
 
 
@@ -61,7 +61,7 @@ hash = {
     }
 }
 
-TOML.dump(hash)
+TomlRB.dump(hash)
 # => "title = \"wow!\"\n[awesome]\nothers = false\nyou = true\n"
 ```
 

@@ -1,0 +1,40 @@
+grammar TomlRB::Document
+  include TomlRB::Primitive
+  include TomlRB::Arrays
+
+  rule document
+    (comment | table_array | keygroup | keyvalue | line_break)*
+  end
+
+  rule table_array
+    (space? '[[' stripped_key ("." stripped_key)* ']]' comment?) <TomlRB::TableArrayParser>
+  end
+
+  rule keygroup
+    (space? '[' stripped_key ("." stripped_key)* ']' comment?) <TomlRB::KeygroupParser>
+  end
+
+  rule keyvalue
+    (stripped_key '=' space? v:(toml_values) comment?) <TomlRB::KeyvalueParser>
+  end
+
+  rule inline_table
+    (space? '{' (keyvalue (',' keyvalue)*)? space? '}' ) <TomlRB::InlineTableParser>
+  end
+
+  rule inline_table_array
+    ("[" array_comments inline_table_array_elements space ","? array_comments "]" indent?) <TomlRB::InlineTableArrayParser>
+  end
+
+  rule inline_table_array_elements
+    (inline_table (space "," array_comments inline_table)*)
+  end
+
+  rule toml_values
+    primitive | inline_table | array | inline_table_array
+  end
+
+  rule stripped_key
+    (space? key space?) { captures[:key].first.value }
+  end
+end

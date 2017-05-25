@@ -1,4 +1,4 @@
-class TOML::Examples
+class TomlRB::Examples
   def self.example_v_0_4_0
     {
       "table" => {
@@ -129,7 +129,7 @@ class TOML::Examples
 
   def self.example
     {
-      'title' => 'TOML Example',
+      'title' => 'TomlRB Example',
       'owner' => {
         'name' => 'Tom Preston-Werner',
         'organization' => 'GitHub',

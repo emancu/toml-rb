@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   module ArrayParser
     def value
       elements = captures[:elements].first

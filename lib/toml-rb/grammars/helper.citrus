@@ -1,4 +1,4 @@
-grammar TOML::Helper
+grammar TomlRB::Helper
   rule comment
     (space? "#" (~line_break)* line_break?) { nil }
   end

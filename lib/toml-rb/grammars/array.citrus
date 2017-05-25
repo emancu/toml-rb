@@ -1,8 +1,8 @@
-grammar TOML::Arrays
-  include TOML::Primitive
+grammar TomlRB::Arrays
+  include TomlRB::Primitive
 
   rule array
-    ("[" array_comments (elements)? space ","? array_comments "]" indent?) <TOML::ArrayParser>
+    ("[" array_comments (elements)? space ","? array_comments "]" indent?) <TomlRB::ArrayParser>
   end
 
   rule array_comments

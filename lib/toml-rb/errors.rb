@@ -1,5 +1,5 @@
-module TOML
-  # Parent class for all TOML errors
+module TomlRB
+  # Parent class for all TomlRB errors
   Error = Class.new(StandardError)
 
   # Error related to parsing.
