@@ -1,68 +1,68 @@
 require_relative '../init'
 
-module TOML
-  # Public: Returns a hash from *TOML* content.
+module TomlRB
+  # Public: Returns a hash from *TomlRB* content.
   #
-  # content - TOML string to be parsed.
+  # content - TomlRB string to be parsed.
   # options - The Hash options used to refine the parser (default: {}):
   #           :symbolize_keys - true|false (optional).
   #
   #
   # Examples
   #
-  #   TOML.parse('[group]')
+  #   TomlRB.parse('[group]')
   #   # => {"group"=>{}}
   #
-  #   TOML.parse('title = "TOML parser"')
-  #   # => {"title"=>"TOML parser"}
+  #   TomlRB.parse('title = "TomlRB parser"')
+  #   # => {"title"=>"TomlRB parser"}
   #
-  #   TOML.parse('[group]', symbolize_keys: true)
+  #   TomlRB.parse('[group]', symbolize_keys: true)
   #   # => {group: {}}
   #
-  #   TOML.parse('title = "TOML parser"', symbolize_keys: true)
-  #   # => {title: "TOML parser"}
+  #   TomlRB.parse('title = "TomlRB parser"', symbolize_keys: true)
+  #   # => {title: "TomlRB parser"}
   #
   #
-  # Returns a Ruby hash representation of the content according to TOML spec.
+  # Returns a Ruby hash representation of the content according to TomlRB spec.
   # Raises ValueOverwriteError if a key is overwritten.
-  # Raises ParseError if the content has invalid TOML.
+  # Raises ParseError if the content has invalid TomlRB.
   def self.parse(content, options = {})
     Parser.new(content, options).hash
   end
 
-  # Public: Returns a hash from a *TOML* file.
+  # Public: Returns a hash from a *TomlRB* file.
   #
-  # path    - TOML File path
+  # path    - TomlRB File path
   # options - The Hash options used to refine the parser (default: {}):
   #           :symbolize_keys - true|false (optional).
   #
   #
   # Examples
   #
-  #   TOML.load_file('/tmp/simple.toml')
+  #   TomlRB.load_file('/tmp/simple.toml')
   #   # => {"group"=>{}}
   #
-  #   TOML.load_file('/tmp/simple.toml', symbolize_keys: true)
+  #   TomlRB.load_file('/tmp/simple.toml', symbolize_keys: true)
   #   # => {group: {}}
   #
   #
   # Returns a Ruby hash representation of the content.
   # Raises ValueOverwriteError if a key is overwritten.
-  # Raises ParseError if the content has invalid TOML.
+  # Raises ParseError if the content has invalid TomlRB.
   # Raises Errno::ENOENT if the file cannot be found.
   # Raises Errno::EACCES if the file cannot be accessed.
   def self.load_file(path, options = {})
-    TOML.parse(File.read(path), options)
+    TomlRB.parse(File.read(path), options)
   end
 
-  # Public: Returns a *TOML* string from a Ruby Hash.
+  # Public: Returns a *TomlRB* string from a Ruby Hash.
   #
-  # hash - Ruby Hash to be dumped into *TOML*
+  # hash - Ruby Hash to be dumped into *TomlRB*
   #
   #
   # Examples
   #
-  #   TOML.dump(title: 'TOML dump')
+  #   TomlRB.dump(title: 'TomlRB dump')
   #   # => "simple = true\n"
   #
   #   hash = {
@@ -73,11 +73,11 @@ module TOML
   #     }
   #   }
   #
-  #   TOML.dump(hash)
+  #   TomlRB.dump(hash)
   #   # => "title = \"wow!\"\n[awesome]\nothers = false\nyou = true\n"
   #
   #
-  # Returns a TOML string representing the hash.
+  # Returns a TomlRB string representing the hash.
   def self.dump(hash)
     Dumper.new(hash).toml_str
   end

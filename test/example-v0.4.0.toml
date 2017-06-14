@@ -22,7 +22,7 @@ key = "value" # Yeah, you can do this.
 
 key = "another value"
 
-# You don't need to specify all the super-tables if you don't want to. TOML
+# You don't need to specify all the super-tables if you don't want to. TomlRB
 # knows how to do it for you.
 
 # [x] you

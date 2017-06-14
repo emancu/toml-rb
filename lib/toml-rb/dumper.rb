@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   class Dumper
     attr_reader :toml_str
 

@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   class InlineTable
     attr_reader :symbolize_keys
 
@@ -56,7 +56,7 @@ module TOML
 
   module InlineTableParser
     def value
-      TOML::InlineTable.new captures[:keyvalue].map(&:value)
+      TomlRB::InlineTable.new captures[:keyvalue].map(&:value)
     end
   end
 
@@ -66,7 +66,7 @@ module TOML
         x.captures[:inline_table]
       end
 
-      TOML::InlineTableArray.new(tables.flatten.map(&:value)).value
+      TomlRB::InlineTableArray.new(tables.flatten.map(&:value)).value
     end
   end
 end

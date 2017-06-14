@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   class Parser
     attr_reader :hash
 
@@ -9,10 +9,10 @@ module TOML
       @symbolize_keys = options[:symbolize_keys]
 
       begin
-        parsed = TOML::Document.parse(content)
+        parsed = TomlRB::Document.parse(content)
         parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
       rescue Citrus::ParseError => e
-        raise TOML::ParseError.new(e.message)
+        raise TomlRB::ParseError.new(e.message)
       end
     end
 

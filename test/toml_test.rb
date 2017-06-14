@@ -5,8 +5,8 @@ require 'json'
 class TomlTest < Minitest::Test
   def test_file_v_0_4_0
     path = File.join(File.dirname(__FILE__), 'example-v0.4.0.toml')
-    parsed = TOML.load_file(path)
-    hash = TOML::Examples.example_v_0_4_0
+    parsed = TomlRB.load_file(path)
+    hash = TomlRB::Examples.example_v_0_4_0
 
     assert_equal hash['Array'], parsed['Array']
     assert_equal hash['Booleans'], parsed['Booleans']
@@ -21,24 +21,24 @@ class TomlTest < Minitest::Test
 
   def test_file
     path = File.join(File.dirname(__FILE__), 'example.toml')
-    parsed = TOML.load_file(path)
+    parsed = TomlRB.load_file(path)
 
-    assert_equal TOML::Examples.example, parsed
+    assert_equal TomlRB::Examples.example, parsed
   end
 
   def test_hard_example
     path = File.join(File.dirname(__FILE__), 'hard_example.toml')
-    parsed = TOML.load_file(path)
+    parsed = TomlRB.load_file(path)
 
-    assert_equal TOML::Examples.hard_example, parsed
+    assert_equal TomlRB::Examples.hard_example, parsed
   end
 
   def test_symbolize_keys
     path = File.join(File.dirname(__FILE__), 'example.toml')
-    parsed = TOML.load_file(path, symbolize_keys: true)
+    parsed = TomlRB.load_file(path, symbolize_keys: true)
 
     hash = {
-      title: 'TOML Example',
+      title: 'TomlRB Example',
 
       owner: {
         name: 'Tom Preston-Werner',
@@ -82,7 +82,7 @@ class TomlTest < Minitest::Test
   end
 
   def test_line_break
-    parsed = TOML.parse("hello = 'world'\r\nline_break = true")
+    parsed = TomlRB.parse("hello = 'world'\r\nline_break = true")
     assert_equal({ 'hello' => 'world', 'line_break' => true }, parsed)
   end
 
@@ -92,8 +92,8 @@ class TomlTest < Minitest::Test
       toml_file = File.join(File.dirname(json_file),
                             File.basename(json_file, '.json')) + '.toml'
       begin
-        toml = TOML.load_file(toml_file)
-      rescue TOML::Error => e
+        toml = TomlRB.load_file(toml_file)
+      rescue TomlRB::Error => e
         assert false, "Error: #{e} in #{toml_file}"
       end
       json = JSON.parse(File.read(json_file))
@@ -110,8 +110,8 @@ class TomlTest < Minitest::Test
   def test_invalid_cases
     file = '*'
     Dir["test/examples/invalid/#{file}.toml"].each do |toml_file|
-      assert_raises(TOML::Error, "For file #{toml_file}") do
-        TOML.load_file(toml_file)
+      assert_raises(TomlRB::Error, "For file #{toml_file}") do
+        TomlRB.load_file(toml_file)
       end
     end
   end

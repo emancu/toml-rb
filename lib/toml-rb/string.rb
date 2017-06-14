@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   # Used in primitive.citrus
   module BasicString
     SPECIAL_CHARS = {
@@ -13,7 +13,7 @@ module TOML
     }.freeze
 
     def value
-      aux = TOML::BasicString.transform_escaped_chars first.value
+      aux = TomlRB::BasicString.transform_escaped_chars first.value
 
       aux[1...-1]
     end
@@ -53,7 +53,7 @@ module TOML
       # Remove spaces on multilined Singleline strings
       aux.gsub!(/\\\r?\n[\n\t\r ]*/, '')
 
-      TOML::BasicString.transform_escaped_chars aux
+      TomlRB::BasicString.transform_escaped_chars aux
     end
   end
 

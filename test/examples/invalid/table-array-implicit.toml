@@ -1,7 +1,7 @@
 # This test is a bit tricky. It should fail because the first use of
 # `[[albums.songs]]` without first declaring `albums` implies that `albums`
 # must be a table. The alternative would be quite weird. Namely, it wouldn't
-# comply with the TOML spec: "Each double-bracketed sub-table will belong to 
+# comply with the TomlRB spec: "Each double-bracketed sub-table will belong to 
 # the most *recently* defined table element *above* it."
 #
 # This is in contrast to the *valid* test, table-array-implicit where

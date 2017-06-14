@@ -1,4 +1,4 @@
-module TOML
+module TomlRB
   class Keygroup
     def initialize(nested_keys)
       @nested_keys = nested_keys
@@ -35,7 +35,7 @@ module TOML
   # Used in document.citrus
   module KeygroupParser
     def value
-      TOML::Keygroup.new(captures[:stripped_key].map(&:value))
+      TomlRB::Keygroup.new(captures[:stripped_key].map(&:value))
     end
   end
 end
