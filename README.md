@@ -19,7 +19,7 @@ Parser Usage
 ------------
 
 ```ruby
-require 'toml'
+require 'toml-rb'
 
 # From a file!
 path = File.join(File.dirname(__FILE__), 'path', 'to', 'file')
@@ -45,7 +45,7 @@ Dumper Usage
 ------------
 
 ```ruby
-require 'toml'
+require 'toml-rb'
 
 # Simple example
 TomlRB.dump( simple: true)
