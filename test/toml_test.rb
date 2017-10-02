@@ -75,7 +75,14 @@ class TomlTest < Minitest::Test
           durable: true,
           auto_delete: false
         }
-      }
+      },
+
+      products: [
+        { name: "Hammer", sku: 738_594_937 },
+        {},
+        { name: "Nail", sku: 284_758_393, color: "gray" }
+      ]
+
     }
 
     assert_equal(hash, parsed)

@@ -6,6 +6,7 @@ module TomlRB
 
     def navigate_keys(hash, symbolize_keys = false)
       last_key = @nested_keys.pop
+      last_key = last_key.to_sym if symbolize_keys
 
       # Go over the parent keys
       @nested_keys.each do |key|
