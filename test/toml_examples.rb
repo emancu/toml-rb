@@ -164,9 +164,9 @@ class TomlRB::Examples
         }
       },
       "products" => [
-        {"name" => "Hammer", "sku" => 738594937},
+        { "name" => "Hammer", "sku" => 738_594_937 },
         {},
-        {"name" => "Nail", "sku" => 284758393, "color" => "gray"}
+        { "name" => "Nail", "sku" => 284_758_393, "color" => "gray" }
       ]
     }
   end
