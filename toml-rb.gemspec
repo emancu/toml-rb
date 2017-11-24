@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
     'lib/**/*.citrus',
     '*.gemspec',
     'test/*.*',
-    'init.rb'
   ]
 
   s.add_dependency 'citrus', '~> 3.0', '> 3.0'
