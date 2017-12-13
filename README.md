@@ -69,12 +69,11 @@ Contributing
 ------------
 
 1. Fork it
-2. Bundle it `$ dep install` (install [dep](https://github.com/cyx/dep) if you don't have it)
-3. Create your feature branch `git checkout -b my-new-feature`
-4. Add tests and commit your changes `git commit -am 'Add some feature'`
-5. Run tests `$ rake`
-6. Push the branch `git push origin my-new-feature`
-7. Create new Pull Request
+2. Create your feature branch `git checkout -b my-new-feature`
+3. Add tests and commit your changes `git commit -am 'Add some feature'`
+4. Run tests `$ rake`
+5. Push the branch `git push origin my-new-feature`
+6. Create new Pull Request
 
 License
 -------
