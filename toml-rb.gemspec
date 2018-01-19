@@ -18,5 +18,6 @@ Gem::Specification.new do |s|
     'test/*.*',
   ]
 
+  s.required_ruby_version = '>= 1.9'
   s.add_dependency 'citrus', '~> 3.0', '> 3.0'
 end
