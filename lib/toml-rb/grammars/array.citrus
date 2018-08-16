@@ -6,7 +6,7 @@ grammar TomlRB::Arrays
   end
 
   rule array_comments
-    (indent? comment* indent?)
+    (indent? (comment indent?)*)
   end
 
   rule elements
