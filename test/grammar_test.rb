@@ -4,7 +4,7 @@ require_relative 'helper'
 class GrammarTest < Minitest::Test
   def test_comment
     match = TomlRB::Document.parse(' # A comment', root: :comment)
-    assert_equal(nil, match.value)
+    assert_nil(match.value)
   end
 
   def test_key
