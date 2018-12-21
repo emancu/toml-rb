@@ -6,18 +6,16 @@ Gem::Specification.new do |s|
   s.description = 'A Toml parser using Citrus parsing library. '
   s.authors     = ['Emiliano Mancuso', 'Lucas Tolchinsky']
   s.email       = ['emiliano.mancuso@gmail.com', 'lucas.tolchinsky@gmail.com']
-  s.homepage    = 'http://github.com/emancu/toml-rb'
+  s.homepage    = 'https://github.com/emancu/toml-rb'
   s.license     = 'MIT'
 
   s.files = Dir[
     'README.md',
-    'Rakefile',
     'lib/**/*.rb',
     'lib/**/*.citrus',
-    '*.gemspec',
-    'test/*.*',
+    'LICENSE'
   ]
 
-  s.required_ruby_version = '>= 1.9'
+  s.required_ruby_version = '>= 2.2'
   s.add_dependency 'citrus', '~> 3.0', '> 3.0'
 end
