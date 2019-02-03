@@ -2,7 +2,7 @@ grammar TomlRB::Primitive
   include TomlRB::Helper
 
   rule primitive
-    string | bool | datetime | number
+    datetime | bool | number | string
   end
 
   ##
@@ -66,15 +66,21 @@ grammar TomlRB::Primitive
   ##
 
   rule number
-     exponent | float | integer
+     float | integer
   end
 
   rule float
-    (integer '.' integer) { to_str.to_f }
+    exponential_float | fractional_float
   end
 
-  rule exponent
-    ( (float | integer) [eE] integer) { to_str.to_f }
+  rule exponential_float
+    ((fractional_float | integer) [eE] integer) { to_str.to_f }
+  end
+
+  rule fractional_float
+    (integer '.' [0-9_]+) { 
+      to_str.to_f
+    }
   end
 
   rule integer
@@ -106,7 +112,7 @@ grammar TomlRB::Primitive
   ##
 
   rule key
-    quoted_key | bare_key
+    dotted_key
   end
 
   rule bare_key
@@ -114,6 +120,16 @@ grammar TomlRB::Primitive
   end
 
   rule quoted_key
-    string
+    basic_string | literal_string 
+  end
+
+  rule single_key
+    quoted_key | bare_key
+  end
+
+  rule dotted_key
+    (space? single_key space?  ("." space? single_key space?)* ) {
+      captures[:single_key].map(&:value)
+    }
   end
 end

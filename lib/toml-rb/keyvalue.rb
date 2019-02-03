@@ -1,31 +1,18 @@
 module TomlRB
   class Keyvalue
-    attr_reader :value, :symbolize_keys
+    attr_reader :dotted_keys, :value, :symbolize_keys
 
-    def initialize(key, value)
-      @key = key
+    def initialize(dotted_keys, value)
+      @dotted_keys = dotted_keys
       @value = value
       @symbolize_keys = false
     end
 
     def assign(hash, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      fail ValueOverwriteError.new(key) if hash.key?(key)
-      hash[key] = visit_value @value
-    end
-
-    def visit_inline_table(inline_table)
-      result = {}
-
-      inline_table.value(@symbolize_keys).each do |k, v|
-        result[key k] = visit_value v
-      end
-
-      result
-    end
-
-    def key(a_key = @key)
-      symbolize_keys ? a_key.to_sym : a_key
+      @dotted_keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
+      update = @dotted_keys.reverse.inject(visit_value @value) { |k1, k2| { k2 => k1 } }
+      hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
     end
 
     def accept_visitor(parser)

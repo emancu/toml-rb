@@ -9,37 +9,37 @@ class GrammarTest < Minitest::Test
 
   def test_key
     match = TomlRB::Document.parse('bad_key-', root: :key)
-    assert_equal('bad_key-', match.value)
+    assert_equal('bad_key-', match.value.first)
 
     match = TomlRB::Document.parse('"123.ʎǝʞ.#?"', root: :key)
-    assert_equal('123.ʎǝʞ.#?', match.value)
+    assert_equal('123.ʎǝʞ.#?', match.value.first)
   end
 
-  def test_keygroup
+  def test_table
     indentation_alternatives_for('[akey]') do |str|
-      match = TomlRB::Document.parse(str, root: :keygroup)
-      assert_equal(TomlRB::Keygroup, match.value.class)
-      assert_equal(['akey'], match.value.instance_variable_get('@nested_keys'))
+      match = TomlRB::Document.parse(str, root: :table)
+      assert_equal(TomlRB::Table, match.value.class)
+      assert_equal(['akey'], match.value.instance_variable_get('@dotted_keys'))
     end
 
-    match = TomlRB::Document.parse('[owner.emancu]', root: :keygroup)
+    match = TomlRB::Document.parse('[owner.emancu]', root: :table)
     assert_equal(%w(owner emancu),
-                 match.value.instance_variable_get('@nested_keys'))
+                 match.value.instance_variable_get('@dotted_keys'))
 
-    match = TomlRB::Document.parse('["owner.emancu"]', root: :keygroup)
+    match = TomlRB::Document.parse('["owner.emancu"]', root: :table)
     assert_equal(%w(owner.emancu),
-                 match.value.instance_variable_get('@nested_keys'))
+                 match.value.instance_variable_get('@dotted_keys'))
 
-    match = TomlRB::Document.parse('["first key"."second key"]', root: :keygroup)
+    match = TomlRB::Document.parse('["first key"."second key"]', root: :table)
     assert_equal(['first key', 'second key'],
-                 match.value.instance_variable_get('@nested_keys'))
+                 match.value.instance_variable_get('@dotted_keys'))
 
-    match = TomlRB::Document.parse('[ owner . emancu ]', root: :keygroup)
+    match = TomlRB::Document.parse('[ owner . emancu ]', root: :table)
     assert_equal(%w(owner emancu),
-                 match.value.instance_variable_get('@nested_keys'))
+                 match.value.instance_variable_get('@dotted_keys'))
 
     assert_raises Citrus::ParseError do
-      TomlRB::Document.parse('[ owner emancu ]', root: :keygroup)
+      TomlRB::Document.parse('[ owner emancu ]', root: :table)
     end
   end
 
@@ -49,7 +49,18 @@ class GrammarTest < Minitest::Test
       assert_equal(TomlRB::Keyvalue, match.value.class)
 
       keyvalue = match.value
-      assert_equal('key', keyvalue.instance_variable_get('@key'))
+      assert_equal('key', keyvalue.instance_variable_get('@dotted_keys').first)
+      assert_equal('value', keyvalue.instance_variable_get('@value'))
+    end
+
+    indentation_alternatives_for('key1."key2".key3 = "value"') do |str|
+      match = TomlRB::Document.parse(str, root: :keyvalue)
+      assert_equal(TomlRB::Keyvalue, match.value.class)
+
+      keyvalue = match.value
+      assert_equal('key1', keyvalue.instance_variable_get('@dotted_keys')[0])
+      assert_equal('key2', keyvalue.instance_variable_get('@dotted_keys')[1])
+      assert_equal('key3', keyvalue.instance_variable_get('@dotted_keys')[2])
       assert_equal('value', keyvalue.instance_variable_get('@value'))
     end
   end
@@ -135,12 +146,12 @@ class GrammarTest < Minitest::Test
   end
 
   def test_expressions_with_comments
-    match = TomlRB::Document.parse('[shouldwork] # with comment', root: :keygroup)
+    match = TomlRB::Document.parse('[shouldwork] # with comment', root: :table)
     assert_equal(['shouldwork'],
-                 match.value.instance_variable_get('@nested_keys'))
+                 match.value.instance_variable_get('@dotted_keys'))
 
     match = TomlRB::Document.parse('works = true # with comment', root: :keyvalue).value
-    assert_equal('works', match.instance_variable_get('@key'))
+    assert_equal('works', match.instance_variable_get('@dotted_keys').first)
     assert_equal(true, match.instance_variable_get('@value'))
   end
 
@@ -161,7 +172,7 @@ class GrammarTest < Minitest::Test
     assert_equal([%w(hey TomlRB), [2, 4]], match.value)
 
     match = TomlRB::Document.parse('[ { one = 1 }, { two = 2, three = 3} ]',
-                                 root: :inline_table_array)
+                                   root: :array)
     assert_equal([{ 'one' => 1 }, { 'two' => 2, 'three' => 3 }], match.value)
   end
 

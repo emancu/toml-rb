@@ -26,7 +26,7 @@ class TomlRB::Examples
       },
       "string" => {
         "basic" => {
-          "basic" => "I'm a string. \"You can quote me\". Name\tJos\\u00E9\nLocation\tSF."
+          "basic" => "I'm a string. \"You can quote me\". Name\tJos\u00E9\nLocation\tSF."
         },
         "multiline" => {
           "key1" => "One\nTwo",
@@ -41,15 +41,11 @@ class TomlRB::Examples
         "literal" => {
           "winpath" => "C:\\Users\\nodejs\\templates",
           "winpath2" => "\\\\ServerX\\admin$\\system32\\",
-          "quoted" => "Tom\"Dubs\"Preston-Werner",
+          "quoted" => "Tom \"Dubs\" Preston-Werner",
           "regex" => "<\\i\\c*\\s*>",
           "multiline" => {
-            "regex2" => "I[
-                dw
-            ]on'tneed\\d{
-                2
-            }apples",
-            "lines" => "Thefirstnewlineis\ntrimmedinrawstrings.\nAllotherwhitespace\nispreserved.\n"
+            "regex2" => "I [dw]on't need \\d{2} apples",
+            "lines" => "The first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
           }
         }
       },

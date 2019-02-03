@@ -8,13 +8,13 @@ class TomlTest < Minitest::Test
     parsed = TomlRB.load_file(path)
     hash = TomlRB::Examples.example_v_0_4_0
 
-    assert_equal hash['Array'], parsed['Array']
-    assert_equal hash['Booleans'], parsed['Booleans']
-    assert_equal hash['Datetime'], parsed['Datetime']
-    assert_equal hash['Float'], parsed['Float']
-    assert_equal hash['Integer'], parsed['Integer']
-    assert_equal hash['String'], parsed['String']
-    assert_equal hash['Table'], parsed['Table']
+    assert_equal hash['array'], parsed['array']
+    assert_equal hash['boolean'], parsed['boolean']
+    assert_equal hash['datetime'], parsed['datetime']
+    assert_equal hash['float'], parsed['float']
+    assert_equal hash['integer'], parsed['integer']
+    assert_equal hash['string'], parsed['string']
+    assert_equal hash['table'], parsed['table']
     assert_equal hash['products'], parsed['products']
     assert_equal hash['fruit'], parsed['fruit']
   end

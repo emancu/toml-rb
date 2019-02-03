@@ -25,8 +25,8 @@ module TomlRB
       @current = table_array.navigate_keys @hash, @symbolize_keys
     end
 
-    def visit_keygroup(keygroup)
-      @current = keygroup.navigate_keys @hash, @visited_keys, @symbolize_keys
+    def visit_table(table)
+      @current = table.navigate_keys @hash, @visited_keys, @symbolize_keys
     end
 
     def visit_keyvalue(keyvalue)

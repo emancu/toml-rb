@@ -1,20 +1,21 @@
 module TomlRB
-  class Keygroup
-    def initialize(nested_keys)
-      @nested_keys = nested_keys
+  class Table
+    def initialize(dotted_keys)
+      @dotted_keys = dotted_keys
     end
 
     def navigate_keys(hash, visited_keys, symbolize_keys = false)
       ensure_key_not_defined(visited_keys)
-      @nested_keys.each do |key|
-        key = symbolize_keys ? key.to_sym : key
-        hash[key] = {} unless hash.key?(key)
-        element = hash[key]
-        hash = element.is_a?(Array) ? element.last : element
+      current = hash
+      keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
+      keys.each do |key|
+        current[key] = {} unless current.key?(key)
+        element = current[key]
+        current = element.is_a?(Array) ? element.last : element
         # check that key has not been defined before as a scalar value
-        fail ValueOverwriteError.new(key) unless hash.is_a?(Hash)
+        fail ValueOverwriteError.new(key) unless current.is_a?(Hash)
       end
-      hash
+      current
     end
 
     # Fail if the key was already defined with a ValueOverwriteError
@@ -24,18 +25,18 @@ module TomlRB
     end
 
     def accept_visitor(parser)
-      parser.visit_keygroup self
+      parser.visit_table self
     end
 
     def full_key
-      @nested_keys.join('.')
+      @dotted_keys.join('.')
     end
   end
 
   # Used in document.citrus
-  module KeygroupParser
+  module TableParser
     def value
-      TomlRB::Keygroup.new(captures[:stripped_key].map(&:value))
+      TomlRB::Table.new(captures[:stripped_key].map(&:value).first)
     end
   end
 end
