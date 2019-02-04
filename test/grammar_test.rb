@@ -148,20 +148,47 @@ class GrammarTest < Minitest::Test
   end
 
   def test_float
-    match = TomlRB::Document.parse('1.69', root: :number)
-    assert_equal(1.69, match.value)
+    match = TomlRB::Document.parse('+1.0', root: :float)
+    assert_equal(+1.0, match.value)
 
-    match = TomlRB::Document.parse('1_000.69', root: :number)
-    assert_equal(1000.69, match.value)
+    match = TomlRB::Document.parse('3.1415', root: :float)
+    assert_equal(3.1415, match.value)
 
-    match = TomlRB::Document.parse('1e6', root: :number)
+    match = TomlRB::Document.parse('-0.01', root: :float)
+    assert_equal(-0.01, match.value)
+
+    match = TomlRB::Document.parse('5e+22', root: :float)
+    assert_equal(5e+22, match.value)
+
+    match = TomlRB::Document.parse('1e6', root: :float)
     assert_equal(1e6, match.value)
 
-    match = TomlRB::Document.parse('1.02e-46', root: :number)
-    assert_equal(1.02e-46, match.value)
+    match = TomlRB::Document.parse('-2E-2', root: :float)
+    assert_equal(-2E-2, match.value)
 
-    match = TomlRB::Document.parse('+1e4_000_000', root: :number)
-    assert_equal(1e4_000_000, match.value)
+    match = TomlRB::Document.parse('6.626e-34', root: :float)
+    assert_equal(6.626e-34, match.value)
+
+    match = TomlRB::Document.parse('224_617.445_991_228', root: :float)
+    assert_equal(224_617.445_991_228, match.value)
+
+    match = TomlRB::Document.parse('inf', root: :float)
+    assert_equal(Float::INFINITY, match.value)
+
+    match = TomlRB::Document.parse('+inf', root: :float)
+    assert_equal(Float::INFINITY, match.value)
+
+    match = TomlRB::Document.parse('-inf', root: :float)
+    assert_equal(-Float::INFINITY, match.value)
+
+    match = TomlRB::Document.parse('nan', root: :float)
+    assert(match.value.nan?)
+
+    match = TomlRB::Document.parse('+nan', root: :float)
+    assert(match.value.nan?)
+
+    match = TomlRB::Document.parse('-nan', root: :float)
+    assert(match.value.nan?)
   end
 
   def test_signed_numbers

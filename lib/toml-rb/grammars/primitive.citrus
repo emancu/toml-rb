@@ -70,7 +70,18 @@ grammar TomlRB::Primitive
   end
 
   rule float
-    exponential_float | fractional_float
+    inf | nan | exponential_float | fractional_float
+  end
+
+  rule inf
+    (s:sign? 'inf') {
+      sign = (capture(:s).value != '-') ? 1 : -1
+      sign * Float::INFINITY
+    }
+  end
+
+  rule nan
+    (sign? 'nan') { Float::NAN }
   end
 
   rule exponential_float
