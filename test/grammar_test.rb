@@ -107,11 +107,44 @@ class GrammarTest < Minitest::Test
   end
 
   def test_integer
-    match = TomlRB::Document.parse('26', root: :number)
-    assert_equal(26, match.value)
+    match = TomlRB::Document.parse('+99', root: :integer)
+    assert_equal(99, match.value)
 
-    match = TomlRB::Document.parse('1_200_000_999', root: :number)
-    assert_equal(1_200_000_999, match.value)
+    match = TomlRB::Document.parse('42', root: :integer)
+    assert_equal(42, match.value)
+
+    match = TomlRB::Document.parse('0', root: :integer)
+    assert_equal(0, match.value)
+
+    match = TomlRB::Document.parse('-17', root: :integer)
+    assert_equal(-17, match.value)
+
+    match = TomlRB::Document.parse('1_000', root: :integer)
+    assert_equal(1_000, match.value)
+
+    match = TomlRB::Document.parse('5_349_221', root: :integer)
+    assert_equal(5_349_221, match.value)
+
+    match = TomlRB::Document.parse('1_2_3_4_5', root: :integer)
+    assert_equal(1_2_3_4_5, match.value)
+
+    match = TomlRB::Document.parse('0xDEADBEEF', root: :integer)
+    assert_equal(0xDEADBEEF, match.value)
+
+    match = TomlRB::Document.parse('0xdeadbeef', root: :integer)
+    assert_equal(0xdeadbeef, match.value)
+
+    match = TomlRB::Document.parse('0xdead_beef', root: :integer)
+    assert_equal(0xdead_beef, match.value)
+
+    match = TomlRB::Document.parse('0o01234567', root: :integer)
+    assert_equal(0o01234567, match.value)
+
+    match = TomlRB::Document.parse('0o755', root: :integer)
+    assert_equal(0o755, match.value)
+
+    match = TomlRB::Document.parse('0b11010110', root: :integer)
+    assert_equal(0b11010110, match.value)
   end
 
   def test_float

@@ -1,6 +1,5 @@
 grammar TomlRB::Arrays
   include TomlRB::Primitive
-
   
   rule array_comments
     (indent? (comment indent?)*)
