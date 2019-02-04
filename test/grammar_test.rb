@@ -267,23 +267,32 @@ class GrammarTest < Minitest::Test
   # Dates are really hard to test from JSON, due the imposibility to represent
   # datetimes without quotes.
   def test_datetime
-    match = TomlRB::Document.parse('1986-08-28T15:15:00Z', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 15, 15), match.value)
+    match = TomlRB::Document.parse('1979-05-27T07:32:00Z', root: :datetime)
+    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), match.value)
 
-    match = TomlRB::Document.parse('1986-08-28T15:15:00-03:00', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 18, 15), match.value)
+    match = TomlRB::Document.parse('1979-05-27T00:32:00-07:00', root: :datetime)
+    assert_equal(Time.new(1979, 5, 27, 0, 32, 0, '-07:00'), match.value)
 
-    match = TomlRB::Document.parse('1986-08-28T15:15:00.123-03:00', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 18, 15, 0.123), match.value)
+    match = TomlRB::Document.parse('1979-05-27T00:32:00.999999-07:00', root: :datetime)
+    assert_equal(Time.new(1979, 5, 27, 0, 32, 0.999999, '-07:00'), match.value)
+    
+    match = TomlRB::Document.parse('1979-05-27 07:32:00Z', root: :datetime)
+    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), match.value)
 
-    match = TomlRB::Document.parse('1986-08-28', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 0, 0, 0), match.value)
+    match = TomlRB::Document.parse('1979-05-27T07:32:00', root: :datetime)
+    assert_equal(Time.local(1979, 5, 27, 7, 32, 0), match.value)
 
-    match = TomlRB::Document.parse('1986-08-28T15:15:00', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 15, 15), match.value)
+    match = TomlRB::Document.parse('1979-05-27T00:32:00.999999', root: :datetime)
+    assert_equal(Time.local(1979, 5, 27, 0, 32, 0, 999999), match.value)
 
-    match = TomlRB::Document.parse('1986-08-28T15:15:00.999999', root: :datetime)
-    assert_equal(Time.utc(1986, 8, 28, 15, 15, 0.999999), match.value)
+    match = TomlRB::Document.parse('1979-05-27', root: :datetime)
+    assert_equal(Time.local(1979, 5, 27), match.value)
+
+    match = TomlRB::Document.parse('07:32:00', root: :datetime)
+    assert_equal(Time.at(3600 * 7 + 60 * 32), match.value)
+
+    match = TomlRB::Document.parse('00:32:00.999999', root: :datetime)
+    assert_equal(Time.at(60 * 32, 999999), match.value)
   end
 
   def test_inline_table

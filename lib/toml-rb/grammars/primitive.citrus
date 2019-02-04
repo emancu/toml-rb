@@ -34,31 +34,45 @@ grammar TomlRB::Primitive
   ##
 
   rule datetime
-    ( skeleton:(datetime_skeleton | date_skeleton) ("Z" | date_offset | [,\.] frac:(/\d/1*6) date_offset?)? ) {
-      skeleton = captures[:skeleton].first
-      y,m,d,h,mi,s = skeleton.value
-      offset = captures[:date_offset].first || "+00:00"
-      sec_frac = captures[:frac].first || 0
-      s = "#{s}.#{sec_frac}".to_f
+    offset_datetime | local_datetime | local_date | local_time
+  end
 
-      Time.new(*[y,m,d,h,mi,s,offset.to_s])
-    }
+  rule offset_datetime
+    ( skeleton:datetime_skeleton ("Z" | date_offset) ) <TomlRB::OffsetDateTimeParser>
+  end
+
+  rule local_datetime
+    datetime_skeleton <TomlRB::LocalDateTimeParser>
+  end
+
+  rule local_date
+    (date_skeleton space) <TomlRB::LocalDateParser>
+  end
+
+  rule local_time
+    (time_skeleton space) <TomlRB::LocalTimeParser>
   end
 
   rule datetime_skeleton
-    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/ "T" h:/\d\d/ ":" mi:/\d\d/ ":" s:/\d\d/) {
-      [:y,:m,:d,:h,:mi,:s].map{ |s| capture(s).value }
+    (date_skeleton ("T"|" ") time_skeleton) {
+      capture(:date_skeleton).value + capture(:time_skeleton).value
+    }
+  end
+
+  rule date_skeleton
+    (year:/\d\d\d\d/ "-" mon:/\d\d/ "-" day:/\d\d/) {
+      [:year,:mon,:day].map{ |s| capture(s).value }
+    }
+  end
+
+  rule time_skeleton
+    ( hour:([0-2][0-9]) ":" mim:([0-6][0-9]) ":" sec:([0-6][0-9])  ([,\.] sec_frac:(/\d/1*6))? ) {
+      [:hour,:mim,:sec].map{ |s| capture(s).value } + [capture(:sec_frac) || '0']
     }
   end
 
   rule date_offset
     offset:(sign /\d\d/ ":" /\d\d/)
-  end
-
-  rule date_skeleton
-    (y:/\d\d\d\d/ "-" m:/\d\d/ "-" d:/\d\d/) {
-      [:y,:m,:d].map{ |s| capture(s).value } + [0, 0, 0]
-    }
   end
 
   ##
