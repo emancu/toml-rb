@@ -10,8 +10,8 @@ module TomlRB
 
     def assign(hash, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      @dotted_keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
-      update = @dotted_keys.reverse.inject(visit_value @value) { |k1, k2| { k2 => k1 } }
+      keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
+      update = keys.reverse.inject(visit_value @value) { |k1, k2| { k2 => k1 } }
       hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
     end
 
