@@ -7,11 +7,11 @@ grammar TomlRB::Document
   end
 
   rule table_array
-    (space? '[[' stripped_key ("." stripped_key)* ']]' comment?) <TomlRB::TableArrayParser>
+    (space? '[[' stripped_key ']]' comment?) <TomlRB::TableArrayParser>
   end
 
   rule table
-    (space? '[' stripped_key ("." stripped_key)* ']' comment?) <TomlRB::TableParser>
+    (space? '[' stripped_key ']' comment?) <TomlRB::TableParser>
   end
 
   rule keyvalue
