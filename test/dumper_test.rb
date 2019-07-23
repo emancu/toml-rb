@@ -93,13 +93,13 @@ class DumperTest < Minitest::Test
   end
 
   def test_dump_interpolation_curly
-    hash = {"key" => 'includes #{variable}'}
+    hash = { "key" => 'includes #{variable}' }
     dumped = TomlRB.dump(hash)
     assert_equal "key = \"includes \#{variable}\"\n", dumped
   end
 
   def test_dump_interpolation_at
-    hash = {"key" => 'includes #@variable'}
+    hash = { "key" => 'includes #@variable' }
     dumped = TomlRB.dump(hash)
     assert_equal "key = \"includes \#@variable\"\n", dumped
   end
