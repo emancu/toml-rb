@@ -120,7 +120,8 @@ class TomlTest < Minitest::Test
       begin
         TomlRB.load_file(toml_file)
       rescue => e
-        assert e.class.ancestors.include?(TomlRB::Error), "Expected a subclass of TomlRB::Error, got #{e.class} for #{toml_file}"
+        message = "Expected TomlRB::Error, got #{e.class} for #{toml_file}"
+        assert e.class.ancestors.include?(TomlRB::Error), message
       end
     end
   end
