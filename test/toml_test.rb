@@ -19,6 +19,25 @@ class TomlTest < Minitest::Test
     assert_equal hash['fruit'], parsed['fruit']
   end
 
+  def test_file_v_0_5_0
+    path = File.join(File.dirname(__FILE__), 'example-v0.5.0.toml')
+    parsed = TomlRB.load_file(path)
+    hash = TomlRB::Examples.example_v_0_5_0
+    assert_equal hash['keys'], parsed['keys']
+    assert_equal hash['string'], parsed['string']
+    assert_equal hash['integer'], parsed['integer']
+    assert_equal hash['float'], parsed['float']
+    assert_equal hash['boolean'], parsed['boolean']
+    assert_equal hash['offset-date-time'], parsed['offset-date-time']
+    assert_equal hash['local-date-time'], parsed['local-date-time']
+    assert_equal hash['local-date'], parsed['local-date']
+    assert_equal hash['local-time'], parsed['local-time']
+    assert_equal hash['array'], parsed['array']
+    assert_equal hash['table'], parsed['table']
+    assert_equal hash['inline-table'], parsed['inline-table']
+    assert_equal hash['array-of-tables'], parsed['array-of-tables']
+  end
+
   def test_file
     path = File.join(File.dirname(__FILE__), 'example.toml')
     parsed = TomlRB.load_file(path)

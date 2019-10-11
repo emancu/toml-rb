@@ -11,7 +11,7 @@ module TomlRB
     def value(symbolize_keys=false)
       result = {}
       @pairs.each do |kv|
-        update = kv.assign({}, symbolize_keys)
+        update = kv.assign({}, [], symbolize_keys)
         result.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
       end
       result

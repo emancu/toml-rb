@@ -1,0 +1,5 @@
+# Inline tables fully define the keys and sub-tables within them.
+# New keys and sub-tables cannot be added to them.
+[product]
+type = { name = "Nail" }
+type.edible = false

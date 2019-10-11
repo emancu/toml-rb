@@ -1,3 +1,5 @@
+require_relative "inline_table"
+
 module TomlRB
   class Keyvalue
     attr_reader :dotted_keys, :value, :symbolize_keys
@@ -8,11 +10,30 @@ module TomlRB
       @symbolize_keys = false
     end
 
-    def assign(hash, symbolize_keys = false)
+    def assign(hash, fully_defined_keys, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
+      dotted_keys_str = @dotted_keys.join(".")
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
       update = keys.reverse.inject(visit_value @value) { |k1, k2| { k2 => k1 } }
-      hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
+
+      if @value.is_a?(InlineTable) then
+        fully_defined_keys << dotted_keys_str
+        hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
+      elsif fully_defined_keys.find{|k| update.dig(*k)} then
+        hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
+      else
+        dotted_key_merge(hash, update)
+      end
+    end
+
+    def dotted_key_merge(hash, update)
+      hash.merge!(update) { |key, old, new|
+        if old.is_a?(Hash) && new.is_a?(Hash) then
+          dotted_key_merge(old, new)
+        else
+          fail ValueOverwriteError.new(key)
+        end
+      }
     end
 
     def accept_visitor(parser)
