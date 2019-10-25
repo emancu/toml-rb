@@ -1,14 +1,8 @@
 module TomlRB
   module ArrayParser
     def value
-      elements = captures[:elements].first
-      return [] unless elements
-
-      if elements.captures.key? :string
-        elements.captures[:string].map(&:value)
-      else
-        eval(to_str)
-      end
+      elements = captures[:array_elements].first
+      return elements ? elements.value : []
     end
   end
 end
