@@ -76,7 +76,7 @@ class TomlRB::Examples
         },
         "underscores" => {
           "key1" => 9224617.445991227,
-          "key2" => 1e1_000
+          "key2" => 1e1_00
         }
       },
       "boolean" => {
