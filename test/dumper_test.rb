@@ -1,4 +1,5 @@
 require_relative 'helper'
+require 'date'
 
 class DumperTest < Minitest::Test
   def test_dump_empty
@@ -28,8 +29,14 @@ class DumperTest < Minitest::Test
     dumped = TomlRB.dump(array: [[1, 2], %w(weird one)])
     assert_equal("array = [[1, 2], [\"weird\", \"one\"]]\n", dumped)
 
-    dumped = TomlRB.dump(datetime: Time.utc(1986, 8, 28, 15, 15))
+    dumped = TomlRB.dump(time: Time.utc(1986, 8, 28, 15, 15))
+    assert_equal("time = 1986-08-28T15:15:00Z\n", dumped)
+
+    dumped = TomlRB.dump(datetime: DateTime.new(1986, 8, 28, 15, 15))
     assert_equal("datetime = 1986-08-28T15:15:00Z\n", dumped)
+
+    dumped = TomlRB.dump(date: Date.new(1986, 8, 28))
+    assert_equal("date = 1986-08-28\n", dumped)
 
     dumped = TomlRB.dump(regexp: /abc\n*\{/)
     assert_equal("regexp = \"/abc\\\\n*\\\\{/\"\n", dumped)

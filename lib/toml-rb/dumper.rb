@@ -1,3 +1,5 @@
+require 'date'
+
 module TomlRB
   class Dumper
     attr_reader :toml_str
@@ -85,12 +87,14 @@ module TomlRB
     end
 
     def to_toml(obj)
-      if obj.is_a? Time
+      if obj.is_a?(Time) || obj.is_a?(DateTime)
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
-      elsif obj.is_a? String
-        obj.inspect.gsub(/\\(#[@{])/, '\1')
+      elsif obj.is_a?(Date)
+        obj.strftime('%Y-%m-%d')
       elsif obj.is_a? Regexp
         obj.inspect.inspect
+      elsif obj.is_a? String
+        obj.inspect.gsub(/\\(#[@{])/, '\1')
       else
         obj.inspect
       end
