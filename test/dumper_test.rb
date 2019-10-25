@@ -30,6 +30,9 @@ class DumperTest < Minitest::Test
 
     dumped = TomlRB.dump(datetime: Time.utc(1986, 8, 28, 15, 15))
     assert_equal("datetime = 1986-08-28T15:15:00Z\n", dumped)
+
+    dumped = TomlRB.dump(regexp: /abc\n*\{/)
+    assert_equal("regexp = \"/abc\\\\n*\\\\{/\"\n", dumped)
   end
 
   def test_dump_nested_attributes

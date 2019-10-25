@@ -1,14 +1,14 @@
 require_relative 'helper'
 
 class ErrorsTest < Minitest::Test
-  def test_text_after_keygroup
+  def test_text_after_table
     str = "[error] if you didn't catch this, your parser is broken"
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
   end
 
   def test_text_after_string
     str = 'string = "Anything other than tabs, spaces and newline after a '
-    str += 'keygroup or key value pair has ended should produce an error '
+    str += 'table or key value pair has ended should produce an error '
     str += 'unless it is a comment" like this'
 
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
