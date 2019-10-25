@@ -35,8 +35,11 @@ class DumperTest < Minitest::Test
     dumped = TomlRB.dump(datetime: DateTime.new(1986, 8, 28, 15, 15))
     assert_equal("datetime = 1986-08-28T15:15:00Z\n", dumped)
 
-    dumped = TomlRB.dump(datetime: Date.new(1986, 8, 28))
+    dumped = TomlRB.dump(date: Date.new(1986, 8, 28))
     assert_equal("datetime = 1986-08-28\n", dumped)
+
+    dumped = TomlRB.dump(regexp: /abc\n*\{/)
+    assert_equal("regexp = \"/abc\\\\n*\\\\{/\"\n", dumped)
   end
 
   def test_dump_nested_attributes
@@ -97,5 +100,17 @@ class DumperTest < Minitest::Test
     EOS
 
     assert_equal toml, dumped
+  end
+
+  def test_dump_interpolation_curly
+    hash = { "key" => 'includes #{variable}' }
+    dumped = TomlRB.dump(hash)
+    assert_equal 'key = "includes #{variable}"' + "\n", dumped
+  end
+
+  def test_dump_interpolation_at
+    hash = { "key" => 'includes #@variable' }
+    dumped = TomlRB.dump(hash)
+    assert_equal 'key = "includes #@variable"' + "\n", dumped
   end
 end

@@ -1,0 +1,344 @@
+[keys]
+# Bare keys may only contain ASCII letters, ASCII digits,
+# underscores, and dashes (A-Za-z0-9_-).
+# Note that bare keys are allowed to be composed of only ASCII digits,
+# e.g. 1234, but are always interpreted as strings.
+key = "value"
+bare_key = "value"
+bare-key = "value"
+1234 = "value"
+
+# Quoted keys follow the exact same rules as either basic strings
+# or literal strings and allow you to use a much broader set of key names.
+# Best practice is to use bare keys except when absolutely necessary.
+"127.0.0.1" = "value"
+"character encoding" = "value"
+"ʎǝʞ" = "value"
+'key2' = "value"
+'quoted "value"' = "value"
+
+# Dotted keys are a sequence of bare or quoted keys joined with a dot.
+# This allows for grouping similar properties together:
+name = "Orange"
+physical.color = "orange"
+physical.shape = "round"
+site."google.com" = true
+
+# Since bare keys are allowed to compose of only ASCII integers,
+# it is possible to write dotted keys that look like floats
+# but are 2-part dotted keys.
+# Don't do this unless you have a good reason to (you probably don't).
+3.14159 = "pi"
+
+# As long as a key hasn't been directly defined,
+# you may still write to it and to names within it.
+a.b.c = 1
+a.d = 2
+
+# Defining dotted keys out-of-order is discouraged.
+# VALID BUT DISCOURAGED
+a.type = ''
+b.type = ''
+
+a.name = ''
+b.name = ''
+
+a.data = ''
+b.data = ''
+
+[string]
+# Multi-line basic strings are surrounded by three quotation marks
+# on each side and allow newlines.
+# A newline immediately following the opening delimiter will be trimmed.
+# All other whitespace and newline characters remain intact.
+str1 = """
+Roses are red
+Violets are blue"""
+
+# On a Unix system, the above multi-line string will most likely be the same as:
+str2 = "Roses are red\nViolets are blue"
+
+# On a Windows system, it will most likely be equivalent to:
+str3 = "Roses are red\r\nViolets are blue"
+
+# All of the escape sequences that are valid for basic strings are
+# also valid for multi-line basic strings.
+same.str1 = "The quick brown fox jumps over the lazy dog."
+
+same.str2 = """
+The quick brown \
+
+
+  fox jumps over \
+    the lazy dog."""
+
+same.str3 = """\
+       The quick brown \
+       fox jumps over \
+       the lazy dog.\
+       """
+
+# Literal strings are surrounded by single quotes.
+# Like basic strings, they must appear on a single line:
+winpath  = 'C:\Users\nodejs\templates'
+winpath2 = '\\ServerX\admin$\system32\'
+quoted   = 'Tom "Dubs" Preston-Werner'
+regex    = '<\i\c*\s*>'
+
+# Multi-line literal strings are surrounded by three single quotes
+# on each side and allow newlines. Like literal strings,
+# there is no escaping whatsoever.
+# A newline immediately following the opening delimiter will be trimmed.
+# All other content between the delimiters is
+# interpreted as-is without modification.
+regex2 = '''I [dw]on't need \d{2} apples'''
+lines  = '''
+The first newline is
+trimmed in raw strings.
+   All other whitespace
+   is preserved.
+'''
+
+[integer]
+# Integers are whole numbers. 
+# Positive numbers may be prefixed with a plus sign.
+# Negative numbers are prefixed with a minus sign.
+int1 = +99
+int2 = 42
+int3 = 0
+int4 = -17
+
+# For large numbers, you may use underscores between digits
+# to enhance readability.
+# Each underscore must be surrounded by at least one digit on each side.
+int5 = 1_000
+int6 = 5_349_221
+int7 = 1_2_3_4_5
+
+# Non-negative integer values may also be expressed
+# in hexadecimal, octal, or binary.
+# In these formats, leading + is not allowed and leading zeros are
+# allowed (after the prefix).
+# Hex values are case insensitive. 
+# Underscores are allowed between digits
+# (but not between the prefix and the value).
+
+# hexadecimal with prefix `0x`
+hex1 = 0xDEADBEEF
+hex2 = 0xdeadbeef
+hex3 = 0xdead_beef
+
+# octal with prefix `0o`
+oct1 = 0o01234567
+oct2 = 0o755 # useful for Unix file permissions
+
+# binary with prefix `0b`
+bin1 = 0b11010110
+
+[float]
+# Floats should be implemented as IEEE 754 binary64 values.
+
+# A float consists of an integer part
+# (which follows the same rules as decimal integer values) followed
+# by a fractional part and/or an exponent part.
+# If both a fractional part and exponent part are present,
+# the fractional part must precede the exponent part.
+
+# fractional
+flt1 = +1.0
+flt2 = 3.1415
+flt3 = -0.01
+
+# exponent
+flt4 = 5e+22
+flt5 = 1e06
+flt6 = -2E-2
+
+# both
+flt7 = 6.626e-34
+
+# Similar to integers, you may use underscores to enhance readability.
+# Each underscore must be surrounded by at least one digit.
+flt8 = 224_617.445_991_228
+
+# Float values -0.0 and +0.0 are valid and should map according to IEEE 754.
+flt9 = -0.0
+flt10 = +0.0
+
+# Special float values can also be expressed. They are always lowercase.
+
+# infinity
+sf1 = inf  # positive infinity
+sf2 = +inf # positive infinity
+sf3 = -inf # negative infinity
+
+# not a number
+sf4 = nan  # actual sNaN/qNaN encoding is implementation specific
+sf5 = +nan # same as `nan`
+sf6 = -nan # valid, actual encoding is implementation specific
+
+[boolean]
+# Booleans are just the tokens you're used to. Always lowercase.
+bool1 = true
+bool2 = false
+
+[offset-date-time]
+# To unambiguously represent a specific instant in time,
+# you may use an RFC 3339 formatted date-time with offset.
+odt1 = 1979-05-27T07:32:00Z
+odt2 = 1979-05-27T00:32:00-07:00
+odt3 = 1979-05-27T00:32:00.999999-07:00
+
+# For the sake of readability, you may replace the T delimiter
+# between date and time with a space (as permitted by RFC 3339 section 5.6).
+odt4 = 1979-05-27 07:32:00Z
+
+[local-date-time]
+# If you omit the offset from an RFC 3339 formatted date-time,
+# it will represent the given date-time without any relation
+# to an offset or timezone.
+# It cannot be converted to an instant in time without additional information.
+# Conversion to an instant, if required, is implementation specific.
+ldt1 = 1979-05-27T07:32:00
+ldt2 = 1979-05-27T00:32:00.999999
+
+[local-date]
+# If you include only the date portion of an RFC 3339 formatted date-time,
+# it will represent that entire day without any relation
+# to an offset or timezone.
+ld1 = 1979-05-27
+
+[local-time]
+# If you include only the time portion of an RFC 3339 formatted date-time,
+# it will represent that time of day without any relation to a specific day
+# or any offset or timezone.
+lt1 = 07:32:00
+lt2 = 00:32:00.999999
+
+[array]
+# Arrays are square brackets with values inside.
+# Whitespace is ignored. Elements are separated by commas.
+# Data types may not be mixed (different ways to define strings
+# should be considered the same type,
+# and so should arrays with different element types).
+arr1 = [ 1, 2, 3 ]
+arr2 = [ "red", "yellow", "green" ]
+arr3 = [ [ 1, 2 ], [3, 4, 5] ]
+arr4 = [ "all", 'strings', """are the same""", '''type''']
+arr5 = [ [ 1, 2 ], ["a", "b", "c"] ]
+
+# Arrays can also be multiline.
+# A terminating comma (also called trailing comma) is
+# ok after the last value of the array.
+# There can be an arbitrary number of newlines and comments
+# before a value and before the closing bracket.
+arr7 = [
+  1, 2, 3
+]
+arr8 = [
+  1,
+  2, # this is ok
+]
+
+[table]
+# Tables (also known as hash tables or dictionaries) are
+# collections of key/value pairs.
+# They appear in square brackets on a line by themselves.
+# You can tell them apart from arrays because arrays are only ever values.
+
+# Under that, and until the next table or EOF are the key/values of that table.
+# Key/value pairs within tables are not guaranteed to be in any specific order.
+
+[table.table-1]
+key1 = "some string"
+key2 = 123
+
+[table.table-2]
+key1 = "another string"
+key2 = 456
+
+# Naming rules for tables are the same as for keys (see definition of Keys above).
+[table.dog."tater.man"]
+type.name = "pug"
+
+# Whitespace around the key is ignored, however, best practice is to not use any extraneous whitespace.
+[table.a.b.c]            # this is best practice
+[ table.d.e.f ]          # same as [d.e.f]
+[ table . g .  h  . i ]    # same as [g.h.i]
+[ table . j . "ʞ" . 'l' ]  # same as [j."ʞ".'l']
+
+# You don't need to specify all the super-tables if you don't want to.
+# TOML knows how to do it for you.
+
+# [x] you
+# [x.y] don't
+# [x.y.z] need these
+[table.x.y.z.w] # for this to work
+
+[table.x] # defining a super-table afterwards is ok
+
+# Defining tables out-of-order is discouraged.
+
+# VALID BUT DISCOURAGED
+[table.a.x]
+[table.b]
+[table.a.y]
+
+# Dotted keys define everything to the left of each dot as a table.
+# Since tables cannot be defined more than once,
+# redefining such tables using a [table] header is not allowed.
+# Likewise, using dotted keys to redefine tables already defined
+# in [table] form is not allowed.
+
+# The [table] form can, however,
+# be used to define sub-tables within tables defined via dotted keys.
+[table.fruit]
+apple.color = "red"
+apple.taste.sweet = true
+
+# [table.fruit.apple]  # INVALID
+# [table.fruit.apple.taste]  # INVALID
+
+[table.fruit.apple.texture]  # you can add sub-tables
+smooth = true
+
+[inline-table]
+# Inline tables provide a more compact syntax for expressing tables.
+name = { first = "Tom", last = "Preston-Werner" }
+point = { x = 1, y = 2 }
+animal = { type.name = "pug" }
+
+
+[array-of-tables]
+# Array of Tables are inserted in the order encountered.
+# A double bracketed table without any key/value pairs
+# will be considered an empty table.
+[[array-of-tables.products]]
+name = "Hammer"
+sku = 738594937
+
+[[array-of-tables.products]]
+
+[[array-of-tables.products]]
+name = "Nail"
+sku = 284758393
+color = "gray"
+
+[[array-of-tables.fruit]]
+  name = "apple"
+
+  [array-of-tables.fruit.physical]
+    color = "red"
+    shape = "round"
+
+  [[array-of-tables.fruit.variety]]
+    name = "red delicious"
+
+  [[array-of-tables.fruit.variety]]
+    name = "granny smith"
+
+[[array-of-tables.fruit]]
+  name = "banana"
+
+  [[array-of-tables.fruit.variety]]
+    name = "plantain"
