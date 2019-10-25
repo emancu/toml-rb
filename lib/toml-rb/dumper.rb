@@ -87,6 +87,8 @@ module TomlRB
     def to_toml(obj)
       if obj.is_a? Time
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+      elsif obj.is_a? String
+        obj.inspect.gsub(/\\(#[@{])/, '\1')
       elsif obj.is_a? Regexp
         obj.inspect.inspect
       else
