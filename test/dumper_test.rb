@@ -113,4 +113,10 @@ class DumperTest < Minitest::Test
     dumped = TomlRB.dump(hash)
     assert_equal 'key = "includes #@variable"' + "\n", dumped
   end
+
+  def test_dump_interpolation_dollar
+    hash = { "key" => 'includes #$variable' }
+    dumped = TomlRB.dump(hash)
+    assert_equal 'key = "includes #$variable"' + "\n", dumped
+  end
 end

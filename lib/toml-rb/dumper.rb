@@ -94,7 +94,7 @@ module TomlRB
       elsif obj.is_a? Regexp
         obj.inspect.inspect
       elsif obj.is_a? String
-        obj.inspect.gsub(/\\(#[@{])/, '\1')
+        obj.inspect.gsub(/\\(#[$@{])/, '\1')
       else
         obj.inspect
       end
