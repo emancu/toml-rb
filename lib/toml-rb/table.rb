@@ -29,7 +29,7 @@ module TomlRB
     end
 
     def full_key
-      @dotted_keys.join('.')
+      @dotted_keys.join(".")
     end
   end
 

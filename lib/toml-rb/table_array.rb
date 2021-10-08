@@ -5,7 +5,7 @@ module TomlRB
     end
 
     def navigate_keys(hash, symbolize_keys = false)
-      current = hash 
+      current = hash
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
       last_key = keys.pop
 
@@ -24,7 +24,7 @@ module TomlRB
       # Define Table Array
       if current[last_key].is_a? Hash
         fail TomlRB::ParseError,
-             "#{last_key} was defined as hash but is now redefined as a table!"
+          "#{last_key} was defined as hash but is now redefined as a table!"
       end
       current[last_key] = [] unless current[last_key]
       current[last_key] << {}
@@ -37,7 +37,7 @@ module TomlRB
     end
 
     def full_key
-      @dotted_keys.join('.')
+      @dotted_keys.join(".")
     end
   end
 
