@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'lib/toml-rb/version'
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'toml-rb/version'
 
 Gem::Specification.new do |s|
   s.name        = 'toml-rb'

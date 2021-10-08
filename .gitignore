@@ -2,3 +2,4 @@
 .config
 test/tmp
 tmp
+Gemfile.lock
