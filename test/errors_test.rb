@@ -1,4 +1,4 @@
-require_relative 'helper'
+require_relative "helper"
 
 class ErrorsTest < Minitest::Test
   def test_text_after_table
@@ -8,7 +8,7 @@ class ErrorsTest < Minitest::Test
 
   def test_text_after_string
     str = 'string = "Anything other than tabs, spaces and newline after a '
-    str += 'table or key value pair has ended should produce an error '
+    str += "table or key value pair has ended should produce an error "
     str += 'unless it is a comment" like this'
 
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
@@ -52,7 +52,7 @@ class ErrorsTest < Minitest::Test
   end
 
   def test_text_after_number
-    str = 'number = 3.14 pi <--again forgot the #'
+    str = "number = 3.14 pi <--again forgot the #"
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
   end
 

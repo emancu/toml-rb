@@ -1,11 +1,11 @@
-require 'date'
+require "date"
 
 module TomlRB
   class Dumper
     attr_reader :toml_str
 
     def initialize(hash)
-      @toml_str = ''
+      @toml_str = ""
 
       visit(hash, [])
     end
@@ -80,17 +80,17 @@ module TomlRB
     end
 
     def print_prefix(prefix, extra_brackets = false)
-      new_prefix = prefix.join('.')
-      new_prefix = '[' + new_prefix + ']' if extra_brackets
+      new_prefix = prefix.join(".")
+      new_prefix = "[" + new_prefix + "]" if extra_brackets
 
       @toml_str += "[" + new_prefix + "]\n"
     end
 
     def to_toml(obj)
       if obj.is_a?(Time) || obj.is_a?(DateTime)
-        obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        obj.strftime("%Y-%m-%dT%H:%M:%SZ")
       elsif obj.is_a?(Date)
-        obj.strftime('%Y-%m-%d')
+        obj.strftime("%Y-%m-%d")
       elsif obj.is_a? Regexp
         obj.inspect.inspect
       elsif obj.is_a? String

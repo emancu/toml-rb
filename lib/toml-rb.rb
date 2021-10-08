@@ -1,4 +1,4 @@
-require 'citrus'
+require "citrus"
 
 require_relative "toml-rb/errors"
 require_relative "toml-rb/array"

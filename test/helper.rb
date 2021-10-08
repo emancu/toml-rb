@@ -1,2 +1,2 @@
-require 'minitest/autorun'
-require_relative '../lib/toml-rb'
+require "minitest/autorun"
+require_relative "../lib/toml-rb"

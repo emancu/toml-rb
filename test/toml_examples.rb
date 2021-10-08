@@ -84,22 +84,22 @@ class TomlRB::Examples
         "False" => false
       },
       "datetime" => {
-        "key1" => Time.utc(1979, 05, 27, 07, 32, 0),
-        "key2" => Time.new(1979, 05, 27, 00, 32, 0, '-07:00'),
-        "key3" => Time.new(1979, 05, 27, 00, 32, 0.999999, '-07:00')
+        "key1" => Time.utc(1979, 5, 27, 7, 32, 0),
+        "key2" => Time.new(1979, 5, 27, 0, 32, 0, "-07:00"),
+        "key3" => Time.new(1979, 5, 27, 0, 32, 0.999999, "-07:00")
       },
       "array" => {
         "key1" => [1, 2, 3],
-        "key2" => %w(red yellow green),
+        "key2" => %w[red yellow green],
         "key3" => [[1, 2], [3, 4, 5]],
-        "key4" => [[1, 2], %w(a b c)],
+        "key4" => [[1, 2], %w[a b c]],
         "key5" => [1, 2, 3],
         "key6" => [1, 2]
       },
       "products" => [
-        { "name" => "Hammer", "sku" => 738594937 },
+        {"name" => "Hammer", "sku" => 738594937},
         {},
-        { "name" => "Nail", "sku" => 284758393, "color" => "gray" }
+        {"name" => "Nail", "sku" => 284758393, "color" => "gray"}
       ],
       "fruit" => [
         {
@@ -109,14 +109,14 @@ class TomlRB::Examples
             "shape" => "round"
           },
           "variety" => [
-            { "name" => "red delicious" },
-            { "name" => "granny smith" }
+            {"name" => "red delicious"},
+            {"name" => "granny smith"}
           ]
         },
         {
           "name" => "banana",
           "variety" => [
-            { "name" => "plantain" }
+            {"name" => "plantain"}
           ]
         }
       ]
@@ -130,20 +130,20 @@ class TomlRB::Examples
         "bare_key" => "value",
         "bare-key" => "value",
         "1234" => "value",
-        "127.0.0.1" =>"value",
+        "127.0.0.1" => "value",
         "character encoding" => "value",
         "ʎǝʞ" => "value",
-        'key2' => "value",
+        "key2" => "value",
         'quoted "value"' => "value",
         "name" => "Orange",
         "physical" => {
           "color" => "orange",
           "shape" => "round"
         },
-        'site' => { "google.com" => true },
-        "3" => { "14159" => "pi" },
+        "site" => {"google.com" => true},
+        "3" => {"14159" => "pi"},
         "a" => {
-          "b" => { "c" => 1 },
+          "b" => {"c" => 1},
           "d" => 2,
           "type" => "",
           "name" => "",
@@ -226,18 +226,18 @@ class TomlRB::Examples
         "lt2" => Time.at(3600 * 0 + 60 * 32 + 0, 999999)
       },
       "array" => {
-        "arr1" => [ 1, 2, 3],
-        "arr2" => [ "red", "yellow", "green"],
-        "arr3" => [[ 1, 2 ], [3, 4, 5]],
-        "arr4" => [ "all", "strings", "are the same", "type"],
-        "arr5" => [[ 1, 2 ], ["a", "b", "c"]],
-        "arr7" => [ 1, 2, 3],
-        "arr8" => [ 1, 2]
+        "arr1" => [1, 2, 3],
+        "arr2" => ["red", "yellow", "green"],
+        "arr3" => [[1, 2], [3, 4, 5]],
+        "arr4" => ["all", "strings", "are the same", "type"],
+        "arr5" => [[1, 2], ["a", "b", "c"]],
+        "arr7" => [1, 2, 3],
+        "arr8" => [1, 2]
       },
       "table" => {
         "table-1" => {
           "key1" => "some string",
-          "key2" => 123,
+          "key2" => 123
         },
         "table-2" => {
           "key1" => "another string",
@@ -269,7 +269,7 @@ class TomlRB::Examples
         },
         "j" => {
           "ʞ" => {
-            'l' => {}
+            "l" => {}
           }
         },
         "x" => {
@@ -290,7 +290,7 @@ class TomlRB::Examples
               "smooth" => true
             }
           }
-        },
+        }
       },
       "inline-table" => {
         "name" => {
@@ -301,7 +301,7 @@ class TomlRB::Examples
           "x" => 1,
           "y" => 2
         },
-        "animal" => { 
+        "animal" => {
           "type" => {
             "name" => "pug"
           }
@@ -309,9 +309,9 @@ class TomlRB::Examples
       },
       "array-of-tables" => {
         "products" => [
-          { "name" => "Hammer", "sku" => 738594937 },
+          {"name" => "Hammer", "sku" => 738594937},
           {},
-          { "name" => "Nail", "sku" => 284758393, "color" => "gray" }
+          {"name" => "Nail", "sku" => 284758393, "color" => "gray"}
         ],
         "fruit" => [
           {
@@ -321,14 +321,14 @@ class TomlRB::Examples
               "shape" => "round"
             },
             "variety" => [
-              { "name" => "red delicious" },
-              { "name" => "granny smith" }
+              {"name" => "red delicious"},
+              {"name" => "granny smith"}
             ]
           },
           {
             "name" => "banana",
             "variety" => [
-              { "name" => "plantain" }
+              {"name" => "plantain"}
             ]
           }
         ]
@@ -338,73 +338,73 @@ class TomlRB::Examples
 
   def self.example
     {
-      'title' => 'TomlRB Example',
-      'owner' => {
-        'name' => 'Tom Preston-Werner',
-        'organization' => 'GitHub',
-        'bio' => "GitHub Cofounder & CEO\nLikes tater tots and beer.",
-        'dob' => Time.utc(1979, 05, 27, 07, 32, 00)
+      "title" => "TomlRB Example",
+      "owner" => {
+        "name" => "Tom Preston-Werner",
+        "organization" => "GitHub",
+        "bio" => "GitHub Cofounder & CEO\nLikes tater tots and beer.",
+        "dob" => Time.utc(1979, 5, 27, 7, 32, 0)
       },
 
-      'database' => {
-        'server' => '192.168.1.1',
-        'ports' => [8001, 8001, 8002],
-        'connection_max' => 5000,
-        'enabled' => true
+      "database" => {
+        "server" => "192.168.1.1",
+        "ports" => [8001, 8001, 8002],
+        "connection_max" => 5000,
+        "enabled" => true
       },
-      'servers' => {
-        'alpha' => {
-          'ip' => '10.0.0.1',
-          'dc' => 'eqdc10'
+      "servers" => {
+        "alpha" => {
+          "ip" => "10.0.0.1",
+          "dc" => "eqdc10"
         },
-        'beta' => {
-          'ip' => '10.0.0.2',
-          'dc' => 'eqdc10'
+        "beta" => {
+          "ip" => "10.0.0.2",
+          "dc" => "eqdc10"
         }
       },
-      'clients' => {
-        'data' => [%w(gamma delta), [1, 2]],
-        'hosts' => %w(alpha omega)
+      "clients" => {
+        "data" => [%w[gamma delta], [1, 2]],
+        "hosts" => %w[alpha omega]
       },
-      'amqp' => {
-        'exchange' => {
-          'durable' => true,
-          'auto_delete' => false
+      "amqp" => {
+        "exchange" => {
+          "durable" => true,
+          "auto_delete" => false
         }
       },
       "products" => [
-        { "name" => "Hammer", "sku" => 738_594_937 },
+        {"name" => "Hammer", "sku" => 738_594_937},
         {},
-        { "name" => "Nail", "sku" => 284_758_393, "color" => "gray" }
+        {"name" => "Nail", "sku" => 284_758_393, "color" => "gray"}
       ]
     }
   end
 
   def self.hard_example
     {
-      'the' => {
-        'test_string' => "You'll hate me after this - #",
-        'hard' => {
-          'test_array'  =>  ['] ', ' # '],
-          'test_array2' =>  ['Test #11 ]proved that', 'Experiment #9 was a success'],
-          'another_test_string' => ' Same thing, but with a string #',
-          'harder_test_string' => " And when \"'s are in the string, along with # \"",
-          'bit#' => {
-            'what?' => "You don't think some user won't do that?",
-            'multi_line_array' => [']']
+      "the" => {
+        "test_string" => "You'll hate me after this - #",
+        "hard" => {
+          "test_array" => ["] ", " # "],
+          "test_array2" => ["Test #11 ]proved that", "Experiment #9 was a success"],
+          "another_test_string" => " Same thing, but with a string #",
+          "harder_test_string" => " And when \"'s are in the string, along with # \"",
+          "bit#" => {
+            "what?" => "You don't think some user won't do that?",
+            "multi_line_array" => ["]"]
           }
         }
       },
-      'parent' => {
-        'child1' => { 'key' => 'value' },
-        'child2' => [
-          { 'key2' => 'value' },
-          { 'key3' => 'value' }
+      "parent" => {
+        "child1" => {"key" => "value"},
+        "child2" => [
+          {"key2" => "value"},
+          {"key3" => "value"}
         ]
       },
-      'a' => {
-        'b' => [
-          { 'c' => 3 }
+      "a" => {
+        "b" => [
+          {"c" => 3}
         ]
       }
     }

@@ -8,7 +8,7 @@ module TomlRB
       value keyvalue.symbolize_keys
     end
 
-    def value(symbolize_keys=false)
+    def value(symbolize_keys = false)
       result = {}
       @pairs.each do |kv|
         update = kv.assign({}, [], symbolize_keys)
