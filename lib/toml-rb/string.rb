@@ -21,7 +21,7 @@ module TomlRB
     # Replace the unicode escaped characters with the corresponding character
     # e.g. \u03B4 => ?
     def self.decode_unicode(str)
-      [str[2..].to_i(16)].pack("U")
+      [str[2..-1].to_i(16)].pack("U")
     end
 
     def self.transform_escaped_chars(str)

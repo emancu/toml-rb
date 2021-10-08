@@ -18,7 +18,6 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -37,3 +36,12 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
       run: bundle exec rake
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    - name: Run standardrb
+      run: bundle exec rake standard STANDARDOPTS="--format progress"
