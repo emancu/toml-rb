@@ -5,7 +5,7 @@ toml-rb
 =======
 
 [![Gem Version](https://badge.fury.io/rb/toml-rb.svg)](http://badge.fury.io/rb/toml-rb)
-[![Build Status](https://travis-ci.org/emancu/toml-rb.svg)](https://travis-ci.org/emancu/toml-rb)
+[![Build Status](https://github.com/emancu/toml-rb/actions/workflows/ruby.yml/badge.svg)](https://github.com/emancu/toml-rb/actions/workflows/ruby.yml)
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb/badges/gpa.svg)](https://codeclimate.com/github/emancu/toml-rb)
 [![RubyGem](https://img.shields.io/gem/dt/toml-rb.svg)](https://rubygems.org/gems/toml-rb)
 
