@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
+require_relative 'lib/toml-rb/version'
+
 Gem::Specification.new do |s|
   s.name        = 'toml-rb'
-  s.version     = '2.0.1'
+  s.version     = TomlRB::VERSION
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Toml parser in ruby, for ruby.'
   s.description = 'A Toml parser using Citrus parsing library. '
@@ -18,4 +22,5 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.3'
   s.add_dependency 'citrus', '~> 3.0', '> 3.0'
+  s.add_development_dependency 'minitest', '~> 5.7'
 end
