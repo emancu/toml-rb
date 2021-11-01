@@ -12,6 +12,6 @@ grammar TomlRB::Helper
   end
 
   rule line_break
-    (space? "\n" | space? "\r\n") { nil }
+    (space "\n" space | space "\r\n" space) { nil }
   end
 end

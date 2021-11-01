@@ -112,6 +112,16 @@ class TomlTest < Minitest::Test
     assert_equal({"hello" => "world", "line_break" => true}, parsed)
   end
 
+  def test_trailing_whitespace_after_keyvalue
+    parsed = TomlRB.parse("a = 1   ")
+    assert_equal({"a" => 1}, parsed)
+  end
+
+  def test_trailing_whitespace_after_line_break
+    parsed = TomlRB.parse("[table]\r\na = 1\r\n  ")
+    assert_equal({"table" => {"a" => 1}}, parsed)
+  end
+
   def compare_toml_files(folder, file = nil, &block)
     file ||= "*"
     Dir["test/examples/#{folder}/#{file}.json"].each do |json_file|

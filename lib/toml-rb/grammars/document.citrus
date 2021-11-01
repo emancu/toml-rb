@@ -15,7 +15,7 @@ grammar TomlRB::Document
   end
 
   rule keyvalue
-    (stripped_key '=' space? v:(toml_values) comment?) <TomlRB::KeyvalueParser>
+    (stripped_key '=' space? v:(toml_values) comment? space) <TomlRB::KeyvalueParser>
   end
 
   rule inline_table
