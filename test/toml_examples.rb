@@ -164,10 +164,10 @@ class TomlRB::Examples
           "str2" => "The quick brown fox jumps over the lazy dog.",
           "str3" => "The quick brown fox jumps over the lazy dog."
         },
-        "winpath" => 'C:\\Users\\nodejs\\templates',
+        "winpath" => "C:\\Users\\nodejs\\templates",
         "winpath2" => "\\\\ServerX\\admin$\\system32\\",
         "quoted" => 'Tom "Dubs" Preston-Werner',
-        "regex" => '<\\i\\c*\\s*>',
+        "regex" => "<\\i\\c*\\s*>",
         "regex2" => "I [dw]on't need \\d{2} apples",
         "lines" => "The first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
       },

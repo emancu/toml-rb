@@ -2,12 +2,12 @@ module TomlRB
   # Used in primitive.citrus
   module BasicString
     SPECIAL_CHARS = {
-      '\\0' => "\0",
-      '\\t' => "\t",
-      '\\b' => "\b",
-      '\\f' => "\f",
-      '\\n' => "\n",
-      '\\r' => "\r",
+      "\\0" => "\0",
+      "\\t" => "\t",
+      "\\b" => "\b",
+      "\\f" => "\f",
+      "\\n" => "\n",
+      "\\r" => "\r",
       '\\"' => '"',
       "\\\\" => "\\"
     }.freeze
