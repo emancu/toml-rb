@@ -18,18 +18,20 @@ module TomlRB
       current
     end
 
-    # Fail if the key was already defined with a ValueOverwriteError
-    def ensure_key_not_defined(visited_keys)
-      fail ValueOverwriteError.new(full_key) if visited_keys.include?(full_key)
-      visited_keys << full_key
-    end
-
     def accept_visitor(parser)
       parser.visit_table self
     end
 
     def full_key
       @dotted_keys.join(".")
+    end
+
+    private
+
+    # Fail if the key was already defined with a ValueOverwriteError
+    def ensure_key_not_defined(visited_keys)
+      fail ValueOverwriteError.new(full_key) if visited_keys.include?(full_key)
+      visited_keys << full_key
     end
   end
 

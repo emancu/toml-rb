@@ -11,18 +11,18 @@ require_relative "toml-rb/keyvalue"
 require_relative "toml-rb/parser"
 require_relative "toml-rb/dumper"
 
-ROOT = File.dirname(File.expand_path(__FILE__))
-Citrus.load "#{ROOT}/toml-rb/grammars/helper.citrus"
-Citrus.load "#{ROOT}/toml-rb/grammars/primitive.citrus"
-Citrus.load "#{ROOT}/toml-rb/grammars/array.citrus"
-Citrus.load "#{ROOT}/toml-rb/grammars/document.citrus"
+File.dirname(File.expand_path(__FILE__)).tap do |root|
+  Citrus.load "#{root}/toml-rb/grammars/helper.citrus"
+  Citrus.load "#{root}/toml-rb/grammars/primitive.citrus"
+  Citrus.load "#{root}/toml-rb/grammars/array.citrus"
+  Citrus.load "#{root}/toml-rb/grammars/document.citrus"
+end
 
 module TomlRB
   # Public: Returns a hash from *TomlRB* content.
   #
-  # content - TomlRB string to be parsed.
-  # options - The Hash options used to refine the parser (default: {}):
-  #           :symbolize_keys - true|false (optional).
+  # content         - TomlRB string to be parsed.
+  # :symbolize_keys - true | false (default: false).
   #
   #
   # Examples
@@ -43,15 +43,14 @@ module TomlRB
   # Returns a Ruby hash representation of the content according to TomlRB spec.
   # Raises ValueOverwriteError if a key is overwritten.
   # Raises ParseError if the content has invalid TomlRB.
-  def self.parse(content, options = {})
-    Parser.new(content, options).hash
+  def self.parse(content, symbolize_keys: false)
+    Parser.new(content, symbolize_keys: symbolize_keys).hash
   end
 
   # Public: Returns a hash from a *TomlRB* file.
   #
-  # path    - TomlRB File path
-  # options - The Hash options used to refine the parser (default: {}):
-  #           :symbolize_keys - true|false (optional).
+  # path            - TomlRB File path
+  # :symbolize_keys - true|false (optional).
   #
   #
   # Examples
@@ -68,8 +67,8 @@ module TomlRB
   # Raises ParseError if the content has invalid TomlRB.
   # Raises Errno::ENOENT if the file cannot be found.
   # Raises Errno::EACCES if the file cannot be accessed.
-  def self.load_file(path, options = {})
-    TomlRB.parse(File.read(path), options)
+  def self.load_file(path, symbolize_keys: false)
+    TomlRB.parse(File.read(path), symbolize_keys: symbolize_keys)
   end
 
   # Public: Returns a *TomlRB* string from a Ruby Hash.
