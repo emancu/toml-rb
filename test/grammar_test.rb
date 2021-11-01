@@ -94,7 +94,7 @@ class GrammarTest < Minitest::Test
     assert_equal("\0 \" \t \n \r", match.value)
 
     match = TomlRB::Document.parse('"C:\\\\Documents\\\\nada.exe"', root: :string)
-    assert_equal('C:\\Documents\\nada.exe', match.value)
+    assert_equal("C:\\Documents\\nada.exe", match.value)
   end
 
   def test_bool
