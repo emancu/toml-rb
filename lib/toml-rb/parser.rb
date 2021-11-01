@@ -2,12 +2,12 @@ module TomlRB
   class Parser
     attr_reader :hash
 
-    def initialize(content, options = {})
+    def initialize(content, symbolize_keys: false)
       @hash = {}
       @visited_keys = []
       @fully_defined_keys = []
       @current = @hash
-      @symbolize_keys = options[:symbolize_keys]
+      @symbolize_keys = symbolize_keys
 
       begin
         parsed = TomlRB::Document.parse(content)
