@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "date"
 
 module TomlRB
@@ -53,7 +55,7 @@ module TomlRB
     def dump_simple_pairs(simple_pairs)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
-        @toml_str << "#{key} = #{to_toml(val)}\n"
+        @toml_str += "#{key} = #{to_toml(val)}\n"
       end
     end
 
