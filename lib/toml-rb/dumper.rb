@@ -97,6 +97,8 @@ module TomlRB
         obj.inspect.inspect
       elsif obj.is_a? String
         obj.inspect.gsub(/\\(#[$@{])/, '\1')
+      elsif obj.is_a? Array
+        '[' + obj.map(&method(:to_toml)).join(', ') + ']'
       else
         obj.inspect
       end
