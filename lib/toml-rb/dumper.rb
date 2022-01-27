@@ -93,12 +93,12 @@ module TomlRB
         obj.strftime("%Y-%m-%dT%H:%M:%SZ")
       elsif obj.is_a?(Date)
         obj.strftime("%Y-%m-%d")
-      elsif obj.is_a? Regexp
+      elsif obj.is_a?(Regexp)
         obj.inspect.inspect
-      elsif obj.is_a? String
+      elsif obj.is_a?(String)
         obj.inspect.gsub(/\\(#[$@{])/, '\1')
-      elsif obj.is_a? Array
-        '[' + obj.map(&method(:to_toml)).join(', ') + ']'
+      elsif obj.is_a?(Array)
+        "[" + obj.map(&method(:to_toml)).join(", ") + "]"
       else
         obj.inspect
       end
