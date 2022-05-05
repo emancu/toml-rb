@@ -1,4 +1,4 @@
-![TOML Logo](https://github.com/toml-lang/toml/blob/master/logos/toml-100.png)
+![TOML Logo](https://github.com/toml-lang/toml/blob/main/logos/toml-100.png)
 
 
 toml-rb
