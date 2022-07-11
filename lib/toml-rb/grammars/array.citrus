@@ -1,36 +1,36 @@
 grammar TomlRB::Arrays
   include TomlRB::Primitive
-  
+
   rule array_comments
     (indent? (comment indent?)*)
   end
 
   rule float_array
-    (float (space "," array_comments float)*) {
+    (float (indent? "," array_comments float)*) {
       captures[:float].map(&:value)
     }
   end
 
   rule string_array
-    (string (space "," array_comments string)*) {
+    (string (indent? "," array_comments string)*) {
       captures[:string].map(&:value)
     }
   end
 
   rule integer_array
-    (integer (space "," array_comments integer)*) {
+    (integer (indent? "," array_comments integer)*) {
       captures[:integer].map(&:value)
     }
   end
 
   rule datetime_array
-    (datetime (space "," array_comments datetime)*) {
+    (datetime (indent? "," array_comments datetime)*) {
       captures[:datetime].map(&:value)
     }
   end
 
   rule bool_array
-    (bool (space "," array_comments bool)*) {
+    (bool (indent? "," array_comments bool)*) {
       captures[:bool].map(&:value)
     }
   end

@@ -17,3 +17,6 @@ This \
                test \
                string''',
                "Other test string"]
+ignore_whitespace = [ 1
+,2       ,3
+	,4	]
