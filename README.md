@@ -11,7 +11,7 @@ toml-rb
 
 A [TOML](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
 
-TOML specs supported: `0.5.0`
+TOML specs supported: `1.0.0`
 
 Installation
 ------------
