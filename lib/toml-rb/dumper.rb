@@ -108,8 +108,13 @@ module TomlRB
       !!key.to_s.match(/^[a-zA-Z0-9_-]*$/)
     end
 
+    # The key needs to use quotes according to TOML specs.
+    # Ruby representation of literals or strings, mixed with special characters
+    # made the concatenation error-prone, luckiley the `#inspect` method returns
+    # exactly what we need. I decided to keep the method `quote_key/1`
+    # for readability.
     def quote_key(key)
-      '"' + key.gsub('"', '\\"') + '"'
+      key.inspect
     end
   end
 end

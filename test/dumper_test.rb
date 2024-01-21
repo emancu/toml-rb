@@ -130,13 +130,13 @@ class DumperTest < Minitest::Test
     hash = {'\t' => "escape special chars in string literals"}
     dumped = TomlRB.dump(hash)
 
-    assert_equal %("\\t" = "escape special chars in string literals") + "\n", dumped
+    assert_equal %("\\\\t" = "escape special chars in string literals") + "\n", dumped
   end
 
   def test_dump_special_chars_in_strings
     hash = {"\t" => "escape special chars in strings"}
     dumped = TomlRB.dump(hash)
 
-    assert_equal %("\t" = "escape special chars in strings") + "\n", dumped
+    assert_equal %("\\t" = "escape special chars in strings") + "\n", dumped
   end
 end
