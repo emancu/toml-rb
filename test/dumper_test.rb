@@ -108,18 +108,35 @@ class DumperTest < Minitest::Test
   def test_dump_interpolation_curly
     hash = {"key" => "includes \#{variable}"}
     dumped = TomlRB.dump(hash)
+
     assert_equal %(key = "includes \#{variable}") + "\n", dumped
   end
 
   def test_dump_interpolation_at
     hash = {"key" => 'includes #@variable'}
     dumped = TomlRB.dump(hash)
+
     assert_equal 'key = "includes #@variable"' + "\n", dumped
   end
 
   def test_dump_interpolation_dollar
     hash = {"key" => 'includes #$variable'}
     dumped = TomlRB.dump(hash)
+
     assert_equal 'key = "includes #$variable"' + "\n", dumped
+  end
+
+  def test_dump_special_chars_in_literals
+    hash = {'\t' => "escape special chars in string literals"}
+    dumped = TomlRB.dump(hash)
+
+    assert_equal %("\\\\t" = "escape special chars in string literals") + "\n", dumped
+  end
+
+  def test_dump_special_chars_in_strings
+    hash = {"\t" => "escape special chars in strings"}
+    dumped = TomlRB.dump(hash)
+
+    assert_equal %("\\t" = "escape special chars in strings") + "\n", dumped
   end
 end
