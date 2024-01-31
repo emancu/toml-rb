@@ -139,4 +139,11 @@ class DumperTest < Minitest::Test
 
     assert_equal %("\\t" = "escape special chars in strings") + "\n", dumped
   end
+
+  def test_dump_empty_key
+    hash = {"" => "empty key"}
+    dumped = TomlRB.dump(hash)
+
+    assert_equal %("" = "empty key") + "\n", dumped
+  end
 end
