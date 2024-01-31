@@ -105,7 +105,7 @@ module TomlRB
     end
 
     def bare_key?(key)
-      !!key.to_s.match(/^[a-zA-Z0-9_-]*$/)
+      !!key.to_s.match(/^[a-zA-Z0-9_-]+$/)
     end
 
     # The key needs to use quotes according to TOML specs.
