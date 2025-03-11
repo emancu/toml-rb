@@ -20,7 +20,7 @@ module TomlRB
 
   module InlineTableParser
     def value
-      TomlRB::InlineTable.new captures[:keyvalue].map(&:value)
+      TomlRB::InlineTable.new(captures[:keyvalue].map(&:value))
     end
   end
 end

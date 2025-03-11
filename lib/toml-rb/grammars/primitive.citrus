@@ -103,7 +103,7 @@ grammar TomlRB::Primitive
   end
 
   rule fractional_float
-    (demical_integer '.' [0-9_]+) { 
+    (demical_integer '.' [0-9_]+) {
       to_str.to_f
     }
   end
@@ -161,7 +161,7 @@ grammar TomlRB::Primitive
   end
 
   rule quoted_key
-    basic_string | literal_string 
+    basic_string | literal_string
   end
 
   rule single_key

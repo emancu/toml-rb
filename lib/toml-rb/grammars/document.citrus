@@ -1,6 +1,5 @@
 grammar TomlRB::Document
   include TomlRB::Primitive
-  include TomlRB::Arrays
 
   rule document
     (comment | table_array | table | keyvalue | line_break)*
@@ -18,22 +17,14 @@ grammar TomlRB::Document
     (stripped_key '=' space? v:(toml_values) comment? space) <TomlRB::KeyvalueParser>
   end
 
+  ### Values
+
   rule inline_table
     (space? '{' (keyvalue? (',' keyvalue)*)? space? '}' ) <TomlRB::InlineTableParser>
   end
 
-  rule inline_table_array
-    (inline_table (space "," array_comments inline_table)*) {
-      captures[:inline_table].map(&:value).map(&:value)
-    }
-  end
-
   rule array
     ("[" array_comments (array_elements)? space ","? array_comments "]" indent?) <TomlRB::ArrayParser>
-  end
-
-  rule array_elements
-    inline_table_array | float_array | string_array | array_array | integer_array | datetime_array | bool_array
   end
 
   rule array_array
@@ -42,11 +33,25 @@ grammar TomlRB::Document
     }
   end
 
-  rule toml_values
-    primitive | inline_table | array | inline_table_array
+  rule array_elements
+    (toml_values (indent? "," array_comments toml_values)*) {
+      captures[:toml_values].map(&:value).map do |v|
+        v.respond_to?(:value) ? v.value : v
+      end
+    }
   end
+
+  ### Helpers
 
   rule stripped_key
     (space? key space?) { captures[:key].first.value }
+  end
+
+  rule array_comments
+    (indent? (comment indent?)*)
+  end
+
+  rule toml_values
+    primitive | inline_table | array
   end
 end

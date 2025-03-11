@@ -14,7 +14,6 @@ require_relative "toml-rb/dumper"
 File.dirname(File.expand_path(__FILE__)).tap do |root|
   Citrus.load "#{root}/toml-rb/grammars/helper.citrus"
   Citrus.load "#{root}/toml-rb/grammars/primitive.citrus"
-  Citrus.load "#{root}/toml-rb/grammars/array.citrus"
   Citrus.load "#{root}/toml-rb/grammars/document.citrus"
 end
 
