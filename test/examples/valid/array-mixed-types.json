@@ -1,0 +1,18 @@
+{
+  "numbers": [
+    0.1,
+    0.2,
+    0.5,
+    1,
+    2,
+    5
+  ],
+  "contributors": [
+    "Foo Bar <foo@example.com>",
+    {
+      "email": "bazqux@example.com",
+      "name": "Baz Qux",
+      "url": "https://example.com/bazqux"
+    }
+  ]
+}
