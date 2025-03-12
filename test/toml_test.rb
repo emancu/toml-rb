@@ -122,9 +122,8 @@ class TomlTest < Minitest::Test
     assert_equal({"table" => {"a" => 1}}, parsed)
   end
 
-  def compare_toml_files(folder, file = nil, &block)
-    file ||= "*"
-    Dir["test/examples/#{folder}/#{file}.json"].each do |json_file|
+  def test_valid_cases
+    Dir["test/examples/valid/**/*.json"].each do |json_file|
       toml_file = File.join(File.dirname(json_file),
         File.basename(json_file, ".json")) + ".toml"
       begin
@@ -132,20 +131,15 @@ class TomlTest < Minitest::Test
       rescue TomlRB::Error => e
         assert false, "Error: #{e} in #{toml_file}"
       end
-      json = JSON.parse(File.read(json_file))
-      block.call(json, toml, toml_file)
-    end
-  end
 
-  def test_valid_cases
-    compare_toml_files "valid" do |json, toml, file|
-      assert_equal json, toml, "In file '#{file}'"
+      json = JSON.parse(File.read(json_file))
+
+      assert_equal json, toml, "In file '#{toml_file}'"
     end
   end
 
   def test_invalid_cases
-    file = "*"
-    Dir["test/examples/invalid/#{file}.toml"].each do |toml_file|
+    Dir["test/examples/invalid/**/*.toml"].each do |toml_file|
       assert_raises(TomlRB::Error, "For file #{toml_file}") do
         TomlRB.load_file(toml_file)
       end
