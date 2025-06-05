@@ -16,13 +16,25 @@ module TomlRB
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
       update = keys.reverse.inject(visit_value(@value)) { |k1, k2| {k2 => k1} }
 
+      merge_block = proc { |key, old, new|
+        if old.is_a?(Hash) && new.is_a?(Hash)
+          dotted_key_merge(old, new)
+        else
+          fail ValueOverwriteError.new(key)
+        end
+      }
+
       if @value.is_a?(InlineTable)
+        if fully_defined_keys.include?(dotted_keys_str)
+          fail ValueOverwriteError.new(dotted_keys_str)
+        end
         fully_defined_keys << dotted_keys_str
-        hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
-      elsif fully_defined_keys.find { |k| update.dig(*k) }
-        hash.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
+        hash.merge!(update, &merge_block)
+      elsif fully_defined_keys.include?(dotted_keys_str)
+        fail ValueOverwriteError.new(dotted_keys_str)
       else
-        dotted_key_merge(hash, update)
+        fully_defined_keys << dotted_keys_str
+        hash.merge!(update, &merge_block)
       end
     end
 
