@@ -11,7 +11,7 @@ module TomlRB
 
     def initialize(key)
       @key = key
-      super "Key #{key.inspect} is defined more than once"
+      super("Key #{key.inspect} is defined more than once")
     end
   end
 end

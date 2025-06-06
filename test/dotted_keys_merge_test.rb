@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'toml-rb'
+require "minitest/autorun"
 
 class DottedKeysMergeTest < Minitest::Test
   def test_dotted_keys_merge
@@ -21,7 +20,7 @@ class DottedKeysMergeTest < Minitest::Test
     assert_equal ["B", "C4", "E", "F", "FAST", "I", "N", "RUF", "T20", "UP", "W"], parsed["tool"]["ruff"]["lint"]["select"]
     assert_equal ["B008", "C901", "RUF012", "RUF029", "UP007"], parsed["tool"]["ruff"]["lint"]["ignore"]
     assert_equal ["*.ipynb"], parsed["tool"]["ruff"]["lint"]["exclude"]
-    assert_equal({"__init__.py"=>["F401"], "migrations/versions/*.py"=>["E501", "W291"]}, parsed["tool"]["ruff"]["lint"]["per-file-ignores"])
+    assert_equal({"__init__.py" => ["F401"], "migrations/versions/*.py" => ["E501", "W291"]}, parsed["tool"]["ruff"]["lint"]["per-file-ignores"])
     assert_equal true, parsed["tool"]["ruff"]["lint"]["preview"]
   end
 
