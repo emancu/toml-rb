@@ -1,0 +1,27 @@
+{
+  "tool": {
+    "ruff": {
+      "target-version": "py310",
+      "lint": {
+        "ignore": [
+          "B008",
+          "C901",
+          "RUF012",
+          "RUF029",
+          "UP007"
+        ],
+        "integer": 81,
+        "per-file-ignores": {
+          "__init__.py": [
+            "F401"
+          ],
+          "migrations/versions/*.py": [
+            "E501",
+            "W291"
+          ]
+        },
+        "enable": true
+      }
+    }
+  }
+}
