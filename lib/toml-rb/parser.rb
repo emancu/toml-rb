@@ -14,6 +14,14 @@ module TomlRB
         parsed.matches.map(&:value).compact.each { |m| m.accept_visitor(self) }
       rescue Citrus::ParseError => e
         raise TomlRB::ParseError.new(e.message)
+      rescue Encoding::CompatibilityError => e
+        raise TomlRB::ParseError.new("Encoding error: #{e.message}")
+      rescue ArgumentError => e
+        if e.message.include?("invalid byte sequence") || e.message.include?("encoding")
+          raise TomlRB::ParseError.new("Encoding error: #{e.message}")
+        else
+          raise
+        end
       end
     end
 
