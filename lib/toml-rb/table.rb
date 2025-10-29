@@ -8,9 +8,16 @@ module TomlRB
       ensure_key_not_defined(visited_keys)
       current = hash
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
-      keys.each do |key|
+      keys.each_with_index do |key, index|
         current[key] = {} unless current.key?(key)
         element = current[key]
+
+        # If this is the final key and it's already an array (from [[key]]), that's invalid
+        is_final_key = (index == keys.length - 1)
+        if is_final_key && element.is_a?(Array)
+          fail ValueOverwriteError.new(key)
+        end
+
         current = element.is_a?(Array) ? element.last : element
         # check that key has not been defined before as a scalar value
         fail ValueOverwriteError.new(key) unless current.is_a?(Hash)

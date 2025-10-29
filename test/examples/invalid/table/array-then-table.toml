@@ -1,0 +1,6 @@
+# Defining [[foo]] as array of tables then [foo] as regular table is invalid
+[[foo]]
+a = true
+
+[foo]
+b = false
