@@ -10,23 +10,23 @@ module TomlRB
       @symbolize_keys = false
     end
 
-    def assign(hash, fully_defined_keys, symbolize_keys = false)
+    def assign(hash, fully_defined_paths, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      dotted_keys_str = @dotted_keys.join(".")
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
+      depth = @dotted_keys.size
       update = keys.reverse.inject(visit_value(@value)) { |k1, k2| {k2 => k1} }
 
-      parent_inline_table = fully_defined_keys.find { |k| dotted_keys_str.start_with?("#{k}.") }
+      parent_inline_table = fully_defined_paths.find { |k| k.size < depth && @dotted_keys.first(k.size) == k }
       fail ValueOverwriteError.new(@dotted_keys.first) if parent_inline_table
 
       if @value.is_a?(InlineTable)
-        child_keys_exist = fully_defined_keys.find { |k| k.start_with?("#{dotted_keys_str}.") }
+        child_keys_exist = fully_defined_paths.find { |k| k.size > depth && k.first(depth) == @dotted_keys }
         fail ValueOverwriteError.new(@dotted_keys.first) if child_keys_exist
 
         existing_hash = hash.dig(*keys)
         fail ValueOverwriteError.new(@dotted_keys.first) if existing_hash.is_a?(Hash) && !existing_hash.empty?
 
-        fully_defined_keys << dotted_keys_str
+        fully_defined_paths << @dotted_keys
       end
 
       dotted_key_merge(hash, update)

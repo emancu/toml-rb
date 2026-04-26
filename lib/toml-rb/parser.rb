@@ -5,7 +5,7 @@ module TomlRB
     def initialize(content, symbolize_keys: false)
       @hash = {}
       @visited_keys = []
-      @fully_defined_keys = []
+      @fully_defined_paths = []
       @current = @hash
       @symbolize_keys = symbolize_keys
 
@@ -28,7 +28,7 @@ module TomlRB
     # Read about the Visitor pattern
     # http://en.wikipedia.org/wiki/Visitor_pattern
     def visit_table_array(table_array)
-      @fully_defined_keys = []
+      @fully_defined_paths = []
       table_array_key = table_array.full_key
       @visited_keys.reject! { |k| k.start_with? table_array_key }
 
@@ -36,12 +36,12 @@ module TomlRB
     end
 
     def visit_table(table)
-      @fully_defined_keys = []
+      @fully_defined_paths = []
       @current = table.navigate_keys @hash, @visited_keys, @symbolize_keys
     end
 
     def visit_keyvalue(keyvalue)
-      keyvalue.assign @current, @fully_defined_keys, @symbolize_keys
+      keyvalue.assign @current, @fully_defined_paths, @symbolize_keys
     end
   end
 end
