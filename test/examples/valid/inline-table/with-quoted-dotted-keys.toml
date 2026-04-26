@@ -1,0 +1,6 @@
+[[package]]
+name = "bleak"
+
+[package.dependencies]
+"winrt-Windows.Devices.Bluetooth" = {version = ">=3.1"}
+"winrt-Windows.Devices.Bluetooth.Advertisement" = {version = ">=3.1"}
