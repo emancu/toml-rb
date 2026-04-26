@@ -1,0 +1,21 @@
+[dependencies]
+windows-sys = {
+  version = "0.61.2",
+  features = [
+    "Win32_System_Environment",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Memory",
+  ],
+}
+
+empty = {
+
+}
+
+single = { a = 1, b = 2 }
+
+with-comments = {
+  # leading comment
+  x = 1, # trailing comment
+  y = 2,
+}
