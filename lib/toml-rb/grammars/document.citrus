@@ -20,7 +20,7 @@ grammar TomlRB::Document
   ### Values
 
   rule inline_table
-    (space? '{' (keyvalue? (',' keyvalue)*)? space? '}' ) <TomlRB::InlineTableParser>
+    (space? '{' array_comments (keyvalue (array_comments ',' array_comments keyvalue)* (array_comments ',')?)? array_comments '}' ) <TomlRB::InlineTableParser>
   end
 
   rule array
