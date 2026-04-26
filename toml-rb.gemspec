@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     "LICENSE"
   ]
 
-  s.required_ruby_version = ">= 2.3"
+  s.required_ruby_version = ">= 2.5"
   s.add_dependency "citrus", "~> 3.0", "> 3.0"
   s.add_dependency "racc", "~> 1.7"
 
