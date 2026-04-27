@@ -16,7 +16,7 @@
 #   conformance and live in the skip-list until v5.0.0 introduces dedicated
 #   types. See lib/toml-rb/datetime.rb.
 
-$LOAD_PATH.unshift(File.expand_path("../lib", __dir__))
+require "bundler/setup"
 require "toml-rb"
 require "json"
 require "date"
@@ -31,11 +31,11 @@ module TomlTestDecoder
     when Array
       value.map { |v| encode(v) }
     when String
-      { "type" => "string", "value" => value }
+      {"type" => "string", "value" => value}
     when true, false
-      { "type" => "bool", "value" => value.to_s }
+      {"type" => "bool", "value" => value.to_s}
     when Integer
-      { "type" => "integer", "value" => value.to_s }
+      {"type" => "integer", "value" => value.to_s}
     when Float
       str =
         if value.nan?
@@ -45,7 +45,7 @@ module TomlTestDecoder
         else
           value.to_s
         end
-      { "type" => "float", "value" => str }
+      {"type" => "float", "value" => str}
     when Time
       # See header comment: we emit "datetime" for everything.
       str = value.strftime("%Y-%m-%dT%H:%M:%S")
@@ -53,9 +53,9 @@ module TomlTestDecoder
       str += "." + format("%06d", usec).sub(/0+\z/, "") if usec.positive?
       zone = value.utc? ? "Z" : value.strftime("%:z")
       str += zone
-      { "type" => "datetime", "value" => str }
+      {"type" => "datetime", "value" => str}
     when Date
-      { "type" => "date-local", "value" => value.iso8601 }
+      {"type" => "date-local", "value" => value.iso8601}
     else
       raise "toml-test-decoder: unhandled type #{value.class}: #{value.inspect}"
     end
@@ -68,6 +68,6 @@ begin
   $stdout.write(JSON.generate(TomlTestDecoder.encode(parsed)))
   $stdout.write("\n")
 rescue => e
-  $stderr.puts("#{e.class}: #{e.message}")
+  warn("#{e.class}: #{e.message}")
   exit 1
 end
