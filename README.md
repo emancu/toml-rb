@@ -68,6 +68,22 @@ TomlRB.dump(hash)
 # => "title = \"wow!\"\n[awesome]\nothers = false\nyou = true\n"
 ```
 
+Conformance
+-----------
+
+`toml-rb` is exercised against the official
+[toml-test](https://github.com/toml-lang/toml-test) conformance suite for both
+TOML 1.0.0 and TOML 1.1.0. The harness lives in:
+
+- `tool/toml-test-decoder` — toml-test decoder shim.
+- `.github/workflows/conformance.yml` — CI workflow (per-version matrix).
+- `.github/toml-test-skip-1.0.txt` and `.github/toml-test-skip-1.1.txt` —
+  skip-lists of currently-failing tests.
+
+The skip-lists are a living gap report: every entry is a known limitation in
+the current parser. The goal for v5.0.0 is **empty skip-lists** — full
+conformance against both spec versions.
+
 Contributing
 ------------
 

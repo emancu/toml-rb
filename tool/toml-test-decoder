@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# toml-test decoder shim for toml-rb.
+# Protocol: https://github.com/toml-lang/toml-test
+#
+# Reads TOML from stdin, parses with TomlRB, writes tagged JSON to stdout.
+# On parse error, writes the error to stderr and exits 1.
+#
+# Known limitation (v4.2.0):
+#   toml-rb collapses all four datetime forms (offset-datetime, local-datetime,
+#   local-date, local-time) into Ruby's Time class. There is no reliable way
+#   from the parser output alone to distinguish a local-datetime, local-date,
+#   or local-time from an offset-datetime. We therefore emit "datetime" for
+#   every Time value. Tests for the local-* types are expected to fail
+#   conformance and live in the skip-list until v5.0.0 introduces dedicated
+#   types. See lib/toml-rb/datetime.rb.
+
+require "bundler/setup"
+require "toml-rb"
+require "json"
+require "date"
+
+module TomlTestDecoder
+  module_function
+
+  def encode(value)
+    case value
+    when Hash
+      value.each_with_object({}) { |(k, v), h| h[k.to_s] = encode(v) }
+    when Array
+      value.map { |v| encode(v) }
+    when String
+      {"type" => "string", "value" => value}
+    when true, false
+      {"type" => "bool", "value" => value.to_s}
+    when Integer
+      {"type" => "integer", "value" => value.to_s}
+    when Float
+      str =
+        if value.nan?
+          "nan"
+        elsif value.infinite?
+          value.positive? ? "inf" : "-inf"
+        else
+          value.to_s
+        end
+      {"type" => "float", "value" => str}
+    when Time
+      # See header comment: we emit "datetime" for everything.
+      str = value.strftime("%Y-%m-%dT%H:%M:%S")
+      usec = value.nsec / 1000
+      str += "." + format("%06d", usec).sub(/0+\z/, "") if usec.positive?
+      zone = value.utc? ? "Z" : value.strftime("%:z")
+      str += zone
+      {"type" => "datetime", "value" => str}
+    when Date
+      {"type" => "date-local", "value" => value.iso8601}
+    else
+      raise "toml-test-decoder: unhandled type #{value.class}: #{value.inspect}"
+    end
+  end
+end
+
+begin
+  input = $stdin.read.force_encoding("UTF-8")
+  parsed = TomlRB.parse(input)
+  $stdout.write(JSON.generate(TomlTestDecoder.encode(parsed)))
+  $stdout.write("\n")
+rescue => e
+  warn("#{e.class}: #{e.message}")
+  exit 1
+end

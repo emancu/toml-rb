@@ -1,0 +1,50 @@
+name: Conformance
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  toml-test:
+    name: toml-test ${{ matrix.toml-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toml-version: ['1.0.0', '1.1.0']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install toml-test
+        run: go install github.com/toml-lang/toml-test/cmd/toml-test@latest
+
+      - name: Make decoder executable
+        run: chmod +x tool/toml-test-decoder
+
+      - name: Run toml-test (${{ matrix.toml-version }})
+        run: |
+          version="${{ matrix.toml-version }}"
+          short="${version%.*}"  # 1.0.0 -> 1.0
+          skip_file=".github/toml-test-skip-${short}.txt"
+          skips=$(grep -v '^[[:space:]]*#' "$skip_file" | grep -v '^[[:space:]]*$' | paste -sd, -)
+          echo "Skipping: $skips"
+          "$(go env GOPATH)/bin/toml-test" \
+            -toml "$version" \
+            -timeout 10s \
+            -skip "$skips" \
+            ./tool/toml-test-decoder
