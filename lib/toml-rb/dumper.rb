@@ -4,6 +4,18 @@ require "date"
 
 module TomlRB
   class Dumper
+    # TOML basic strings only allow these short escapes; every other control
+    # character must be written as \uXXXX (TOML 1.0.0 spec).
+    BASIC_ESCAPES = {
+      "\\" => "\\\\",
+      "\"" => "\\\"",
+      "\b" => "\\b",
+      "\t" => "\\t",
+      "\n" => "\\n",
+      "\f" => "\\f",
+      "\r" => "\\r"
+    }.freeze
+
     attr_reader :toml_str
 
     def initialize(hash)
@@ -96,7 +108,7 @@ module TomlRB
       elsif obj.is_a?(Regexp)
         obj.inspect.inspect
       elsif obj.is_a?(String)
-        obj.inspect.gsub(/\\(#[$@{])/, '\1')
+        escape_string(obj)
       elsif obj.is_a?(Array)
         "[" + obj.map(&method(:to_toml)).join(", ") + "]"
       elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
@@ -114,16 +126,22 @@ module TomlRB
     end
 
     def bare_key?(key)
-      !!key.to_s.match(/^[a-zA-Z0-9_-]+$/)
+      !!key.to_s.match(/\A[a-zA-Z0-9_-]+\z/)
     end
 
-    # The key needs to use quotes according to TOML specs.
-    # Ruby representation of literals or strings, mixed with special characters
-    # made the concatenation error-prone, luckiley the `#inspect` method returns
-    # exactly what we need. I decided to keep the method `quote_key/1`
-    # for readability.
+    # Quote and escape a key as a TOML basic string.
     def quote_key(key)
-      key.inspect
+      escape_string(key.to_s)
+    end
+
+    # Serialize a Ruby string as a TOML basic string. Ruby's String#inspect
+    # emits \a \v \e for 0x07/0x0B/0x1B, which TOML (and this parser) reject.
+    def escape_string(str)
+      escaped = str.gsub(/[\x00-\x1f\x7f"\\]/) do |char|
+        BASIC_ESCAPES[char] || format('\\u%04X', char.ord)
+      end
+
+      "\"#{escaped}\""
     end
   end
 end
