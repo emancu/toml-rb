@@ -99,6 +99,15 @@ module TomlRB
         obj.inspect.gsub(/\\(#[$@{])/, '\1')
       elsif obj.is_a?(Array)
         "[" + obj.map(&method(:to_toml)).join(", ") + "]"
+      elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
+        # Ruby renders these as Infinity/-Infinity/NaN, which are invalid TOML.
+        if obj.nan?
+          "nan"
+        elsif obj.negative?
+          "-inf"
+        else
+          "inf"
+        end
       else
         obj.inspect
       end

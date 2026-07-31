@@ -146,4 +146,29 @@ class DumperTest < Minitest::Test
 
     assert_equal %("" = "empty key") + "\n", dumped
   end
+
+  def test_dump_special_floats
+    assert_equal "inf = inf\n", TomlRB.dump(inf: Float::INFINITY)
+    assert_equal "inf = -inf\n", TomlRB.dump(inf: -Float::INFINITY)
+    assert_equal "nan = nan\n", TomlRB.dump(nan: Float::NAN)
+
+    # Also inside arrays and nested tables.
+    assert_equal "arr = [1.0, inf, -inf, nan]\n",
+      TomlRB.dump(arr: [1.0, Float::INFINITY, -Float::INFINITY, Float::NAN])
+    assert_equal "[a]\nx = inf\n", TomlRB.dump(a: {x: Float::INFINITY})
+
+    # Finite floats keep their full-precision rendering.
+    assert_equal "float = 3.141592653589793\n", TomlRB.dump(float: Math::PI)
+    assert_equal "float = 1.0e+100\n", TomlRB.dump(float: 1.0e+100)
+    assert_equal "float = -0.0\n", TomlRB.dump(float: -0.0)
+  end
+
+  # The dumped tokens must round-trip through TomlRB's own parser, which
+  # already accepts inf/-inf/nan; Ruby's Infinity/NaN spellings do not.
+  def test_dump_special_floats_roundtrip
+    parsed = TomlRB.parse(TomlRB.dump(pos: Float::INFINITY, neg: -Float::INFINITY))
+    assert_equal Float::INFINITY, parsed["pos"]
+    assert_equal(-Float::INFINITY, parsed["neg"])
+    assert TomlRB.parse(TomlRB.dump(nan: Float::NAN))["nan"].nan?
+  end
 end
