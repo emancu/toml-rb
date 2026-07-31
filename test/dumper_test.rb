@@ -171,4 +171,48 @@ class DumperTest < Minitest::Test
     assert_equal(-Float::INFINITY, parsed["neg"])
     assert TomlRB.parse(TomlRB.dump(nan: Float::NAN))["nan"].nan?
   end
+
+  # Every C0 control character (plus DEL) must survive dump -> parse, both as a
+  # value and as a key. String#inspect used to leak \a \v \e (0x07/0x0B/0x1B),
+  # which the parser rejects; keys with a newline slipped through bare_key?.
+  def test_dump_control_chars_round_trip
+    codes = (0x00..0x1f).to_a << 0x7f
+
+    codes.each do |code|
+      char = code.chr(Encoding::UTF_8)
+
+      value_hash = {"k" => "x#{char}y"}
+      dumped_value = TomlRB.dump(value_hash)
+      assert_equal value_hash, TomlRB.parse(dumped_value),
+        format("value with 0x%02X did not round-trip, dumped %p", code, dumped_value)
+
+      key_hash = {"x#{char}y" => 1}
+      dumped_key = TomlRB.dump(key_hash)
+      assert_equal key_hash, TomlRB.parse(dumped_key),
+        format("key with 0x%02X did not round-trip, dumped %p", code, dumped_key)
+    end
+  end
+
+  def test_dump_reserved_control_chars_use_unicode_escape
+    assert_equal %q(k = "\u0007\u000B\u001B") + "\n",
+      TomlRB.dump({"k" => "\a\v\e"})
+  end
+
+  def test_dump_keeps_short_toml_escapes
+    assert_equal %q(k = "\b\t\n\f\r") + "\n",
+      TomlRB.dump({"k" => "\b\t\n\f\r"})
+  end
+
+  def test_dump_does_not_escape_printable_unicode
+    assert_equal "k = \"café 😀\"" + "\n",
+      TomlRB.dump({"k" => "café 😀"})
+  end
+
+  def test_dump_quotes_key_containing_newline
+    hash = {"a\nb" => 1}
+    dumped = TomlRB.dump(hash)
+
+    assert_equal %q("a\nb" = 1) + "\n", dumped
+    assert_equal hash, TomlRB.parse(dumped)
+  end
 end
