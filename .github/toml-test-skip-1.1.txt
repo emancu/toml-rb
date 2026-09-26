@@ -112,7 +112,6 @@ valid/spec-1.1.0/common-33
 valid/spec-1.1.0/common-34
 valid/spec-1.1.0/common-44
 valid/string/ends-in-whitespace-escape
-valid/string/escape-esc
 valid/string/escape-tricky
 valid/string/hex-escape
 valid/string/multiline
