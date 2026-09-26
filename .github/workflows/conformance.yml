@@ -31,7 +31,7 @@ jobs:
           go-version: '1.22'
 
       - name: Install toml-test
-        run: go install github.com/toml-lang/toml-test/cmd/toml-test@latest
+        run: go install github.com/toml-lang/toml-test/v2/cmd/toml-test@v2.2.0
 
       - name: Make decoder executable
         run: chmod +x tool/toml-test-decoder
@@ -43,8 +43,9 @@ jobs:
           skip_file=".github/toml-test-skip-${short}.txt"
           skips=$(grep -v '^[[:space:]]*#' "$skip_file" | grep -v '^[[:space:]]*$' | paste -sd, -)
           echo "Skipping: $skips"
-          "$(go env GOPATH)/bin/toml-test" \
+          "$(go env GOPATH)/bin/toml-test" test \
+            -decoder ./tool/toml-test-decoder \
             -toml "$version" \
             -timeout 10s \
             -skip "$skips" \
-            ./tool/toml-test-decoder
+            -skip-must-err
