@@ -135,7 +135,8 @@ module TomlRB
     end
 
     # Serialize a Ruby string as a TOML basic string. Ruby's String#inspect
-    # emits \a \v \e for 0x07/0x0B/0x1B, which TOML (and this parser) reject.
+    # emits \a and \v, which are not TOML escapes, and \e, which is not a TOML 1.0
+    # escape. Write ESC as \u001B to keep the output valid TOML 1.0.
     def escape_string(str)
       escaped = str.gsub(/[\x00-\x1f\x7f"\\]/) do |char|
         BASIC_ESCAPES[char] || format('\\u%04X', char.ord)
