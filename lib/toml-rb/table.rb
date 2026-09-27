@@ -4,24 +4,22 @@ module TomlRB
       @dotted_keys = dotted_keys
     end
 
-    def navigate_keys(hash, visited_keys, symbolize_keys = false)
-      ensure_key_not_defined(visited_keys)
+    def navigate_keys(hash, tables, symbolize_keys = false)
       current = hash
       keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
-      keys.each_with_index do |key, index|
-        current[key] = {} unless current.key?(key)
-        element = current[key]
-
-        # If this is the final key and it's already an array (from [[key]]), that's invalid
-        is_final_key = (index == keys.length - 1)
-        if is_final_key && element.is_a?(Array)
-          fail ValueOverwriteError.new(key)
+      keys.each do |key|
+        unless current.key?(key)
+          current[key] = {}
+          tables[current[key]] = :implicit
         end
+        element = current[key]
+        fail ValueOverwriteError.new(key) unless tables.key?(element)
 
         current = element.is_a?(Array) ? element.last : element
-        # check that key has not been defined before as a scalar value
-        fail ValueOverwriteError.new(key) unless current.is_a?(Hash)
       end
+      fail ValueOverwriteError.new(full_key) unless tables[current] == :implicit
+
+      tables[current] = :explicit
       current
     end
 
@@ -31,14 +29,6 @@ module TomlRB
 
     def full_key
       @dotted_keys.join(".")
-    end
-
-    private
-
-    # Fail if the key was already defined with a ValueOverwriteError
-    def ensure_key_not_defined(visited_keys)
-      fail ValueOverwriteError.new(full_key) if visited_keys.include?(full_key)
-      visited_keys << full_key
     end
   end
 

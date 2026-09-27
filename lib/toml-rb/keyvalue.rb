@@ -10,36 +10,23 @@ module TomlRB
       @symbolize_keys = false
     end
 
-    def assign(hash, fully_defined_paths, symbolize_keys = false)
+    def assign(hash, tables, symbolize_keys = false)
       @symbolize_keys = symbolize_keys
-      keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
-      depth = @dotted_keys.size
-      update = keys.reverse.inject(visit_value(@value)) { |k1, k2| {k2 => k1} }
+      *keys, last_key = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
 
-      parent_inline_table = fully_defined_paths.find { |k| k.size < depth && @dotted_keys.first(k.size) == k }
-      fail ValueOverwriteError.new(@dotted_keys.first) if parent_inline_table
-
-      if @value.is_a?(InlineTable)
-        child_keys_exist = fully_defined_paths.find { |k| k.size > depth && k.first(depth) == @dotted_keys }
-        fail ValueOverwriteError.new(@dotted_keys.first) if child_keys_exist
-
-        existing_hash = hash.dig(*keys)
-        fail ValueOverwriteError.new(@dotted_keys.first) if existing_hash.is_a?(Hash) && !existing_hash.empty?
-
-        fully_defined_paths << @dotted_keys
-      end
-
-      dotted_key_merge(hash, update)
-    end
-
-    def dotted_key_merge(hash, update)
-      hash.merge!(update) do |key, old, new|
-        if old.is_a?(Hash) && new.is_a?(Hash)
-          dotted_key_merge(old, new)
-        else
-          fail ValueOverwriteError.new(key)
+      keys.each do |key|
+        unless hash.key?(key)
+          hash[key] = {}
+          tables[hash[key]] = :dotted
         end
+        hash = hash[key]
+        fail ValueOverwriteError.new(key) unless [:implicit, :dotted].include?(tables[hash])
+
+        tables[hash] = :dotted
       end
+      fail ValueOverwriteError.new(last_key) if hash.key?(last_key)
+
+      hash[last_key] = visit_value(@value)
     end
 
     def accept_visitor(parser)

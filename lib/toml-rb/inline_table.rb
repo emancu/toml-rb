@@ -10,10 +10,8 @@ module TomlRB
 
     def value(symbolize_keys = false)
       result = {}
-      @pairs.each do |kv|
-        update = kv.assign({}, [], symbolize_keys)
-        result.merge!(update) { |key, _, _| fail ValueOverwriteError.new(key) }
-      end
+      tables = {}.compare_by_identity
+      @pairs.each { |kv| kv.assign(result, tables, symbolize_keys) }
       result
     end
   end

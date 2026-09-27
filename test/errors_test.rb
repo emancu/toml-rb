@@ -85,4 +85,19 @@ class ErrorsTest < Minitest::Test
     e = assert_raises(TomlRB::ValueOverwriteError) { TomlRB.parse(str) }
     assert_equal "Key \"b\" is defined more than once", e.message
   end
+
+  def test_table_redefinition
+    [
+      "[ab]\n[[a]]\n[ab]",
+      "x = false\n[[x]]",
+      "a = []\n[[a]]",
+      "a = [{b = 1}]\n[a.c]",
+      "a = {}\n[a.b]",
+      "[a.b]\n[a]\nb = {c = 1}",
+      "[a.b.c]\nz = 9\n[a]\nb.c.t = 1",
+      "[fruit]\napple.color = \"red\"\n[fruit.apple]"
+    ].each do |str|
+      assert_raises(TomlRB::ValueOverwriteError, str) { TomlRB.parse(str) }
+    end
+  end
 end

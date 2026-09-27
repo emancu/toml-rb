@@ -4,21 +4,20 @@ module TomlRB
       @dotted_keys = dotted_keys
     end
 
-    def navigate_keys(hash, symbolize_keys = false)
+    def navigate_keys(hash, tables, symbolize_keys = false)
       current = hash
-      keys = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
-      last_key = keys.pop
+      *keys, last_key = symbolize_keys ? @dotted_keys.map(&:to_sym) : @dotted_keys
 
       # Go over the parent keys
       keys.each do |key|
-        current[key] = {} unless current[key]
-
-        if current[key].is_a? Array
-          current[key] << {} if current[key].empty?
-          current = current[key].last
-        else
-          current = current[key]
+        unless current.key?(key)
+          current[key] = {}
+          tables[current[key]] = :implicit
         end
+        element = current[key]
+        fail ValueOverwriteError.new(key) unless tables.key?(element)
+
+        current = element.is_a?(Array) ? element.last : element
       end
 
       # Define Table Array
@@ -26,18 +25,19 @@ module TomlRB
         fail TomlRB::ParseError,
           "#{last_key} was defined as hash but is now redefined as a table!"
       end
-      current[last_key] = [] unless current[last_key]
-      current[last_key] << {}
+      unless current.key?(last_key)
+        current[last_key] = []
+        tables[current[last_key]] = :explicit
+      end
+      fail ValueOverwriteError.new(last_key) unless tables.key?(current[last_key])
 
+      current[last_key] << {}
+      tables[current[last_key].last] = :explicit
       current[last_key].last
     end
 
     def accept_visitor(parser)
       parser.visit_table_array self
-    end
-
-    def full_key
-      @dotted_keys.join(".")
     end
   end
 
