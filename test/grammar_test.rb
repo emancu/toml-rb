@@ -280,7 +280,7 @@ class GrammarTest < Minitest::Test
     assert_equal(Time.new(1979, 5, 27, 0, 32, 0, "-07:00"), match.value)
 
     match = TomlRB::Document.parse("1979-05-27T00:32:00.999999-07:00", root: :datetime)
-    assert_equal(Time.new(1979, 5, 27, 0, 32, 0.999999, "-07:00"), match.value)
+    assert_equal(Time.new(1979, 5, 27, 0, 32, 0.999999r, "-07:00"), match.value)
 
     match = TomlRB::Document.parse("1979-05-27 07:32:00Z", root: :datetime)
     assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), match.value)
@@ -310,6 +310,23 @@ class GrammarTest < Minitest::Test
       assert_raises Citrus::ParseError do
         TomlRB::Document.parse(datetime, root: :datetime)
       end
+    end
+  end
+
+  def test_datetime_fractional_seconds
+    {
+      "2025-01-01T10:30:00.123456Z" => 123_456_000,
+      "2025-01-01T10:30:00.123456789Z" => 123_456_789,
+      "2025-01-01T10:30:00.123456789999Z" => 123_456_789,
+      "1979-05-27T00:32:00.999-07:00" => 999_000_000,
+      "2025-01-01T10:30:00.123456" => 123_456_000,
+      "2025-01-01T10:30:00.123456789" => 123_456_789,
+      "2025-01-01T10:30:00.123456789999" => 123_456_789,
+      "10:30:00.123456" => 123_456_000,
+      "10:30:00.123456789" => 123_456_789,
+      "10:30:00.123456789999" => 123_456_789
+    }.each do |datetime, nsec|
+      assert_equal nsec, TomlRB::Document.parse(datetime, root: :datetime).value.nsec
     end
   end
 

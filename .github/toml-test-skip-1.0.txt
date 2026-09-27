@@ -5,7 +5,7 @@
 # the goal is an empty skip-list.
 #
 # Categories of current gaps:
-#   - Date/time: parser accepts some out-of-range values, fractions lose precision (see lib/toml-rb/datetime.rb).
+#   - Date/time: parser accepts some out-of-range values (see lib/toml-rb/datetime.rb).
 #   - Control characters in strings/comments: lexer accepts some forbidden control bytes.
 #   - Dotted-key / table redefinition edge cases: parser is too lenient on a few invalids.
 #   - Multiline string quote-edge cases.
@@ -94,11 +94,9 @@ invalid/table/redefine-02
 invalid/table/redefine-03
 valid/comment/tricky
 valid/datetime/datetime
-valid/datetime/milliseconds
 valid/empty-space
 valid/empty-tab
 valid/inline-table/key-dotted-02
-valid/spec-1.0.0/offset-date-time-0
 valid/spec-1.0.0/string-4
 valid/string/ends-in-whitespace-escape
 valid/string/escape-tricky

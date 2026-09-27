@@ -86,7 +86,7 @@ class TomlRB::Examples
       "datetime" => {
         "key1" => Time.utc(1979, 5, 27, 7, 32, 0),
         "key2" => Time.new(1979, 5, 27, 0, 32, 0, "-07:00"),
-        "key3" => Time.new(1979, 5, 27, 0, 32, 0.999999, "-07:00")
+        "key3" => Time.new(1979, 5, 27, 0, 32, 0.999999r, "-07:00")
       },
       "array" => {
         "key1" => [1, 2, 3],
@@ -211,7 +211,7 @@ class TomlRB::Examples
       "offset-date-time" => {
         "odt1" => Time.new(1979, 5, 27, 7, 32, 0, "+00:00"),
         "odt2" => Time.new(1979, 5, 27, 0, 32, 0, "-07:00"),
-        "odt3" => Time.new(1979, 5, 27, 0, 32, 0.999999, "-07:00"),
+        "odt3" => Time.new(1979, 5, 27, 0, 32, 0.999999r, "-07:00"),
         "odt4" => Time.new(1979, 5, 27, 7, 32, 0, "+00:00")
       },
       "local-date-time" => {
