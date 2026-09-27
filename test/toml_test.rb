@@ -114,6 +114,15 @@ class TomlTest < Minitest::Test
     assert_instance_of TomlRB::LocalDateTime, parsed["ldt"]
     assert_instance_of TomlRB::LocalDate, parsed["ld"]
     assert_instance_of TomlRB::LocalTime, parsed["lt"]
+
+    parsed = TomlRB.parse("odt = 1979-05-27T07:32Z\nldt = 2025-01-01T10:30\nlt = 10:30")
+
+    assert_instance_of Time, parsed["odt"]
+    assert_instance_of TomlRB::LocalDateTime, parsed["ldt"]
+    assert_instance_of TomlRB::LocalTime, parsed["lt"]
+    assert_equal Time.utc(1979, 5, 27, 7, 32, 0), parsed["odt"]
+    assert_equal Time.local(2025, 1, 1, 10, 30, 0), parsed["ldt"]
+    assert_equal Time.utc(1970, 1, 1, 10, 30, 0), parsed["lt"]
   end
 
   def test_line_break

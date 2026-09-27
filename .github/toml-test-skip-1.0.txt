@@ -42,6 +42,7 @@ invalid/control/string-us
 invalid/datetime/feb-29
 invalid/datetime/feb-30
 invalid/datetime/hour-over
+invalid/datetime/no-secs
 invalid/float/leading-zero
 invalid/float/leading-zero-neg
 invalid/float/leading-zero-plus
@@ -72,7 +73,9 @@ invalid/local-date/feb-30
 invalid/local-datetime/feb-29
 invalid/local-datetime/feb-30
 invalid/local-datetime/hour-over
+invalid/local-datetime/no-secs
 invalid/local-time/hour-over
+invalid/local-time/no-secs
 invalid/spec-1.0.0/table-9-0
 invalid/spec-1.0.0/table-9-1
 invalid/string/bad-escape-03
