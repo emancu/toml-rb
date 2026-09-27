@@ -11,6 +11,17 @@ class GrammarTest < Minitest::Test
     assert_equal({"a" => 1}, TomlRB.parse("#" + " " * 10_000 + "x\r\na=1"))
   end
 
+  def test_comments_reject_control_characters
+    ["\0", "\x7f", "\r"].each do |char|
+      assert_raises(TomlRB::ParseError) { TomlRB.parse("# x#{char}y\na = 1") }
+    end
+    assert_raises(TomlRB::ParseError) { TomlRB.parse("a = [1 # x\r, 2]") }
+  end
+
+  def test_comments_allow_tabs_and_crlf
+    assert_equal({"a" => 1}, TomlRB.parse("# x\ty\r\na = 1\r\n#\t"))
+  end
+
   def test_key
     match = TomlRB::Document.parse("bad_key-", root: :key)
     assert_equal("bad_key-", match.value.first)
@@ -72,6 +83,29 @@ class GrammarTest < Minitest::Test
   def test_string
     match = TomlRB::Document.parse('"TomlRB-Example, should work."', root: :string)
     assert_equal("TomlRB-Example, should work.", match.value)
+  end
+
+  def test_strings_reject_control_characters
+    ['"', "'", '"""', "'''"].each do |quote|
+      ["\0", "\x7f", "\r"].each do |char|
+        assert_raises(TomlRB::ParseError) { TomlRB.parse("a = #{quote}x#{char}y#{quote}") }
+      end
+    end
+    assert_raises(TomlRB::ParseError) { TomlRB.parse("a = \"\"\"x\\\ry\"\"\"") }
+    assert_raises(TomlRB::ParseError) { TomlRB.parse("a = \"\"\"x\\\n\ry\"\"\"") }
+  end
+
+  def test_strings_allow_tabs
+    ['"', "'", '"""', "'''"].each do |quote|
+      assert_equal({"a" => "x\ty"}, TomlRB.parse("a = #{quote}x\ty#{quote}"))
+    end
+  end
+
+  def test_multiline_strings_allow_crlf
+    ['"""', "'''"].each do |quote|
+      assert_equal({"a" => "x\r\ny"}, TomlRB.parse("a = #{quote}\r\nx\r\ny#{quote}\r\n"))
+    end
+    assert_equal({"a" => "xy"}, TomlRB.parse("a = \"\"\"x\\\r\n\ty\"\"\""))
   end
 
   def test_unterminated_basic_string_with_many_backslashes
