@@ -5,7 +5,7 @@
 # the goal is an empty skip-list.
 #
 # Categories of current gaps:
-#   - Local date/time/datetime: collapsed into Ruby Time (see lib/toml-rb/datetime.rb).
+#   - Date/time: parser accepts some out-of-range values, fractions lose precision (see lib/toml-rb/datetime.rb).
 #   - Control characters in strings/comments: lexer accepts some forbidden control bytes.
 #   - Dotted-key / table redefinition edge cases: parser is too lenient on a few invalids.
 #   - Multiline string quote-edge cases.
@@ -73,8 +73,6 @@ invalid/local-datetime/feb-29
 invalid/local-datetime/feb-30
 invalid/local-datetime/hour-over
 invalid/local-time/hour-over
-invalid/local-time/minute-over
-invalid/local-time/second-over
 invalid/spec-1.0.0/table-9-0
 invalid/spec-1.0.0/table-9-1
 invalid/string/bad-escape-03
@@ -91,25 +89,14 @@ invalid/table/duplicate-key-05
 invalid/table/duplicate-key-10
 invalid/table/redefine-02
 invalid/table/redefine-03
-valid/array/array
-valid/comment/everywhere
 valid/comment/tricky
 valid/datetime/datetime
-valid/datetime/edge
-valid/datetime/leap-year
-valid/datetime/local
-valid/datetime/local-date
-valid/datetime/local-time
 valid/datetime/milliseconds
 valid/empty-space
 valid/empty-tab
 valid/inline-table/key-dotted-02
-valid/spec-1.0.0/local-date-0
-valid/spec-1.0.0/local-date-time-0
-valid/spec-1.0.0/local-time-0
 valid/spec-1.0.0/offset-date-time-0
 valid/spec-1.0.0/string-4
-valid/spec-1.0.0/table-7
 valid/string/ends-in-whitespace-escape
 valid/string/escape-tricky
 valid/string/multiline

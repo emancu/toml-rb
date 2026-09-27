@@ -6,15 +6,6 @@
 #
 # Reads TOML from stdin, parses with TomlRB, writes tagged JSON to stdout.
 # On parse error, writes the error to stderr and exits 1.
-#
-# Known limitation (v4.2.0):
-#   toml-rb collapses all four datetime forms (offset-datetime, local-datetime,
-#   local-date, local-time) into Ruby's Time class. There is no reliable way
-#   from the parser output alone to distinguish a local-datetime, local-date,
-#   or local-time from an offset-datetime. We therefore emit "datetime" for
-#   every Time value. Tests for the local-* types are expected to fail
-#   conformance and live in the skip-list until v5.0.0 introduces dedicated
-#   types. See lib/toml-rb/datetime.rb.
 
 require "bundler/setup"
 require "toml-rb"
@@ -46,8 +37,13 @@ module TomlTestDecoder
           value.to_s
         end
       {"type" => "float", "value" => str}
+    when TomlRB::LocalDate
+      {"type" => "date-local", "value" => value.strftime("%Y-%m-%d")}
+    when TomlRB::LocalTime
+      {"type" => "time-local", "value" => value.strftime("%H:%M:%S.%6N")}
+    when TomlRB::LocalDateTime
+      {"type" => "datetime-local", "value" => value.strftime("%Y-%m-%dT%H:%M:%S.%6N")}
     when Time
-      # See header comment: we emit "datetime" for everything.
       str = value.strftime("%Y-%m-%dT%H:%M:%S")
       usec = value.nsec / 1000
       str += "." + format("%06d", usec).sub(/0+\z/, "") if usec.positive?

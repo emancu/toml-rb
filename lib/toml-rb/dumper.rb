@@ -101,8 +101,15 @@ module TomlRB
     end
 
     def to_toml(obj)
-      if obj.is_a?(Time) || obj.is_a?(DateTime)
-        obj.strftime("%Y-%m-%dT%H:%M:%SZ")
+      if obj.is_a?(LocalDate)
+        obj.strftime("%Y-%m-%d")
+      elsif obj.is_a?(LocalTime)
+        obj.strftime("%H:%M:%S") + sec_fraction(obj)
+      elsif obj.is_a?(LocalDateTime)
+        obj.strftime("%Y-%m-%dT%H:%M:%S") + sec_fraction(obj)
+      elsif obj.is_a?(Time) || obj.is_a?(DateTime)
+        zone = obj.strftime("%:z").sub("+00:00", "Z")
+        obj.strftime("%Y-%m-%dT%H:%M:%S") + sec_fraction(obj) + zone
       elsif obj.is_a?(Date)
         obj.strftime("%Y-%m-%d")
       elsif obj.is_a?(Regexp)
@@ -143,6 +150,10 @@ module TomlRB
       end
 
       "\"#{escaped}\""
+    end
+
+    def sec_fraction(time)
+      time.strftime(".%6N").sub(/\.?0+\z/, "")
     end
   end
 end
