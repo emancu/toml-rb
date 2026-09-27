@@ -6,6 +6,11 @@ class GrammarTest < Minitest::Test
     assert_nil(match.value)
   end
 
+  def test_comment_with_many_spaces
+    assert_equal({}, TomlRB.parse("#" + " " * 10_000))
+    assert_equal({"a" => 1}, TomlRB.parse("#" + " " * 10_000 + "x\r\na=1"))
+  end
+
   def test_key
     match = TomlRB::Document.parse("bad_key-", root: :key)
     assert_equal("bad_key-", match.value.first)
@@ -67,6 +72,38 @@ class GrammarTest < Minitest::Test
   def test_string
     match = TomlRB::Document.parse('"TomlRB-Example, should work."', root: :string)
     assert_equal("TomlRB-Example, should work.", match.value)
+  end
+
+  def test_unterminated_basic_string_with_many_backslashes
+    assert_raises TomlRB::ParseError do
+      TomlRB.parse('a="' + "\\" * 10_000)
+    end
+  end
+
+  def test_unterminated_basic_string_with_escaped_quote
+    assert_raises TomlRB::ParseError do
+      TomlRB.parse('a="x\"')
+    end
+  end
+
+  def test_basic_string_with_reserved_escape
+    assert_raises TomlRB::ParseError do
+      TomlRB.parse('a="\q"')
+    end
+  end
+
+  def test_literal_string_with_backslash_quote
+    assert_raises TomlRB::ParseError do
+      TomlRB.parse("a='x\\'y'")
+    end
+  end
+
+  def test_literal_strings_ending_in_backslashes
+    assert_equal({"a" => ["C:\\", "D:\\"]}, TomlRB.parse("a=['C:\\', 'D:\\']"))
+  end
+
+  def test_literal_string_before_comment_with_quote
+    assert_equal({"a" => "C:\\"}, TomlRB.parse("a='C:\\' # '"))
   end
 
   def test_multiline_string
