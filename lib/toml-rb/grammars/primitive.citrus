@@ -14,11 +14,11 @@ grammar TomlRB::Primitive
   end
 
   rule basic_string
-    (/(["])(?:\\?.)*?\1/ space) <TomlRB::BasicString>
+    (/"(?:[^"\\\n]|\\.)*"/ space) <TomlRB::BasicString>
   end
 
   rule literal_string
-    (/(['])(?:\\?.)*?\1/ space) <TomlRB::LiteralString>
+    (/'[^'\n]*'/ space) <TomlRB::LiteralString>
   end
 
   rule multiline_string
