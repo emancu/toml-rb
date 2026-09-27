@@ -10,7 +10,6 @@
 #   - Multiline string quote-edge cases.
 #
 # Format: one toml-test name per line (no extension), comments start with '#'.
-invalid/array/only-comma-01
 invalid/control/comment-cr
 invalid/control/comment-del
 invalid/control/comment-ff
@@ -42,15 +41,6 @@ invalid/inline-table/linebreak-02
 invalid/inline-table/linebreak-03
 invalid/inline-table/linebreak-04
 invalid/inline-table/trailing-comma
-invalid/key/after-array
-invalid/key/after-table
-invalid/key/after-value
-invalid/key/no-eol-01
-invalid/key/no-eol-02
-invalid/key/no-eol-03
-invalid/key/no-eol-04
-invalid/key/no-eol-06
-invalid/key/no-eol-07
 invalid/local-datetime/no-secs
 invalid/local-time/no-secs
 invalid/string/basic-byte-escapes
@@ -58,9 +48,6 @@ invalid/string/literal-multiline-quotes-01
 invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
 invalid/string/multiline-quotes-01
-valid/comment/tricky
-valid/empty-space
-valid/empty-tab
 valid/spec-1.0.0/string-4
 valid/string/ends-in-whitespace-escape
 valid/string/escape-tricky
