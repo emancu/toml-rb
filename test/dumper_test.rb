@@ -238,4 +238,52 @@ class DumperTest < Minitest::Test
     assert_equal %q("a\nb" = 1) + "\n", dumped
     assert_equal hash, TomlRB.parse(dumped)
   end
+
+  def test_dump_mixed_key_classes
+    assert_equal "a = 1\nb = 2\n", TomlRB.dump({"a" => 1, :b => 2})
+  end
+
+  def test_dump_integer_keys_in_numeric_order
+    assert_equal "9 = 2\n10 = 1\n", TomlRB.dump({10 => 1, 9 => 2})
+  end
+
+  def test_dump_raises_for_duplicate_key_names
+    assert_raises(TomlRB::Error) { TomlRB.dump({"a" => 1, :a => 2}) }
+    assert_raises(TomlRB::Error) { TomlRB.dump(x: [0, {"a" => 1, :a => 2}]) }
+  end
+
+  def test_dump_symbol_value
+    assert_equal "a = \"sym\"\n", TomlRB.dump(a: :sym)
+  end
+
+  def test_dump_bigdecimal
+    begin
+      require "bigdecimal"
+    rescue LoadError
+      skip "bigdecimal is not available"
+    end
+
+    assert_equal "a = 0.15e1\n", TomlRB.dump(a: BigDecimal("1.5"))
+    assert_raises(TomlRB::Error) { TomlRB.dump(a: BigDecimal("NaN")) }
+  end
+
+  def test_dump_raises_for_values_without_toml_type
+    assert_raises(TomlRB::Error) { TomlRB.dump(a: nil) }
+    assert_raises(TomlRB::Error) { TomlRB.dump(a: Object.new) }
+  end
+
+  def test_dump_hash_inside_array_as_inline_table
+    assert_equal "a = [1, {b = 1}]\n", TomlRB.dump(a: [1, {b: 1}])
+    assert_equal "a = [{b = 1}, 2]\n", TomlRB.dump(a: [{b: 1}, 2])
+
+    hash = {"a" => [{"b" => 1}, 2]}
+    assert_equal hash, TomlRB.parse(TomlRB.dump(hash))
+
+    hash = {"a" => [[{"b c" => {"d" => [1, {"e" => "f"}]}}]]}
+    assert_equal hash, TomlRB.parse(TomlRB.dump(hash))
+  end
+
+  def test_dump_regexp_with_interpolation_chars
+    assert_equal({"r" => "/\#{x}/"}, TomlRB.parse(TomlRB.dump(r: Regexp.new("\#{x}"))))
+  end
 end
