@@ -5,7 +5,7 @@
 # the goal is an empty skip-list.
 #
 # Categories of current gaps:
-#   - Date/time: parser accepts some out-of-range values (see lib/toml-rb/datetime.rb).
+#   - Date/time: parser accepts omitted seconds, which TOML 1.0 forbids.
 #   - Control characters in strings/comments: lexer accepts some forbidden control bytes.
 #   - Multiline string quote-edge cases.
 #
@@ -36,24 +36,12 @@ invalid/control/string-del
 invalid/control/string-lf
 invalid/control/string-null
 invalid/control/string-us
-invalid/datetime/feb-29
-invalid/datetime/feb-30
-invalid/datetime/hour-over
 invalid/datetime/no-secs
-invalid/float/leading-zero
-invalid/float/leading-zero-neg
-invalid/float/leading-zero-plus
 invalid/inline-table/linebreak-01
 invalid/inline-table/linebreak-02
 invalid/inline-table/linebreak-03
 invalid/inline-table/linebreak-04
 invalid/inline-table/trailing-comma
-invalid/integer/leading-zero-01
-invalid/integer/leading-zero-02
-invalid/integer/leading-zero-03
-invalid/integer/leading-zero-sign-01
-invalid/integer/leading-zero-sign-02
-invalid/integer/leading-zero-sign-03
 invalid/key/after-array
 invalid/key/after-table
 invalid/key/after-value
@@ -63,13 +51,7 @@ invalid/key/no-eol-03
 invalid/key/no-eol-04
 invalid/key/no-eol-06
 invalid/key/no-eol-07
-invalid/local-date/feb-29
-invalid/local-date/feb-30
-invalid/local-datetime/feb-29
-invalid/local-datetime/feb-30
-invalid/local-datetime/hour-over
 invalid/local-datetime/no-secs
-invalid/local-time/hour-over
 invalid/local-time/no-secs
 invalid/string/basic-byte-escapes
 invalid/string/literal-multiline-quotes-01
@@ -77,7 +59,6 @@ invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
 invalid/string/multiline-quotes-01
 valid/comment/tricky
-valid/datetime/datetime
 valid/empty-space
 valid/empty-tab
 valid/spec-1.0.0/string-4

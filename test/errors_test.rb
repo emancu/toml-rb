@@ -56,6 +56,34 @@ class ErrorsTest < Minitest::Test
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
   end
 
+  def test_numbers_with_leading_zeros
+    %w[0123 00 0_0 -01 +01 +0_1 00.5 -03.14 +03.14 01e2 00.5e2].each do |number|
+      assert_raises(TomlRB::ParseError) { TomlRB.parse("a = #{number}") }
+    end
+  end
+
+  def test_invalid_dates
+    %w[2025-02-30 2100-02-29 1500-02-29 2025-04-31 2025-13-01 2025-00-01 2025-01-00 2025-01-32].each do |date|
+      [date, "#{date}T12:00:00", "#{date}T12:00:00Z"].each do |datetime|
+        assert_raises(TomlRB::ParseError) { TomlRB.parse("a = #{datetime}") }
+      end
+    end
+  end
+
+  def test_invalid_times
+    %w[24:00:00 00:60:00 00:00:61 12:00:00,5].each do |time|
+      [time, "2025-01-01T#{time}", "2025-01-01T#{time}Z"].each do |datetime|
+        assert_raises(TomlRB::ParseError) { TomlRB.parse("a = #{datetime}") }
+      end
+    end
+  end
+
+  def test_invalid_offsets
+    %w[+24:00 -24:00 +00:60 -00:60].each do |offset|
+      assert_raises(TomlRB::ParseError) { TomlRB.parse("a = 2025-01-01T12:00:00#{offset}") }
+    end
+  end
+
   def test_value_overwrite
     str = "a = 1\na = 2"
     e = assert_raises(TomlRB::ValueOverwriteError) { TomlRB.parse(str) }

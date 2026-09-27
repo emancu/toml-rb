@@ -38,7 +38,7 @@ grammar TomlRB::Primitive
   end
 
   rule offset_datetime
-    ( skeleton:datetime_skeleton ("Z" | date_offset) ) <TomlRB::OffsetDateTimeParser>
+    ( skeleton:datetime_skeleton ([Zz] | date_offset) ) <TomlRB::OffsetDateTimeParser>
   end
 
   rule local_datetime
@@ -54,21 +54,17 @@ grammar TomlRB::Primitive
   end
 
   rule datetime_skeleton
-    (date_skeleton ("T"|" ") time_skeleton) {
+    (date_skeleton ([Tt]|" ") time_skeleton) {
       capture(:date_skeleton).value + capture(:time_skeleton).value
     }
   end
 
   rule date_skeleton
-    (year:/\d\d\d\d/ "-" mon:/\d\d/ "-" day:/\d\d/) {
-      [:year,:mon,:day].map{ |s| capture(s).value }
-    }
+    (year:/\d\d\d\d/ "-" mon:/\d\d/ "-" day:/\d\d/) <TomlRB::DateSkeletonParser>
   end
 
   rule time_skeleton
-    ( hour:([0-2][0-9]) ":" mim:([0-6][0-9]) (":" sec:([0-6][0-9])  ([,\.] sec_frac:(/\d/1*9) /\d/*)?)? ) {
-      [:hour,:mim,:sec].map{ |s| capture(s)&.value || '0' } + [capture(:sec_frac) || '0']
-    }
+    ( hour:([0-2][0-9]) ":" mim:([0-6][0-9]) (":" sec:([0-6][0-9])  ("." sec_frac:(/\d/1*9) /\d/*)?)? ) <TomlRB::TimeSkeletonParser>
   end
 
   rule date_offset
@@ -99,7 +95,11 @@ grammar TomlRB::Primitive
   end
 
   rule exponential_float
-    ((fractional_float | decimal_integer) [eE] decimal_integer) { to_str.to_f }
+    ((fractional_float | decimal_integer) [eE] exponent) { to_str.to_f }
+  end
+
+  rule exponent
+    sign? [0-9] ([0-9] | '_' [0-9])*
   end
 
   rule fractional_float
@@ -125,7 +125,7 @@ grammar TomlRB::Primitive
   end
 
   rule decimal_integer
-    (sign? [0-9] ([0-9] | '_' [0-9])*) { to_str.to_i }
+    (sign? ('0' | [1-9] ([0-9] | '_' [0-9])*)) { to_str.to_i }
   end
 
   rule sign

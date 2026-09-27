@@ -159,6 +159,10 @@ class GrammarTest < Minitest::Test
     match = TomlRB::Document.parse("0", root: :integer)
     assert_equal(0, match.value)
 
+    %w[+0 -0].each do |integer|
+      assert_equal(0, TomlRB::Document.parse(integer, root: :integer).value)
+    end
+
     match = TomlRB::Document.parse("-17", root: :integer)
     assert_equal(-17, match.value)
 
@@ -205,6 +209,13 @@ class GrammarTest < Minitest::Test
 
     match = TomlRB::Document.parse("1e6", root: :float)
     assert_equal(1e6, match.value)
+
+    %w[1e06 1e+06 1e0_6 1.0e06].each do |float|
+      assert_equal(1e6, TomlRB::Document.parse(float, root: :float).value)
+    end
+
+    match = TomlRB::Document.parse("1e-06", root: :float)
+    assert_equal(1e-6, match.value)
 
     match = TomlRB::Document.parse("-2E-2", root: :float)
     assert_equal(-2E-2, match.value)
@@ -267,6 +278,9 @@ class GrammarTest < Minitest::Test
 
     match = TomlRB::Document.parse("[ 2.4, 4.72]", root: :array)
     assert_equal([2.4, 4.72], match.value)
+
+    match = TomlRB::Document.parse("[12:00:00,5]", root: :array)
+    assert_equal([TomlRB::LocalTime.utc(1970, 1, 1, 12), 5], match.value)
 
     match = TomlRB::Document.parse('[ "hey", "TomlRB"]', root: :array)
     assert_equal(%w[hey TomlRB], match.value)
@@ -364,6 +378,24 @@ class GrammarTest < Minitest::Test
       "10:30:00.123456789999" => 123_456_789
     }.each do |datetime, nsec|
       assert_equal nsec, TomlRB::Document.parse(datetime, root: :datetime).value.nsec
+    end
+  end
+
+  def test_datetime_boundaries
+    {
+      "2000-02-29t23:59:59z" => Time.utc(2000, 2, 29, 23, 59, 59),
+      "2000-02-29t23:59:59+18:00" => Time.new(2000, 2, 29, 23, 59, 59, "+18:00"),
+      "2000-02-29T23:59:59-18:00" => Time.new(2000, 2, 29, 23, 59, 59, "-18:00"),
+      "2000-02-29t23:59:59" => TomlRB::LocalDateTime.local(2000, 2, 29, 23, 59, 59),
+      "2000-02-29" => TomlRB::LocalDate.local(2000, 2, 29),
+      "1582-10-10" => TomlRB::LocalDate.local(1582, 10, 10),
+      "2016-12-31T23:59:60.5Z" => Time.utc(2016, 12, 31, 23, 59, 60.5r),
+      "2016-12-31T23:59:60.5" => TomlRB::LocalDateTime.local(2016, 12, 31, 23, 59, 60.5r),
+      "23:59:60.5" => TomlRB::LocalTime.utc(1970, 1, 1, 23, 59, 60.5r)
+    }.each do |datetime, expected|
+      actual = TomlRB::Document.parse(datetime, root: :datetime).value
+      assert_equal expected, actual
+      assert_instance_of expected.class, actual
     end
   end
 
