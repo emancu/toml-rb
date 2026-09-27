@@ -153,7 +153,7 @@ module TomlRB
     end
 
     def sec_fraction(time)
-      time.strftime(".%6N").sub(/\.?0+\z/, "")
+      time.strftime(".%9N").sub(/\.?0+\z/, "")
     end
   end
 end

@@ -57,9 +57,12 @@ class DumperTest < Minitest::Test
   def test_dump_datetimes_round_trip
     [
       "odt = 1979-05-27T00:32:00-07:00\n",
+      "odt = 1979-05-27T00:32:00.999-07:00\n",
       "ldt = 1979-05-27T00:32:00.999999\n",
+      "ldt = 1979-05-27T00:32:00.123456789\n",
       "ld = 1979-05-27\n",
-      "lt = 00:32:00.5\n"
+      "lt = 00:32:00.5\n",
+      "lt = 00:32:00.123456789\n"
     ].each do |toml|
       assert_equal toml, TomlRB.dump(TomlRB.parse(toml))
     end

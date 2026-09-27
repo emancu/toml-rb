@@ -8,7 +8,7 @@ module TomlRB
       skeleton = captures[:datetime_skeleton].first
       year, mon, day, hour, min, sec, sec_frac = skeleton.value
       offset = captures[:date_offset].first || "+00:00"
-      sec = "#{sec}.#{sec_frac}".to_f
+      sec = "#{sec}.#{sec_frac}".to_r
 
       Time.new(year, mon, day, hour, min, sec, offset.to_s)
     end
@@ -18,9 +18,9 @@ module TomlRB
     def value
       year, mon, day = captures[:date_skeleton].first.value
       hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      usec = sec_frac.to_s.ljust(6, "0")
+      sec = "#{sec}.#{sec_frac}".to_r
 
-      LocalDateTime.local(year, mon, day, hour, min, sec, usec)
+      LocalDateTime.local(year, mon, day, hour, min, sec)
     end
   end
 
@@ -34,9 +34,9 @@ module TomlRB
   module LocalTimeParser
     def value
       hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      usec = sec_frac.to_s.ljust(6, "0")
+      sec = "#{sec}.#{sec_frac}".to_r
 
-      LocalTime.utc(1970, 1, 1, hour, min, sec, usec)
+      LocalTime.utc(1970, 1, 1, hour, min, sec)
     end
   end
 end

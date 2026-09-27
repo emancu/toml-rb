@@ -40,13 +40,13 @@ module TomlTestDecoder
     when TomlRB::LocalDate
       {"type" => "date-local", "value" => value.strftime("%Y-%m-%d")}
     when TomlRB::LocalTime
-      {"type" => "time-local", "value" => value.strftime("%H:%M:%S.%6N")}
+      {"type" => "time-local", "value" => value.strftime("%H:%M:%S.%9N")}
     when TomlRB::LocalDateTime
-      {"type" => "datetime-local", "value" => value.strftime("%Y-%m-%dT%H:%M:%S.%6N")}
+      {"type" => "datetime-local", "value" => value.strftime("%Y-%m-%dT%H:%M:%S.%9N")}
     when Time
       str = value.strftime("%Y-%m-%dT%H:%M:%S")
-      usec = value.nsec / 1000
-      str += "." + format("%06d", usec).sub(/0+\z/, "") if usec.positive?
+      nsec = value.nsec
+      str += "." + format("%09d", nsec).sub(/0+\z/, "") if nsec.positive?
       zone = value.utc? ? "Z" : value.strftime("%:z")
       str += zone
       {"type" => "datetime", "value" => str}

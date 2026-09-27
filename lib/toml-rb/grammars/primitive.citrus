@@ -66,7 +66,7 @@ grammar TomlRB::Primitive
   end
 
   rule time_skeleton
-    ( hour:([0-2][0-9]) ":" mim:([0-6][0-9]) (":" sec:([0-6][0-9])  ([,\.] sec_frac:(/\d/1*6))?)? ) {
+    ( hour:([0-2][0-9]) ":" mim:([0-6][0-9]) (":" sec:([0-6][0-9])  ([,\.] sec_frac:(/\d/1*9) /\d/*)?)? ) {
       [:hour,:mim,:sec].map{ |s| capture(s)&.value || '0' } + [capture(:sec_frac) || '0']
     }
   end
