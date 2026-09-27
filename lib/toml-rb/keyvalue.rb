@@ -36,6 +36,7 @@ module TomlRB
     private
 
     def visit_value(a_value)
+      return a_value.map { |v| visit_value(v) } if a_value.is_a?(Array)
       return a_value unless a_value.respond_to? :accept_visitor
 
       a_value.accept_visitor self
