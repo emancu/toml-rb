@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.5"
   s.add_dependency "citrus", "~> 3.0", "> 3.0"
-  s.add_dependency "racc", "~> 1.7"
 
   s.add_development_dependency "minitest", "~> 5.7"
   s.add_development_dependency "standard", "~> 1.4"
