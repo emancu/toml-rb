@@ -1,6 +1,6 @@
 grammar TomlRB::Helper
   rule comment
-    (space? "#" (~line_break)* line_break?) { nil }
+    (space? "#" /[^\n]*/u line_break?) { nil }
   end
 
   rule space

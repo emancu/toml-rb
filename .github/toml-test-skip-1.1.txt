@@ -70,7 +70,6 @@ invalid/local-datetime/hour-over
 invalid/local-time/hour-over
 invalid/spec-1.1.0/common-46-0
 invalid/spec-1.1.0/common-46-1
-invalid/string/bad-escape-03
 invalid/string/literal-multiline-quotes-01
 invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
