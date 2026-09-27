@@ -28,12 +28,28 @@
   `1979-13-01` or the escape `\q`, when it reads that value. Before, any
   syntax error in the document came first. In both cases, the error is
   `TomlRB::ParseError`.
+- `TomlRB::LocalDateTime` and `TomlRB::LocalDate` values are UTC `Time`
+  values, like `TomlRB::LocalTime` values. Their date and clock time match the
+  TOML text in every system time zone. `utc?` is true, and `to_s` shows `UTC`.
+  The instant of a value moves by the UTC offset of the system time zone at
+  that date and time. When this offset is not 0, a parsed value is not equal to
+  `Time.local` with the same fields. Build the expected value with `Time.utc`,
+  for example `Time.utc(1979, 5, 27, 7, 32)`.
+- For parsed local datetimes and dates, `zone` returns `"UTC"`, and
+  `utc_offset` returns `0`. `iso8601` output ends in `Z`. YAML output also
+  uses UTC. `TomlRB.dump` continues to omit the time zone.
 
 ### Fixes
 
 - A document in an encoding other than UTF-8, like BINARY or ISO-8859-1, gives
   the same result with and without a newline at the end. Before, a document
   with non-ASCII bytes and no newline at the end raised `TomlRB::ParseError`.
+- A local datetime inside a daylight saving time (DST) gap of the system time
+  zone keeps its clock time. For example, `2026-03-29T02:30:00` in
+  Europe/Warsaw stays 02:30, and `TomlRB.dump` writes `02:30:00`. Before, it
+  became 03:30. A local date keeps the hour 0 when midnight does not occur in
+  the system time zone, like 2021-09-05 in America/Santiago. Before, the hour
+  was 1.
 
 ## v5.0.0.rc.1 (unreleased)
 

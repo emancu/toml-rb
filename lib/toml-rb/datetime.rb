@@ -22,12 +22,12 @@ module TomlRB
     def local_datetime(year, mon, day, hour, min, sec, sec_frac)
       validate_date(year, mon, day)
       validate_time(hour, min, sec)
-      LocalDateTime.local(year, mon, day, hour, min, seconds(sec, sec_frac))
+      LocalDateTime.utc(year, mon, day, hour, min, seconds(sec, sec_frac))
     end
 
     def local_date(year, mon, day)
       validate_date(year, mon, day)
-      LocalDate.local(year, mon, day)
+      LocalDate.utc(year, mon, day)
     end
 
     def local_time(hour, min, sec, sec_frac)

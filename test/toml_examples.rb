@@ -215,11 +215,11 @@ class TomlRB::Examples
         "odt4" => Time.new(1979, 5, 27, 7, 32, 0, "+00:00")
       },
       "local-date-time" => {
-        "ldt1" => Time.local(1979, 5, 27, 7, 32, 0),
-        "ldt2" => Time.local(1979, 5, 27, 0, 32, 0, 999999)
+        "ldt1" => Time.utc(1979, 5, 27, 7, 32, 0),
+        "ldt2" => Time.utc(1979, 5, 27, 0, 32, 0, 999999)
       },
       "local-date" => {
-        "ld1" => Time.local(1979, 5, 27)
+        "ld1" => Time.utc(1979, 5, 27)
       },
       "local-time" => {
         "lt1" => Time.at(3600 * 7 + 60 * 32 + 0, 0),
