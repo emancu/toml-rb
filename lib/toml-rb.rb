@@ -67,7 +67,7 @@ module TomlRB
   # Raises Errno::ENOENT if the file cannot be found.
   # Raises Errno::EACCES if the file cannot be accessed.
   def self.load_file(path, symbolize_keys: false)
-    TomlRB.parse(File.read(path), symbolize_keys: symbolize_keys)
+    TomlRB.parse(File.read(path, encoding: "UTF-8"), symbolize_keys: symbolize_keys)
   end
 
   # Public: Returns a *TomlRB* string from a Ruby Hash.

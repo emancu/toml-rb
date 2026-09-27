@@ -1,6 +1,29 @@
 require_relative "helper"
+require "tempfile"
 
 class EncodingTest < Minitest::Test
+  def test_load_file_uses_utf8
+    original_encoding = Encoding.default_external
+    Encoding.default_external = Encoding::US_ASCII
+
+    Tempfile.create("toml-encoding") do |file|
+      File.binwrite(file.path, "name = \"Jos\u00e9\"\n")
+
+      assert_equal({"name" => "Jos\u00e9"}, TomlRB.load_file(file.path))
+      assert_equal({name: "Jos\u00e9"}, TomlRB.load_file(file.path, symbolize_keys: true))
+
+      ["name = \"\xC3\x28\"\n", "# \xFF\xFE comment\nkey = 1"].each do |invalid_toml|
+        File.binwrite(file.path, invalid_toml)
+
+        assert_raises(TomlRB::ParseError) do
+          TomlRB.load_file(file.path)
+        end
+      end
+    end
+  ensure
+    Encoding.default_external = original_encoding
+  end
+
   def test_binary_data_raises_parse_error
     binary_data = String.new("\x80\x81\x82", encoding: "ASCII-8BIT")
 
