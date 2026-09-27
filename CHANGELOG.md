@@ -4,6 +4,7 @@
 
 ### Breaking changes
 
+- The gem no longer depends on Citrus. The gem has no runtime dependencies.
 - `TomlRB.parse` does not use Citrus. A recursive-descent parser on the
   `StringScanner` class of the standard library reads the document, and
   `require "toml-rb"` does not load Citrus. This release removes the grammars
