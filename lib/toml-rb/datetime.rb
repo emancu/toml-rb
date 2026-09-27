@@ -7,61 +7,85 @@ module TomlRB
 
   module DateSkeletonParser
     def value
-      year, mon, day = [:year, :mon, :day].map { |s| capture(s).value }
-      unless Date.valid_date?(year.to_i, mon.to_i, day.to_i, Date::GREGORIAN)
-        raise ParseError, "Invalid date: #{year}-#{mon}-#{day}"
-      end
-      [year, mon, day]
+      [:year, :mon, :day].map { |s| capture(s).value }
     end
   end
 
   module TimeSkeletonParser
     def value
-      hour, min, sec = [:hour, :mim, :sec].map { |s| capture(s)&.value || "0" }
-      unless hour.to_i.between?(0, 23) && min.to_i.between?(0, 59) && sec.to_i.between?(0, 60)
-        raise ParseError, "Invalid time: #{hour}:#{min}:#{sec}"
-      end
-      [hour, min, sec, capture(:sec_frac) || "0"]
+      [:hour, :mim, :sec, :sec_frac].map { |s| capture(s)&.value }
     end
   end
 
   module OffsetDateTimeParser
     def value
-      skeleton = captures[:datetime_skeleton].first
-      year, mon, day, hour, min, sec, sec_frac = skeleton.value
-      offset = (captures[:date_offset].first || "+00:00").to_s
-      unless offset[1, 2].to_i.between?(0, 23) && offset[4, 2].to_i.between?(0, 59)
-        raise ParseError, "Invalid UTC offset: #{offset}"
-      end
-      sec = "#{sec}.#{sec_frac}".to_r
-
-      Time.new(year, mon, day, hour, min, sec, offset)
+      offset = (capture(:date_offset) || "Z").to_s
+      DatetimeParser.offset_datetime(*capture(:datetime_skeleton).value, offset)
     end
   end
 
   module LocalDateTimeParser
     def value
-      year, mon, day = captures[:date_skeleton].first.value
-      hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      sec = "#{sec}.#{sec_frac}".to_r
-
-      LocalDateTime.local(year, mon, day, hour, min, sec)
+      DatetimeParser.local_datetime(*capture(:date_skeleton).value, *capture(:time_skeleton).value)
     end
   end
 
   module LocalDateParser
     def value
-      year, mon, day = captures[:date_skeleton].first.value
-      LocalDate.local(year, mon, day)
+      DatetimeParser.local_date(*capture(:date_skeleton).value)
     end
   end
 
   module LocalTimeParser
     def value
-      hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      sec = "#{sec}.#{sec_frac}".to_r
+      DatetimeParser.local_time(*capture(:time_skeleton).value)
+    end
+  end
 
-      LocalTime.utc(1970, 1, 1, hour, min, sec)
+  module DatetimeParser
+    module_function
+
+    def offset_datetime(year, mon, day, hour, min, sec, sec_frac, offset)
+      validate_date(year, mon, day)
+      validate_time(hour, min, sec)
+      offset = "+00:00" if offset.casecmp?("Z")
+      unless offset[1, 2].to_i.between?(0, 23) && offset[4, 2].to_i.between?(0, 59)
+        raise ParseError, "Invalid UTC offset: #{offset}"
+      end
+
+      Time.new(year, mon, day, hour, min, seconds(sec, sec_frac), offset)
+    end
+
+    def local_datetime(year, mon, day, hour, min, sec, sec_frac)
+      validate_date(year, mon, day)
+      validate_time(hour, min, sec)
+      LocalDateTime.local(year, mon, day, hour, min, seconds(sec, sec_frac))
+    end
+
+    def local_date(year, mon, day)
+      validate_date(year, mon, day)
+      LocalDate.local(year, mon, day)
+    end
+
+    def local_time(hour, min, sec, sec_frac)
+      validate_time(hour, min, sec)
+      LocalTime.utc(1970, 1, 1, hour, min, seconds(sec, sec_frac))
+    end
+
+    def validate_date(year, mon, day)
+      unless Date.valid_date?(year.to_i, mon.to_i, day.to_i, Date::GREGORIAN)
+        raise ParseError, "Invalid date: #{year}-#{mon}-#{day}"
+      end
+    end
+
+    def validate_time(hour, min, sec)
+      unless hour.to_i.between?(0, 23) && min.to_i.between?(0, 59) && sec.to_i.between?(0, 60)
+        raise ParseError, "Invalid time: #{hour}:#{min}:#{sec || 0}"
+      end
+    end
+
+    def seconds(sec, sec_frac)
+      "#{sec || 0}.#{sec_frac || 0}".to_r
     end
   end
 end
