@@ -70,8 +70,8 @@ class GrammarTest < Minitest::Test
   end
 
   def test_multiline_string
-    match = TomlRB::Document.parse('"""\tOne\nTwo\e"""', root: :multiline_string)
-    assert_equal "\tOne\nTwo\e", match.value
+    match = TomlRB::Document.parse('"""\tOne\nTwo\e\x41"""', root: :multiline_string)
+    assert_equal "\tOne\nTwo\eA", match.value
 
     to_parse = '"""\
     One \
@@ -92,6 +92,13 @@ class GrammarTest < Minitest::Test
   def test_special_characters
     match = TomlRB::Document.parse('"\0 \" \t \n \r \e"', root: :string)
     assert_equal("\0 \" \t \n \r \e", match.value)
+
+    match = TomlRB::Document.parse('"\x41 \x00 \xff"', root: :string)
+    assert_equal("A \u0000 ÿ", match.value)
+
+    assert_raises TomlRB::ParseError do
+      TomlRB::Document.parse('"\x1"', root: :string).value
+    end
 
     match = TomlRB::Document.parse('"C:\\\\Documents\\\\nada.exe"', root: :string)
     assert_equal("C:\\Documents\\nada.exe", match.value)
