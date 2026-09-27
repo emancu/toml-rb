@@ -22,11 +22,11 @@ grammar TomlRB::Primitive
   end
 
   rule multiline_string
-    ('"""' line_break* (text:~('"""' !'"')|'') '"""' space) <TomlRB::MultilineString>
+    ('"""' /\r?\n/? text:/(?:[^"\\]|\\.|"{1,2}(?!"))*"{0,2}(?=""")/m '"""' space) <TomlRB::MultilineString>
   end
 
   rule multiline_literal
-    ("'''" line_break* (text:~("'''" !"'")|'') "'''" space) <TomlRB::MultilineLiteral>
+    ("'''" /\r?\n/? text:/(?:[^']|'{1,2}(?!'))*'{0,2}(?=''')/ "'''" space) <TomlRB::MultilineLiteral>
   end
 
   ##
