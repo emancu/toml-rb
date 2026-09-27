@@ -2,8 +2,7 @@ require_relative "helper"
 
 class GrammarTest < Minitest::Test
   def test_comment
-    match = TomlRB::Document.parse(" # A comment", root: :comment)
-    assert_nil(match.value)
+    assert_equal({}, TomlRB.parse(" # A comment"))
   end
 
   def test_comment_with_many_spaces
@@ -23,66 +22,40 @@ class GrammarTest < Minitest::Test
   end
 
   def test_key
-    match = TomlRB::Document.parse("bad_key-", root: :key)
-    assert_equal("bad_key-", match.value.first)
-
-    match = TomlRB::Document.parse('"123.ʎǝʞ.#?"', root: :key)
-    assert_equal("123.ʎǝʞ.#?", match.value.first)
+    assert_equal({"bad_key-" => 1}, TomlRB.parse("bad_key- = 1"))
+    assert_equal({"123.ʎǝʞ.#?" => 1}, TomlRB.parse('"123.ʎǝʞ.#?" = 1'))
   end
 
   def test_table
     indentation_alternatives_for("[akey]") do |str|
-      match = TomlRB::Document.parse(str, root: :table)
-      assert_equal(TomlRB::Table, match.value.class)
-      assert_equal(["akey"], match.value.instance_variable_get(:@dotted_keys))
+      parsed = TomlRB.parse(str)
+      assert_equal({"akey" => {}}, parsed)
     end
 
-    match = TomlRB::Document.parse("[owner.emancu]", root: :table)
-    assert_equal(%w[owner emancu],
-      match.value.instance_variable_get(:@dotted_keys))
+    assert_equal({"owner" => {"emancu" => {}}}, TomlRB.parse("[owner.emancu]"))
+    assert_equal({"owner.emancu" => {}}, TomlRB.parse('["owner.emancu"]'))
+    assert_equal({"first key" => {"second key" => {}}}, TomlRB.parse('["first key"."second key"]'))
+    assert_equal({"owner" => {"emancu" => {}}}, TomlRB.parse("[ owner . emancu ]"))
 
-    match = TomlRB::Document.parse('["owner.emancu"]', root: :table)
-    assert_equal(%w[owner.emancu],
-      match.value.instance_variable_get(:@dotted_keys))
-
-    match = TomlRB::Document.parse('["first key"."second key"]', root: :table)
-    assert_equal(["first key", "second key"],
-      match.value.instance_variable_get(:@dotted_keys))
-
-    match = TomlRB::Document.parse("[ owner . emancu ]", root: :table)
-    assert_equal(%w[owner emancu],
-      match.value.instance_variable_get(:@dotted_keys))
-
-    assert_raises Citrus::ParseError do
-      TomlRB::Document.parse("[ owner emancu ]", root: :table)
+    assert_raises TomlRB::ParseError do
+      TomlRB.parse("[ owner emancu ]")
     end
   end
 
   def test_keyvalue
     indentation_alternatives_for('key = "value"') do |str|
-      match = TomlRB::Document.parse(str, root: :keyvalue)
-      assert_equal(TomlRB::Keyvalue, match.value.class)
-
-      keyvalue = match.value
-      assert_equal("key", keyvalue.instance_variable_get(:@dotted_keys).first)
-      assert_equal("value", keyvalue.instance_variable_get(:@value))
+      parsed = TomlRB.parse(str)
+      assert_equal({"key" => "value"}, parsed)
     end
 
     indentation_alternatives_for('key1."key2".key3 = "value"') do |str|
-      match = TomlRB::Document.parse(str, root: :keyvalue)
-      assert_equal(TomlRB::Keyvalue, match.value.class)
-
-      keyvalue = match.value
-      assert_equal("key1", keyvalue.instance_variable_get(:@dotted_keys)[0])
-      assert_equal("key2", keyvalue.instance_variable_get(:@dotted_keys)[1])
-      assert_equal("key3", keyvalue.instance_variable_get(:@dotted_keys)[2])
-      assert_equal("value", keyvalue.instance_variable_get(:@value))
+      parsed = TomlRB.parse(str)
+      assert_equal({"key1" => {"key2" => {"key3" => "value"}}}, parsed)
     end
   end
 
   def test_string
-    match = TomlRB::Document.parse('"TomlRB-Example, should work."', root: :string)
-    assert_equal("TomlRB-Example, should work.", match.value)
+    assert_equal("TomlRB-Example, should work.", value_of('"TomlRB-Example, should work."'))
   end
 
   def test_strings_reject_control_characters
@@ -141,23 +114,20 @@ class GrammarTest < Minitest::Test
   end
 
   def test_multiline_string
-    match = TomlRB::Document.parse('"""\tOne\nTwo\e\x41"""', root: :multiline_string)
-    assert_equal "\tOne\nTwo\eA", match.value
+    assert_equal "\tOne\nTwo\eA", value_of('"""\tOne\nTwo\e\x41"""')
 
     to_parse = '"""\
     One \
     Two\
     """'
 
-    match = TomlRB::Document.parse(to_parse, root: :multiline_string)
-    assert_equal "One Two", match.value
+    assert_equal "One Two", value_of(to_parse)
   end
 
   def test_empty_multiline_string
     to_parse = '""""""'
 
-    match = TomlRB::Document.parse(to_parse, root: :multiline_string)
-    assert_equal "", match.value
+    assert_equal "", value_of(to_parse)
   end
 
   def test_multiline_strings_trim_one_newline
@@ -187,248 +157,183 @@ class GrammarTest < Minitest::Test
 
   def test_unicode_escapes_must_be_scalar_values
     ['"\uD800"', '"\uDFFF"', '"\U00110000"', '"\UFFFFFFFF"'].each do |str|
-      assert_raises(TomlRB::ParseError) { TomlRB::Document.parse(str, root: :string).value }
+      assert_raises(TomlRB::ParseError) { value_of(str) }
     end
   end
 
   def test_special_characters
-    match = TomlRB::Document.parse('"\u0000 \" \t \n \r \e"', root: :string)
-    assert_equal("\u0000 \" \t \n \r \e", match.value)
+    assert_equal("\u0000 \" \t \n \r \e", value_of('"\u0000 \" \t \n \r \e"'))
 
-    match = TomlRB::Document.parse('"\x41 \x00 \xff"', root: :string)
-    assert_equal("A \u0000 ÿ", match.value)
+    assert_equal("A \u0000 ÿ", value_of('"\x41 \x00 \xff"'))
 
     assert_raises TomlRB::ParseError do
-      TomlRB::Document.parse('"\x1"', root: :string).value
+      value_of('"\x1"')
     end
 
     assert_raises TomlRB::ParseError do
-      TomlRB::Document.parse('"\0"', root: :string).value
+      value_of('"\0"')
     end
 
-    match = TomlRB::Document.parse('"C:\\\\Documents\\\\nada.exe"', root: :string)
-    assert_equal("C:\\Documents\\nada.exe", match.value)
+    assert_equal("C:\\Documents\\nada.exe", value_of('"C:\\\\Documents\\\\nada.exe"'))
   end
 
   def test_bool
-    match = TomlRB::Document.parse("true", root: :bool)
-    assert_equal(true, match.value)
+    assert_equal(true, value_of("true"))
 
-    match = TomlRB::Document.parse("false", root: :bool)
-    assert_equal(false, match.value)
+    assert_equal(false, value_of("false"))
   end
 
   def test_integer
-    match = TomlRB::Document.parse("+99", root: :integer)
-    assert_equal(99, match.value)
+    assert_toml_value(99, "+99")
 
-    match = TomlRB::Document.parse("42", root: :integer)
-    assert_equal(42, match.value)
+    assert_toml_value(42, "42")
 
-    match = TomlRB::Document.parse("0", root: :integer)
-    assert_equal(0, match.value)
+    assert_toml_value(0, "0")
 
     %w[+0 -0].each do |integer|
-      assert_equal(0, TomlRB::Document.parse(integer, root: :integer).value)
+      assert_toml_value(0, integer)
     end
 
-    match = TomlRB::Document.parse("-17", root: :integer)
-    assert_equal(-17, match.value)
+    assert_toml_value(-17, "-17")
 
-    match = TomlRB::Document.parse("1_000", root: :integer)
-    assert_equal(1_000, match.value)
+    assert_toml_value(1_000, "1_000")
 
-    match = TomlRB::Document.parse("5_349_221", root: :integer)
-    assert_equal(5_349_221, match.value)
+    assert_toml_value(5_349_221, "5_349_221")
 
-    match = TomlRB::Document.parse("1_2_3_4_5", root: :integer)
-    assert_equal(1_2_3_4_5, match.value)
+    assert_toml_value(1_2_3_4_5, "1_2_3_4_5")
 
-    match = TomlRB::Document.parse("0xDEADBEEF", root: :integer)
-    assert_equal(0xDEADBEEF, match.value)
+    assert_toml_value(0xDEADBEEF, "0xDEADBEEF")
 
-    match = TomlRB::Document.parse("0xdeadbeef", root: :integer)
-    assert_equal(0xdeadbeef, match.value)
+    assert_toml_value(0xdeadbeef, "0xdeadbeef")
 
-    match = TomlRB::Document.parse("0xdead_beef", root: :integer)
-    assert_equal(0xdead_beef, match.value)
+    assert_toml_value(0xdead_beef, "0xdead_beef")
 
-    match = TomlRB::Document.parse("0o01234567", root: :integer)
-    assert_equal(0o01234567, match.value)
+    assert_toml_value(0o01234567, "0o01234567")
 
-    match = TomlRB::Document.parse("0o755", root: :integer)
-    assert_equal(0o755, match.value)
+    assert_toml_value(0o755, "0o755")
 
-    match = TomlRB::Document.parse("0b11010110", root: :integer)
-    assert_equal(0b11010110, match.value)
+    assert_toml_value(0b11010110, "0b11010110")
   end
 
   def test_float
-    match = TomlRB::Document.parse("+1.0", root: :float)
-    assert_equal(+1.0, match.value)
+    assert_toml_value(+1.0, "+1.0")
 
-    match = TomlRB::Document.parse("3.1415", root: :float)
-    assert_equal(3.1415, match.value)
+    assert_toml_value(3.1415, "3.1415")
 
-    match = TomlRB::Document.parse("-0.01", root: :float)
-    assert_equal(-0.01, match.value)
+    assert_toml_value(-0.01, "-0.01")
 
-    match = TomlRB::Document.parse("5e+22", root: :float)
-    assert_equal(5e+22, match.value)
+    assert_toml_value(5e+22, "5e+22")
 
-    match = TomlRB::Document.parse("1e6", root: :float)
-    assert_equal(1e6, match.value)
+    assert_toml_value(1e6, "1e6")
 
     %w[1e06 1e+06 1e0_6 1.0e06].each do |float|
-      assert_equal(1e6, TomlRB::Document.parse(float, root: :float).value)
+      assert_toml_value(1e6, float)
     end
 
-    match = TomlRB::Document.parse("1e-06", root: :float)
-    assert_equal(1e-6, match.value)
+    assert_toml_value(1e-6, "1e-06")
 
-    match = TomlRB::Document.parse("-2E-2", root: :float)
-    assert_equal(-2E-2, match.value)
+    assert_toml_value(-2E-2, "-2E-2")
 
-    match = TomlRB::Document.parse("6.626e-34", root: :float)
-    assert_equal(6.626e-34, match.value)
+    assert_toml_value(6.626e-34, "6.626e-34")
 
-    match = TomlRB::Document.parse("224_617.445_991_228", root: :float)
-    assert_equal(224_617.445_991_228, match.value)
+    assert_toml_value(224_617.445_991_228, "224_617.445_991_228")
 
-    match = TomlRB::Document.parse("inf", root: :float)
-    assert_equal(Float::INFINITY, match.value)
+    assert_toml_value(Float::INFINITY, "inf")
 
-    match = TomlRB::Document.parse("+inf", root: :float)
-    assert_equal(Float::INFINITY, match.value)
+    assert_toml_value(Float::INFINITY, "+inf")
 
-    match = TomlRB::Document.parse("-inf", root: :float)
-    assert_equal(-Float::INFINITY, match.value)
+    assert_toml_value(-Float::INFINITY, "-inf")
 
-    match = TomlRB::Document.parse("nan", root: :float)
-    assert(match.value.nan?)
+    assert(value_of("nan").nan?)
 
-    match = TomlRB::Document.parse("+nan", root: :float)
-    assert(match.value.nan?)
+    assert(value_of("+nan").nan?)
 
-    match = TomlRB::Document.parse("-nan", root: :float)
-    assert(match.value.nan?)
+    assert(value_of("-nan").nan?)
   end
 
   def test_signed_numbers
-    match = TomlRB::Document.parse("+26", root: :number)
-    assert_equal(26, match.value)
+    assert_toml_value(26, "+26")
 
-    match = TomlRB::Document.parse("-26", root: :number)
-    assert_equal(-26, match.value)
+    assert_toml_value(-26, "-26")
 
-    match = TomlRB::Document.parse("1.69", root: :number)
-    assert_equal(1.69, match.value)
+    assert_toml_value(1.69, "1.69")
 
-    match = TomlRB::Document.parse("-1.69", root: :number)
-    assert_equal(-1.69, match.value)
+    assert_toml_value(-1.69, "-1.69")
   end
 
   def test_expressions_with_comments
-    match = TomlRB::Document.parse("[shouldwork] # with comment", root: :table)
-    assert_equal(["shouldwork"],
-      match.value.instance_variable_get(:@dotted_keys))
+    assert_equal({"shouldwork" => {}}, TomlRB.parse("[shouldwork] # with comment"))
 
-    match = TomlRB::Document.parse("works = true # with comment", root: :keyvalue_line).value
-    assert_equal("works", match.instance_variable_get(:@dotted_keys).first)
-    assert_equal(true, match.instance_variable_get(:@value))
+    parsed = TomlRB.parse("works = true # with comment")
+    assert_equal({"works" => true}, parsed)
   end
 
   def test_array
-    match = TomlRB::Document.parse("[]", root: :array)
-    assert_equal([], match.value)
+    assert_equal([], value_of("[]"))
 
-    match = TomlRB::Document.parse("[ 2, 4]", root: :array)
-    assert_equal([2, 4], match.value)
+    assert_equal([2, 4], value_of("[ 2, 4]"))
 
-    match = TomlRB::Document.parse("[ 2.4, 4.72]", root: :array)
-    assert_equal([2.4, 4.72], match.value)
+    assert_equal([2.4, 4.72], value_of("[ 2.4, 4.72]"))
 
-    match = TomlRB::Document.parse("[12:00:00,5]", root: :array)
-    assert_equal([TomlRB::LocalTime.utc(1970, 1, 1, 12), 5], match.value)
+    assert_equal([TomlRB::LocalTime.utc(1970, 1, 1, 12), 5], value_of("[12:00:00,5]"))
 
-    match = TomlRB::Document.parse('[ "hey", "TomlRB"]', root: :array)
-    assert_equal(%w[hey TomlRB], match.value)
+    assert_equal(%w[hey TomlRB], value_of('[ "hey", "TomlRB"]'))
 
-    match = TomlRB::Document.parse('[ ["hey", "TomlRB"], [2,4] ]', root: :array)
-    assert_equal([%w[hey TomlRB], [2, 4]], match.value)
+    assert_equal([%w[hey TomlRB], [2, 4]], value_of('[ ["hey", "TomlRB"], [2,4] ]'))
 
-    match = TomlRB::Document.parse("[ { one = 1 }, { two = 2, three = 3} ]",
-      root: :array)
-    assert_equal([{"one" => 1}, {"two" => 2, "three" => 3}], match.value)
+    assert_equal([{"one" => 1}, {"two" => 2, "three" => 3}], value_of("[ { one = 1 }, { two = 2, three = 3} ]"))
   end
 
   def test_empty_array
     # test that [] is parsed as array and not as inline table array
-    match = TomlRB::Document.parse("a = []", root: :keyvalue).value
-    assert_equal [], match.value
+    assert_equal({"a" => []}, TomlRB.parse("a = []"))
   end
 
   def test_multiline_array
     multiline_array = "[ \"hey\",\n   \"ho\",\n\t \"lets\", \"go\",\n ]"
-    match = TomlRB::Document.parse(multiline_array, root: :array)
-    assert_equal(%w[hey ho lets go], match.value)
+    assert_equal(%w[hey ho lets go], value_of(multiline_array))
 
     multiline_array = "[\n#1,\n2,\n# 3\n]"
-    match = TomlRB::Document.parse(multiline_array, root: :array)
-    assert_equal([2], match.value)
+    assert_equal([2], value_of(multiline_array))
 
     multiline_array = "[\n# comment\n#, more comments\n4]"
-    match = TomlRB::Document.parse(multiline_array, root: :array)
-    assert_equal([4], match.value)
+    assert_equal([4], value_of(multiline_array))
 
     multiline_array = "[\n  1,\n  # 2,\n  3 ,\n]"
-    match = TomlRB::Document.parse(multiline_array, root: :array)
-    assert_equal([1, 3], match.value)
+    assert_equal([1, 3], value_of(multiline_array))
 
     multiline_array = "[\n  1 , # useless comment\n  # 2,\n  3 #other comment\n]"
-    match = TomlRB::Document.parse(multiline_array, root: :array)
-    assert_equal([1, 3], match.value)
+    assert_equal([1, 3], value_of(multiline_array))
   end
 
   # Dates are really hard to test from JSON, due the imposibility to represent
   # datetimes without quotes.
   def test_datetime
-    match = TomlRB::Document.parse("1979-05-27T07:32:00Z", root: :datetime)
-    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), match.value)
+    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), value_of("1979-05-27T07:32:00Z"))
 
-    match = TomlRB::Document.parse("1979-05-27T00:32:00-07:00", root: :datetime)
-    assert_equal(Time.new(1979, 5, 27, 0, 32, 0, "-07:00"), match.value)
+    assert_equal(Time.new(1979, 5, 27, 0, 32, 0, "-07:00"), value_of("1979-05-27T00:32:00-07:00"))
 
-    match = TomlRB::Document.parse("1979-05-27T00:32:00.999999-07:00", root: :datetime)
-    assert_equal(Time.new(1979, 5, 27, 0, 32, 0.999999r, "-07:00"), match.value)
+    assert_equal(Time.new(1979, 5, 27, 0, 32, 0.999999r, "-07:00"), value_of("1979-05-27T00:32:00.999999-07:00"))
 
-    match = TomlRB::Document.parse("1979-05-27 07:32:00Z", root: :datetime)
-    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), match.value)
+    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), value_of("1979-05-27 07:32:00Z"))
 
-    match = TomlRB::Document.parse("1979-05-27T07:32:00", root: :datetime)
-    assert_equal(Time.local(1979, 5, 27, 7, 32, 0), match.value)
+    assert_equal(Time.local(1979, 5, 27, 7, 32, 0), value_of("1979-05-27T07:32:00"))
 
-    match = TomlRB::Document.parse("1979-05-27T00:32:00.999999", root: :datetime)
-    assert_equal(Time.local(1979, 5, 27, 0, 32, 0, 999999), match.value)
+    assert_equal(Time.local(1979, 5, 27, 0, 32, 0, 999999), value_of("1979-05-27T00:32:00.999999"))
 
-    match = TomlRB::Document.parse("1979-05-27", root: :datetime)
-    assert_equal(Time.local(1979, 5, 27), match.value)
+    assert_equal(Time.local(1979, 5, 27), value_of("1979-05-27"))
 
-    match = TomlRB::Document.parse("07:32:00", root: :datetime)
-    assert_equal(Time.at(3600 * 7 + 60 * 32), match.value)
+    assert_equal(Time.at(3600 * 7 + 60 * 32), value_of("07:32:00"))
 
-    match = TomlRB::Document.parse("00:32:00.999999", root: :datetime)
-    assert_equal(Time.at(60 * 32, 999999), match.value)
+    assert_equal(Time.at(60 * 32, 999999), value_of("00:32:00.999999"))
 
-    match = TomlRB::Document.parse("1979-05-27T07:32-07:00", root: :datetime)
-    assert_equal(Time.new(1979, 5, 27, 7, 32, 0, "-07:00"), match.value)
+    assert_equal(Time.new(1979, 5, 27, 7, 32, 0, "-07:00"), value_of("1979-05-27T07:32-07:00"))
 
-    match = TomlRB::Document.parse("10:30:45", root: :datetime)
-    assert_equal(Time.utc(1970, 1, 1, 10, 30, 45), match.value)
+    assert_equal(Time.utc(1970, 1, 1, 10, 30, 45), value_of("10:30:45"))
 
     ["10:30.5", "2025-01-01T10:30.5", "1979-05-27T07:32.5Z", "1979-05-27T07:32.5-07:00"].each do |datetime|
-      assert_raises Citrus::ParseError do
-        TomlRB::Document.parse(datetime, root: :datetime)
+      assert_raises TomlRB::ParseError do
+        value_of(datetime)
       end
     end
   end
@@ -446,7 +351,7 @@ class GrammarTest < Minitest::Test
       "10:30:00.123456789" => 123_456_789,
       "10:30:00.123456789999" => 123_456_789
     }.each do |datetime, nsec|
-      assert_equal nsec, TomlRB::Document.parse(datetime, root: :datetime).value.nsec
+      assert_equal nsec, value_of(datetime).nsec
     end
   end
 
@@ -462,26 +367,33 @@ class GrammarTest < Minitest::Test
       "2016-12-31T23:59:60.5" => TomlRB::LocalDateTime.local(2016, 12, 31, 23, 59, 60.5r),
       "23:59:60.5" => TomlRB::LocalTime.utc(1970, 1, 1, 23, 59, 60.5r)
     }.each do |datetime, expected|
-      actual = TomlRB::Document.parse(datetime, root: :datetime).value
+      actual = value_of(datetime)
       assert_equal expected, actual
       assert_instance_of expected.class, actual
     end
   end
 
   def test_inline_table
-    match = TomlRB::Document.parse("{ }", root: :inline_table)
-    assert_equal({}, match.value.value)
+    assert_equal({}, value_of("{ }"))
 
-    match = TomlRB::Document.parse("{ simple = true, params = 2 }", root: :inline_table)
-    assert_equal({"simple" => true, "params" => 2}, match.value.value)
+    assert_equal({"simple" => true, "params" => 2}, value_of("{ simple = true, params = 2 }"))
 
-    match = TomlRB::Document.parse("{ nest = { really = { hard = true } } }",
-      root: :inline_table)
-    assert_equal({"nest" => {"really" => {"hard" => true}}}, match.value.value)
-    assert_equal({nest: {really: {hard: true}}}, match.value.value(true))
+    assert_equal({"nest" => {"really" => {"hard" => true}}}, value_of("{ nest = { really = { hard = true } } }"))
+    assert_equal({v: {nest: {really: {hard: true}}}},
+      TomlRB.parse("v = { nest = { really = { hard = true } } }", symbolize_keys: true))
   end
 
   private
+
+  def assert_toml_value(expected, toml)
+    actual = value_of(toml)
+    assert_equal(expected, actual)
+    assert_instance_of(expected.class, actual)
+  end
+
+  def value_of(toml)
+    TomlRB.parse("v = #{toml}")["v"]
+  end
 
   # Creates all the alternatives of valid indentations to test
   def indentation_alternatives_for(str)

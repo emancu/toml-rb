@@ -10,7 +10,7 @@ class EncodingTest < Minitest::Test
   end
 
   def test_comment_with_high_bytes_raises_parse_error
-    # This triggers Encoding::CompatibilityError in Citrus
+    # This triggers Encoding::CompatibilityError in the parser
     # which should be wrapped in TomlRB::ParseError
     data = String.new("# \xFF\xFE comment\nkey = 1", encoding: "ASCII-8BIT")
 
