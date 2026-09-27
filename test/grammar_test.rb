@@ -264,7 +264,7 @@ class GrammarTest < Minitest::Test
     assert_equal(["shouldwork"],
       match.value.instance_variable_get(:@dotted_keys))
 
-    match = TomlRB::Document.parse("works = true # with comment", root: :keyvalue).value
+    match = TomlRB::Document.parse("works = true # with comment", root: :keyvalue_line).value
     assert_equal("works", match.instance_variable_get(:@dotted_keys).first)
     assert_equal(true, match.instance_variable_get(:@value))
   end

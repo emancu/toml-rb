@@ -130,6 +130,48 @@ class TomlTest < Minitest::Test
     assert_equal({"hello" => "world", "line_break" => true}, parsed)
   end
 
+  def test_statements_require_a_line_end
+    ["a=1 b=2", "a=[] b=2", "a={} b=2", "[a] b=2", "[[a]] b=2",
+      "a=1[a]", "a=[][b]", "[a][b]", "[[a]][b]"].each do |input|
+      assert_raises(TomlRB::ParseError, input) { TomlRB.parse(input) }
+    end
+  end
+
+  def test_statement_line_end_variants
+    ["\n", "\r\n", " # comment\n", " # comment\r\n"].each do |ending|
+      input = ["a=[]", "[b]", "c={d=1, e=2}", "[[f]]", "g=3"].join(ending)
+      expected = {"a" => [], "b" => {"c" => {"d" => 1, "e" => 2}}, "f" => [{"g" => 3}]}
+      assert_equal expected, TomlRB.parse(input), ending.inspect
+    end
+
+    ["[a]", "[[a]]", "a=1", "a=[]", "a={b=1}"].each do |input|
+      ["", " \t", " # comment"].each do |ending|
+        assert_equal TomlRB.parse(input), TomlRB.parse(input + ending)
+      end
+    end
+  end
+
+  def test_whitespace_only_document
+    ["", " ", "\t", " \t ", " \n\t\r\n "].each do |input|
+      assert_equal({}, TomlRB.parse(input), input.inspect)
+    end
+  end
+
+  def test_array_comma_requires_an_element
+    ["a=[,]", "a=[ , ]", "a=[# comment\n,]", "a=[1,,]"].each do |input|
+      assert_raises(TomlRB::ParseError, input) { TomlRB.parse(input) }
+    end
+
+    assert_equal({"a" => []}, TomlRB.parse("a=[ # comment\n ]"))
+    assert_equal({"a" => [1]}, TomlRB.parse("a=[1,]"))
+  end
+
+  def test_array_comments_before_commas
+    assert_equal({"a" => [1, 2]}, TomlRB.parse("a=[1 # comment\n, 2]"))
+    assert_equal({"a" => [1]}, TomlRB.parse("a=[1 # comment\n, # trailing\n]"))
+    assert_equal({"a" => [[1], {"b" => 2}]}, TomlRB.parse("a=[[1] # nested\n, {b=2}]"))
+  end
+
   def test_comments_do_not_affect_table_structure
     parsed = TomlRB.parse("# [x]\nroot = 1\n[x]\nvalue = 2")
     assert_equal({"root" => 1, "x" => {"value" => 2}}, parsed)
