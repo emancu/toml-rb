@@ -130,6 +130,20 @@ class TomlTest < Minitest::Test
     assert_equal({"hello" => "world", "line_break" => true}, parsed)
   end
 
+  def test_comments_do_not_affect_table_structure
+    parsed = TomlRB.parse("# [x]\nroot = 1\n[x]\nvalue = 2")
+    assert_equal({"root" => 1, "x" => {"value" => 2}}, parsed)
+
+    parsed = TomlRB.parse("# [[x]]\nroot = 1\n[[x]]\nvalue = 2")
+    assert_equal({"root" => 1, "x" => [{"value" => 2}]}, parsed)
+
+    parsed = TomlRB.parse("#[a.b]\nroot = 1\n[a.b]\nvalue = 2")
+    assert_equal({"root" => 1, "a" => {"b" => {"value" => 2}}}, parsed)
+
+    parsed = TomlRB.parse("[a] # [b]\nvalue = 1\n[b]\nvalue = 2")
+    assert_equal({"a" => {"value" => 1}, "b" => {"value" => 2}}, parsed)
+  end
+
   def test_trailing_whitespace_after_keyvalue
     parsed = TomlRB.parse("a = 1   ")
     assert_equal({"a" => 1}, parsed)
