@@ -63,7 +63,8 @@ begin
   parsed = TomlRB.parse(input)
   $stdout.write(JSON.generate(TomlTestDecoder.encode(parsed)))
   $stdout.write("\n")
-rescue => e
+rescue StandardError, SystemStackError => e
   warn("#{e.class}: #{e.message}")
-  exit 1
+  # toml-test treats exit 1 as rejection and other nonzero exits as failures.
+  exit(e.is_a?(TomlRB::Error) ? 1 : 2)
 end
