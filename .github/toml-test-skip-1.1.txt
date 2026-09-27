@@ -9,7 +9,6 @@
 # differs slightly from 1.0.
 #
 # Format: one toml-test name per line (no extension), comments start with '#'.
-invalid/array/only-comma-01
 invalid/control/comment-cr
 invalid/control/comment-del
 invalid/control/comment-ff
@@ -37,22 +36,10 @@ invalid/control/string-del
 invalid/control/string-lf
 invalid/control/string-null
 invalid/control/string-us
-invalid/key/after-array
-invalid/key/after-table
-invalid/key/after-value
-invalid/key/no-eol-01
-invalid/key/no-eol-02
-invalid/key/no-eol-03
-invalid/key/no-eol-04
-invalid/key/no-eol-06
-invalid/key/no-eol-07
 invalid/string/literal-multiline-quotes-01
 invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
 invalid/string/multiline-quotes-01
-valid/comment/tricky
-valid/empty-space
-valid/empty-tab
 valid/inline-table/newline
 valid/inline-table/newline-comment
 valid/spec-1.1.0/common-16

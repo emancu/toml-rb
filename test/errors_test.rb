@@ -1,6 +1,16 @@
 require_relative "helper"
 
 class ErrorsTest < Minitest::Test
+  def test_statements_require_line_end
+    ["a=1 b=2", "[a] b=2", "[[a]] b=2", "a=[] b=2", "a={b=1} c=2"].each do |str|
+      assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }
+    end
+  end
+
+  def test_array_with_only_comma
+    assert_raises(TomlRB::ParseError) { TomlRB.parse("a=[,]") }
+  end
+
   def test_text_after_table
     str = "[error] if you didn't catch this, your parser is broken"
     assert_raises(TomlRB::ParseError) { TomlRB.parse(str) }

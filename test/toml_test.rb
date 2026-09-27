@@ -3,6 +3,15 @@ require_relative "toml_examples"
 require "json"
 
 class TomlTest < Minitest::Test
+  def test_whitespace_only_document
+    assert_equal({}, TomlRB.parse("  \t  "))
+  end
+
+  def test_array_comments_before_commas
+    parsed = TomlRB.parse("a = [1 # first\n, 2 # last\n,]")
+    assert_equal({"a" => [1, 2]}, parsed)
+  end
+
   def test_file_v_0_4_0
     path = File.join(File.dirname(__FILE__), "example-v0.4.0.toml")
     parsed = TomlRB.load_file(path)
