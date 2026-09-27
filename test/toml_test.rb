@@ -1,6 +1,8 @@
 require_relative "helper"
 require_relative "toml_examples"
 require "json"
+require "pathname"
+require "stringio"
 
 class TomlTest < Minitest::Test
   def test_file_v_0_4_0
@@ -50,6 +52,18 @@ class TomlTest < Minitest::Test
     parsed = TomlRB.load_file(path)
 
     assert_equal TomlRB::Examples.hard_example, parsed
+  end
+
+  def test_parse_reads_io_path_and_to_str_objects
+    path = File.join(File.dirname(__FILE__), "example.toml")
+    text = File.read(path, encoding: "UTF-8")
+    expected = TomlRB::Examples.example
+
+    assert_equal expected, TomlRB.parse(StringIO.new(text))
+    File.open(path, encoding: "UTF-8") { |file| assert_equal expected, TomlRB.parse(file) }
+    assert_equal expected, TomlRB.parse(Pathname.new(path))
+    assert_equal expected, TomlRB.parse(Struct.new(:to_str).new(text))
+    assert_raises(ArgumentError) { TomlRB.parse(42) }
   end
 
   def test_symbolize_keys

@@ -15,10 +15,4 @@ module TomlRB
       result
     end
   end
-
-  module InlineTableParser
-    def value
-      TomlRB::InlineTable.new(captures[:keyvalue].map(&:value))
-    end
-  end
 end

@@ -1,7 +1,4 @@
-require "citrus"
-
 require_relative "toml-rb/errors"
-require_relative "toml-rb/array"
 require_relative "toml-rb/string"
 require_relative "toml-rb/datetime"
 require_relative "toml-rb/table"
@@ -10,12 +7,6 @@ require_relative "toml-rb/inline_table"
 require_relative "toml-rb/keyvalue"
 require_relative "toml-rb/parser"
 require_relative "toml-rb/dumper"
-
-File.dirname(File.expand_path(__FILE__)).tap do |root|
-  Citrus.load "#{root}/toml-rb/grammars/helper.citrus"
-  Citrus.load "#{root}/toml-rb/grammars/primitive.citrus"
-  Citrus.load "#{root}/toml-rb/grammars/document.citrus"
-end
 
 module TomlRB
   # Public: Returns a hash from *TomlRB* content.

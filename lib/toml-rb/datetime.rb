@@ -5,43 +5,6 @@ module TomlRB
   LocalDate = Class.new(Time)
   LocalTime = Class.new(Time)
 
-  module DateSkeletonParser
-    def value
-      [:year, :mon, :day].map { |s| capture(s).value }
-    end
-  end
-
-  module TimeSkeletonParser
-    def value
-      [:hour, :mim, :sec, :sec_frac].map { |s| capture(s)&.value }
-    end
-  end
-
-  module OffsetDateTimeParser
-    def value
-      offset = (capture(:date_offset) || "Z").to_s
-      DatetimeParser.offset_datetime(*capture(:datetime_skeleton).value, offset)
-    end
-  end
-
-  module LocalDateTimeParser
-    def value
-      DatetimeParser.local_datetime(*capture(:date_skeleton).value, *capture(:time_skeleton).value)
-    end
-  end
-
-  module LocalDateParser
-    def value
-      DatetimeParser.local_date(*capture(:date_skeleton).value)
-    end
-  end
-
-  module LocalTimeParser
-    def value
-      DatetimeParser.local_time(*capture(:time_skeleton).value)
-    end
-  end
-
   module DatetimeParser
     module_function
 

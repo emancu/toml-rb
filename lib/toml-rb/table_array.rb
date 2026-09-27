@@ -40,11 +40,4 @@ module TomlRB
       parser.visit_table_array self
     end
   end
-
-  # Used in document.citrus
-  module TableArrayParser
-    def value
-      TomlRB::TableArray.new(captures[:stripped_key].map(&:value).first)
-    end
-  end
 end

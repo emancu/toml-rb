@@ -31,11 +31,4 @@ module TomlRB
       @dotted_keys.join(".")
     end
   end
-
-  # Used in document.citrus
-  module TableParser
-    def value
-      TomlRB::Table.new(captures[:stripped_key].map(&:value).first)
-    end
-  end
 end
