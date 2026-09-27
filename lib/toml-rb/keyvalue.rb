@@ -42,11 +42,4 @@ module TomlRB
       a_value.accept_visitor self
     end
   end
-
-  # Used in document.citrus
-  module KeyvalueParser
-    def value
-      TomlRB::Keyvalue.new(capture(:stripped_key).value, capture(:v).value)
-    end
-  end
 end
