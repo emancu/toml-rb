@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased
+
+### Breaking changes
+
+- `TomlRB.parse` does not use Citrus. A recursive-descent parser on the
+  `StringScanner` class of the standard library reads the document, and
+  `require "toml-rb"` does not load Citrus. This release removes the grammars
+  `TomlRB::Document`, `TomlRB::Primitive` and `TomlRB::Helper`, and the
+  modules that the grammars used, like `TomlRB::KeyvalueParser`.
+- A value with more than 100 levels of nested arrays and inline tables raises
+  `TomlRB::ParseError`. Arrays and inline tables count together. Before,
+  toml-rb parsed up to 359 levels on Ruby 3.4.1. More levels raised
+  `SystemStackError`, which is not a `TomlRB::Error`.
+- A syntax error message gives the line, the column and the expected text.
+  Columns count characters, and the first column is 1. For example,
+  `[ owner emancu ]` raises `Unexpected "e" at line 1, column 9: expected ']'`.
+  Before, the message was `Failed to parse input on line 1 at offset 8`, then
+  the line and a caret. Update code that matches the old message.
+- When a multi-line string does not end or has an invalid character, the
+  message also gives the line and the column where the string starts.
+- Errors for invalid values keep their old messages without a line and a
+  column, for example `Invalid date: 1979-13-01`.
+- For a document with more than one error, `TomlRB.parse` can raise a
+  different one of them. The parser reports an invalid value, like
+  `1979-13-01` or the escape `\q`, when it reads that value. Before, any
+  syntax error in the document came first. In both cases, the error is
+  `TomlRB::ParseError`.
+
+### Fixes
+
+- A document in an encoding other than UTF-8, like BINARY or ISO-8859-1, gives
+  the same result with and without a newline at the end. Before, a document
+  with non-ASCII bytes and no newline at the end raised `TomlRB::ParseError`.
+
 ## v5.0.0.rc.1 (unreleased)
 
 ### Breaking changes

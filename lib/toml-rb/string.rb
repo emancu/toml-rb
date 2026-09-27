@@ -1,5 +1,4 @@
 module TomlRB
-  # Used in primitive.citrus
   module BasicString
     SPECIAL_CHARS = {
       "\\t" => "\t",
@@ -11,12 +10,6 @@ module TomlRB
       '\\"' => '"',
       "\\\\" => "\\"
     }.freeze
-
-    def value
-      aux = TomlRB::BasicString.transform_escaped_chars first.value
-
-      aux[1...-1]
-    end
 
     # Replace the unicode escaped characters with the corresponding character
     # e.g. \u03B4 => ?
@@ -43,24 +36,6 @@ module TomlRB
 
     def self.parse_error(m)
       fail ParseError.new "Escape sequence #{m} is reserved"
-    end
-  end
-
-  module LiteralString
-    def value
-      first.value[1...-1]
-    end
-  end
-
-  module MultilineString
-    def value
-      TomlRB::BasicString.transform_escaped_chars captures[:text].first.value
-    end
-  end
-
-  module MultilineLiteral
-    def value
-      captures[:text].first.value
     end
   end
 end
