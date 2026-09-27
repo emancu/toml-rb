@@ -1,6 +1,6 @@
 grammar TomlRB::Helper
   rule comment
-    (space? "#" /[^\n]*/u line_break?) { nil }
+    (space? "#" /[^\x00-\x08\x0a-\x1f\x7f]*(?=\r?\n|\z)/u line_break?) { nil }
   end
 
   rule space

@@ -6,34 +6,8 @@
 #
 # Categories of current gaps:
 #   - Date/time: parser accepts omitted seconds, which TOML 1.0 forbids.
-#   - Control characters in strings/comments: lexer accepts some forbidden control bytes.
 #
 # Format: one toml-test name per line (no extension), comments start with '#'.
-invalid/control/comment-cr
-invalid/control/comment-del
-invalid/control/comment-ff
-invalid/control/comment-lf
-invalid/control/comment-null
-invalid/control/comment-us
-invalid/control/multi-del
-invalid/control/multi-lf
-invalid/control/multi-null
-invalid/control/multi-us
-invalid/control/rawmulti-del
-invalid/control/rawmulti-lf
-invalid/control/rawmulti-null
-invalid/control/rawmulti-us
-invalid/control/rawstring-cr
-invalid/control/rawstring-del
-invalid/control/rawstring-lf
-invalid/control/rawstring-null
-invalid/control/rawstring-us
-invalid/control/string-bs
-invalid/control/string-cr
-invalid/control/string-del
-invalid/control/string-lf
-invalid/control/string-null
-invalid/control/string-us
 invalid/datetime/no-secs
 invalid/inline-table/linebreak-01
 invalid/inline-table/linebreak-02

@@ -14,19 +14,19 @@ grammar TomlRB::Primitive
   end
 
   rule basic_string
-    (/"(?:[^"\\\n]|\\.)*"/ space) <TomlRB::BasicString>
+    (/"(?:[^"\\\x00-\x08\x0a-\x1f\x7f]|\\.)*"/ space) <TomlRB::BasicString>
   end
 
   rule literal_string
-    (/'[^'\n]*'/ space) <TomlRB::LiteralString>
+    (/'[^'\x00-\x08\x0a-\x1f\x7f]*'/ space) <TomlRB::LiteralString>
   end
 
   rule multiline_string
-    ('"""' /\r?\n/? text:/(?:[^"\\]|\\.|"{1,2}(?!"))*"{0,2}(?=""")/m '"""' space) <TomlRB::MultilineString>
+    ('"""' /\r?\n/? text:/(?:[^"\\\x00-\x08\x0b-\x1f\x7f]|\r\n|\\(?:[^\r]|\r\n)|"{1,2}(?!"))*"{0,2}(?=""")/ '"""' space) <TomlRB::MultilineString>
   end
 
   rule multiline_literal
-    ("'''" /\r?\n/? text:/(?:[^']|'{1,2}(?!'))*'{0,2}(?=''')/ "'''" space) <TomlRB::MultilineLiteral>
+    ("'''" /\r?\n/? text:/(?:[^'\x00-\x08\x0b-\x1f\x7f]|\r\n|'{1,2}(?!'))*'{0,2}(?=''')/ "'''" space) <TomlRB::MultilineLiteral>
   end
 
   ##
