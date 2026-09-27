@@ -26,7 +26,7 @@ module TomlRB
     end
 
     def self.transform_escaped_chars(str)
-      str.gsub(/\\(u[\da-fA-F]{4}|U[\da-fA-F]{8}|.)/) do |m|
+      str.gsub(/\\(x[\da-fA-F]{2}|u[\da-fA-F]{4}|U[\da-fA-F]{8}|.)/) do |m|
         if m.size == 2
           SPECIAL_CHARS[m] || parse_error(m)
         else

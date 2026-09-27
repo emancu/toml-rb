@@ -78,6 +78,7 @@ invalid/local-time/second-over
 invalid/spec-1.0.0/table-9-0
 invalid/spec-1.0.0/table-9-1
 invalid/string/bad-escape-03
+invalid/string/basic-byte-escapes
 invalid/string/literal-multiline-quotes-01
 invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
