@@ -107,6 +107,15 @@ class TomlTest < Minitest::Test
     assert_equal(hash, parsed)
   end
 
+  def test_datetime_classes
+    parsed = TomlRB.parse("odt = 1979-05-27T07:32:00Z\nldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00")
+
+    assert_instance_of Time, parsed["odt"]
+    assert_instance_of TomlRB::LocalDateTime, parsed["ldt"]
+    assert_instance_of TomlRB::LocalDate, parsed["ld"]
+    assert_instance_of TomlRB::LocalTime, parsed["lt"]
+  end
+
   def test_line_break
     parsed = TomlRB.parse("hello = 'world'\r\nline_break = true")
     assert_equal({"hello" => "world", "line_break" => true}, parsed)

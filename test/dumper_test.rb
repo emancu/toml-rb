@@ -35,14 +35,34 @@ class DumperTest < Minitest::Test
     dumped = TomlRB.dump(time: Time.utc(1986, 8, 28, 15, 15))
     assert_equal("time = 1986-08-28T15:15:00Z\n", dumped)
 
+    dumped = TomlRB.dump(time: Time.new(1986, 8, 28, 15, 15, 0, "+02:00"))
+    assert_equal("time = 1986-08-28T15:15:00+02:00\n", dumped)
+
+    dumped = TomlRB.dump(time: Time.utc(1986, 8, 28, 15, 15, 0, 500_000))
+    assert_equal("time = 1986-08-28T15:15:00.5Z\n", dumped)
+
     dumped = TomlRB.dump(datetime: DateTime.new(1986, 8, 28, 15, 15))
     assert_equal("datetime = 1986-08-28T15:15:00Z\n", dumped)
+
+    dumped = TomlRB.dump(datetime: DateTime.new(1986, 8, 28, 15, 15, 0, "+02:00"))
+    assert_equal("datetime = 1986-08-28T15:15:00+02:00\n", dumped)
 
     dumped = TomlRB.dump(date: Date.new(1986, 8, 28))
     assert_equal("date = 1986-08-28\n", dumped)
 
     dumped = TomlRB.dump(regexp: /abc\n*\{/)
     assert_equal("regexp = \"/abc\\\\n*\\\\{/\"\n", dumped)
+  end
+
+  def test_dump_datetimes_round_trip
+    [
+      "odt = 1979-05-27T00:32:00-07:00\n",
+      "ldt = 1979-05-27T00:32:00.999999\n",
+      "ld = 1979-05-27\n",
+      "lt = 00:32:00.5\n"
+    ].each do |toml|
+      assert_equal toml, TomlRB.dump(TomlRB.parse(toml))
+    end
   end
 
   def test_dump_nested_attributes
