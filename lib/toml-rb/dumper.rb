@@ -41,13 +41,13 @@ module TomlRB
       simple_pairs = []
       table_array_pairs = []
 
-      hash.keys.sort.each do |key|
+      sorted_keys(hash).each do |key|
         val = hash[key]
         element = [key, val]
 
         if val.is_a? Hash
           nested_pairs << element
-        elsif val.is_a?(Array) && val.first.is_a?(Hash)
+        elsif val.is_a?(Array) && !val.empty? && val.all?(Hash)
           table_array_pairs << element
         else
           simple_pairs << element
@@ -55,6 +55,17 @@ module TomlRB
       end
 
       [simple_pairs, nested_pairs, table_array_pairs]
+    end
+
+    def sorted_keys(hash)
+      keys = hash.keys
+      raise Error, "Cannot dump keys with duplicate names: #{keys.inspect}" if keys.map(&:to_s).uniq!
+
+      begin
+        keys.sort
+      rescue ArgumentError
+        keys.sort_by(&:to_s)
+      end
     end
 
     def dump_pairs(simple, nested, table_array, prefix = [])
@@ -113,11 +124,18 @@ module TomlRB
       elsif obj.is_a?(Date)
         obj.strftime("%Y-%m-%d")
       elsif obj.is_a?(Regexp)
-        obj.inspect.inspect
-      elsif obj.is_a?(String)
-        escape_string(obj)
+        escape_string(obj.inspect)
+      elsif obj.is_a?(String) || obj.is_a?(Symbol)
+        escape_string(obj.to_s)
       elsif obj.is_a?(Array)
         "[" + obj.map(&method(:to_toml)).join(", ") + "]"
+      elsif obj.is_a?(Hash)
+        pairs = sorted_keys(obj).map do |key|
+          val = obj[key]
+          key = quote_key(key) unless bare_key? key
+          "#{key} = #{to_toml(val)}"
+        end
+        "{" + pairs.join(", ") + "}"
       elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
         # Ruby renders these as Infinity/-Infinity/NaN, which are invalid TOML.
         if obj.nan?
@@ -127,8 +145,13 @@ module TomlRB
         else
           "inf"
         end
-      else
+      elsif obj.is_a?(Integer) || obj.is_a?(Float) || obj == true || obj == false
         obj.inspect
+      elsif defined?(BigDecimal) && obj.is_a?(BigDecimal) && obj.finite?
+        # BigDecimal#inspect is a valid TOML float, for example 0.15e1.
+        obj.inspect
+      else
+        raise Error, "Cannot dump #{obj.class} to TOML"
       end
     end
 
