@@ -1,11 +1,3 @@
 # toml-test skip-list for TOML 1.1.0
 #
-# Tests skipped because v4.2.0 has known limitations.
-# Each removal from this file is progress toward v5.0.0, where
-# the goal is an empty skip-list.
-#
-# 1.1 adds new valid forms (e.g. newlines in inline tables — already supported,
-# trailing commas, unicode in bare keys, additional escapes) so the failing set
-# differs slightly from 1.0.
-#
 # Format: one toml-test name per line (no extension), comments start with '#'.

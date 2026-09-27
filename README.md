@@ -11,7 +11,7 @@ toml-rb
 
 A [TOML](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
 
-TOML specs supported: `1.0.0`
+toml-rb implements [TOML 1.1.0](https://toml.io/en/v1.1.0) and passes all [toml-test](https://github.com/toml-lang/toml-test) v2.2.0 decoder tests for that version.
 
 Installation
 ------------
@@ -42,6 +42,16 @@ TomlRB.parse(stream)
 # You want symbols as your keys? No problem!
 TomlRB.load_file(path, symbolize_keys: true) 
 # Works the same for TomlRB.parse
+
+# Local datetimes, dates and times are subclasses of Time. Offset datetimes are Time.
+times = <<-EOS
+  odt = 1979-05-27T07:32:00Z
+  ldt = 1979-05-27T07:32:00
+  ld  = 1979-05-27
+  lt  = 07:32:00
+EOS
+TomlRB.parse(times).transform_values(&:class)
+# => {"odt"=>Time, "ldt"=>TomlRB::LocalDateTime, "ld"=>TomlRB::LocalDate, "lt"=>TomlRB::LocalTime}
 ```
 
 Dumper Usage
@@ -78,11 +88,13 @@ TOML 1.0.0 and TOML 1.1.0. The harness lives in:
 - `tool/toml-test-decoder` — toml-test decoder shim.
 - `.github/workflows/conformance.yml` — CI workflow (per-version matrix).
 - `.github/toml-test-skip-1.0.txt` and `.github/toml-test-skip-1.1.txt` —
-  skip-lists of currently-failing tests.
+  skip-lists of toml-test names for each spec version.
 
-The skip-lists are a living gap report: every entry is a known limitation in
-the current parser. The goal for v5.0.0 is **empty skip-lists** — full
-conformance against both spec versions.
+The TOML 1.1.0 skip-list is empty. The TOML 1.0.0 skip-list has 9 tests with
+documents that TOML 1.0.0 forbids and TOML 1.1.0 allows. `toml-rb` accepts
+TOML 1.1.0 syntax and has no option to select the spec version, so these tests
+fail. CI runs toml-test with `-skip-must-err`, so the run fails when a skipped
+test passes.
 
 Contributing
 ------------

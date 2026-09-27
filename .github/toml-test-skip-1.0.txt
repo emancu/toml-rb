@@ -1,11 +1,11 @@
 # toml-test skip-list for TOML 1.0.0
 #
-# Tests skipped because v4.2.0 has known limitations.
-# Each removal from this file is progress toward v5.0.0, where
-# the goal is an empty skip-list.
-#
-# Categories of current gaps:
-#   - Date/time: parser accepts omitted seconds, which TOML 1.0 forbids.
+# Each test below has a document that TOML 1.0.0 forbids and TOML 1.1.0 allows.
+# toml-rb accepts TOML 1.1.0 syntax and has no option to select the spec
+# version, so these tests fail:
+#   - */no-secs: a time without seconds.
+#   - inline-table/*: a newline or a trailing comma in an inline table.
+#   - string/basic-byte-escapes: the \xHH escape.
 #
 # Format: one toml-test name per line (no extension), comments start with '#'.
 invalid/datetime/no-secs
