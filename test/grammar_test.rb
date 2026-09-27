@@ -126,15 +126,50 @@ class GrammarTest < Minitest::Test
     assert_equal "", match.value
   end
 
+  def test_multiline_strings_trim_one_newline
+    assert_equal({"a" => "    indented"}, TomlRB.parse(%(a = """\n    indented""")))
+    assert_equal({"a" => "\nsecond"}, TomlRB.parse(%(a = """\n\nsecond""")))
+    assert_equal({"a" => "\nsecond"}, TomlRB.parse(%(a = '''\r\n\nsecond''')))
+  end
+
+  def test_multiline_string_line_ending_backslash
+    assert_equal({"a" => "foo\\\nbar"}, TomlRB.parse(%(a = """foo\\\\\nbar""")))
+    assert_equal({"a" => "xy"}, TomlRB.parse(%(a = """x\\ \n  y""")))
+  end
+
+  def test_multiline_literal_keeps_line_ending_backslash
+    assert_equal({"a" => "foo\\\nbar"}, TomlRB.parse(%(a = '''foo\\\nbar''')))
+  end
+
+  def test_multiline_strings_closing_quotes
+    assert_equal({"a" => 'a"""b'}, TomlRB.parse('a = """a\"""b"""'))
+    assert_equal({"a" => 'x""'}, TomlRB.parse('a = """x"""""'))
+    assert_equal({"a" => "x''"}, TomlRB.parse("a = '''x'''''"))
+
+    ['a = """x""""""', "a = '''x''''''", 'a = """\"""'].each do |toml|
+      assert_raises(TomlRB::ParseError) { TomlRB.parse(toml) }
+    end
+  end
+
+  def test_unicode_escapes_must_be_scalar_values
+    ['"\uD800"', '"\uDFFF"', '"\U00110000"', '"\UFFFFFFFF"'].each do |str|
+      assert_raises(TomlRB::ParseError) { TomlRB::Document.parse(str, root: :string).value }
+    end
+  end
+
   def test_special_characters
-    match = TomlRB::Document.parse('"\0 \" \t \n \r \e"', root: :string)
-    assert_equal("\0 \" \t \n \r \e", match.value)
+    match = TomlRB::Document.parse('"\u0000 \" \t \n \r \e"', root: :string)
+    assert_equal("\u0000 \" \t \n \r \e", match.value)
 
     match = TomlRB::Document.parse('"\x41 \x00 \xff"', root: :string)
     assert_equal("A \u0000 ÿ", match.value)
 
     assert_raises TomlRB::ParseError do
       TomlRB::Document.parse('"\x1"', root: :string).value
+    end
+
+    assert_raises TomlRB::ParseError do
+      TomlRB::Document.parse('"\0"', root: :string).value
     end
 
     match = TomlRB::Document.parse('"C:\\\\Documents\\\\nada.exe"', root: :string)

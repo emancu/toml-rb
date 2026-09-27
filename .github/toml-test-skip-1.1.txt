@@ -36,14 +36,3 @@ invalid/control/string-del
 invalid/control/string-lf
 invalid/control/string-null
 invalid/control/string-us
-invalid/string/literal-multiline-quotes-01
-invalid/string/literal-multiline-quotes-02
-invalid/string/multiline-bad-escape-04
-invalid/string/multiline-quotes-01
-valid/inline-table/newline
-valid/inline-table/newline-comment
-valid/spec-1.1.0/common-16
-valid/string/ends-in-whitespace-escape
-valid/string/escape-tricky
-valid/string/multiline
-valid/string/multiline-empty
