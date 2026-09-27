@@ -107,6 +107,17 @@ class TomlTest < Minitest::Test
     assert_equal(hash, parsed)
   end
 
+  def test_symbolize_keys_in_arrays
+    {
+      "a = [{b = 1}, {c = 2}]" => {a: [{b: 1}, {c: 2}]},
+      "a = [[{b = 1}], [[{c = 2}], 3]]" => {a: [[{b: 1}], [[{c: 2}], 3]]},
+      "a = [{b = {c = 1, d = [{e.f = 2}]}}]" => {a: [{b: {c: 1, d: [{e: {f: 2}}]}}]},
+      "a = [{b = 1}]\n[[x]]\ny = [{z = 2}]\n[[x]]\ny = []" => {a: [{b: 1}], x: [{y: [{z: 2}]}, {y: []}]}
+    }.each do |toml, symbolized|
+      assert_equal symbolized, TomlRB.parse(toml, symbolize_keys: true), toml
+    end
+  end
+
   def test_datetime_classes
     parsed = TomlRB.parse("odt = 1979-05-27T07:32:00Z\nldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00")
 

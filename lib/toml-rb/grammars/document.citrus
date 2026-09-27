@@ -39,9 +39,7 @@ grammar TomlRB::Document
 
   rule array_elements
     (toml_values (array_comments "," array_comments toml_values)*) {
-      captures[:toml_values].map(&:value).map do |v|
-        v.respond_to?(:value) ? v.value : v
-      end
+      captures[:toml_values].map(&:value)
     }
   end
 
