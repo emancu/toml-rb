@@ -154,6 +154,20 @@ class TomlTest < Minitest::Test
     assert_equal({"table" => {"a" => 1}}, parsed)
   end
 
+  def test_tables_and_dotted_keys
+    parsed = TomlRB.parse("[\"a.b\"]\nx = 1\n[a.b]\nx = 2")
+    assert_equal({"a.b" => {"x" => 1}, "a" => {"b" => {"x" => 2}}}, parsed)
+
+    parsed = TomlRB.parse("a = {b.c = 1, b.d = 2}")
+    assert_equal({"a" => {"b" => {"c" => 1, "d" => 2}}}, parsed)
+
+    parsed = TomlRB.parse("[fruit]\napple.color = \"red\"\n[fruit.apple.texture]\nsmooth = true")
+    assert_equal({"fruit" => {"apple" => {"color" => "red", "texture" => {"smooth" => true}}}}, parsed)
+
+    parsed = TomlRB.parse("[a.b.c]\n[a]\nb.d = 1")
+    assert_equal({"a" => {"b" => {"c" => {}, "d" => 1}}}, parsed)
+  end
+
   def test_valid_cases
     Dir["test/examples/valid/**/*.json"].each do |json_file|
       toml_file = File.join(File.dirname(json_file),

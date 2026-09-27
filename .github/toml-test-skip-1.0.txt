@@ -7,13 +7,10 @@
 # Categories of current gaps:
 #   - Date/time: parser accepts some out-of-range values (see lib/toml-rb/datetime.rb).
 #   - Control characters in strings/comments: lexer accepts some forbidden control bytes.
-#   - Dotted-key / table redefinition edge cases: parser is too lenient on a few invalids.
 #   - Multiline string quote-edge cases.
 #
 # Format: one toml-test name per line (no extension), comments start with '#'.
-invalid/array/extending-table
 invalid/array/only-comma-01
-invalid/array/tables-01
 invalid/control/comment-cr
 invalid/control/comment-del
 invalid/control/comment-ff
@@ -50,8 +47,6 @@ invalid/inline-table/linebreak-01
 invalid/inline-table/linebreak-02
 invalid/inline-table/linebreak-03
 invalid/inline-table/linebreak-04
-invalid/inline-table/overwrite-02
-invalid/inline-table/overwrite-05
 invalid/inline-table/trailing-comma
 invalid/integer/leading-zero-01
 invalid/integer/leading-zero-02
@@ -76,30 +71,17 @@ invalid/local-datetime/hour-over
 invalid/local-datetime/no-secs
 invalid/local-time/hour-over
 invalid/local-time/no-secs
-invalid/spec-1.0.0/table-9-0
-invalid/spec-1.0.0/table-9-1
 invalid/string/basic-byte-escapes
 invalid/string/literal-multiline-quotes-01
 invalid/string/literal-multiline-quotes-02
 invalid/string/multiline-bad-escape-04
 invalid/string/multiline-quotes-01
-invalid/table/append-with-dotted-keys-01
-invalid/table/append-with-dotted-keys-02
-invalid/table/append-with-dotted-keys-08
-invalid/table/duplicate-key-04
-invalid/table/duplicate-key-05
-invalid/table/duplicate-key-10
-invalid/table/redefine-02
-invalid/table/redefine-03
 valid/comment/tricky
 valid/datetime/datetime
 valid/empty-space
 valid/empty-tab
-valid/inline-table/key-dotted-02
 valid/spec-1.0.0/string-4
 valid/string/ends-in-whitespace-escape
 valid/string/escape-tricky
 valid/string/multiline
 valid/string/multiline-empty
-valid/table/names
-valid/table/names-with-values
