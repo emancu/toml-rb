@@ -299,6 +299,18 @@ class GrammarTest < Minitest::Test
 
     match = TomlRB::Document.parse("00:32:00.999999", root: :datetime)
     assert_equal(Time.at(60 * 32, 999999), match.value)
+
+    match = TomlRB::Document.parse("1979-05-27T07:32-07:00", root: :datetime)
+    assert_equal(Time.new(1979, 5, 27, 7, 32, 0, "-07:00"), match.value)
+
+    match = TomlRB::Document.parse("10:30:45", root: :datetime)
+    assert_equal(Time.utc(1970, 1, 1, 10, 30, 45), match.value)
+
+    ["10:30.5", "2025-01-01T10:30.5", "1979-05-27T07:32.5Z", "1979-05-27T07:32.5-07:00"].each do |datetime|
+      assert_raises Citrus::ParseError do
+        TomlRB::Document.parse(datetime, root: :datetime)
+      end
+    end
   end
 
   def test_inline_table
