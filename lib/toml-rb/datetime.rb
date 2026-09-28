@@ -5,63 +5,50 @@ module TomlRB
   LocalDate = Class.new(Time)
   LocalTime = Class.new(Time)
 
-  module DateSkeletonParser
-    def value
-      year, mon, day = [:year, :mon, :day].map { |s| capture(s).value }
-      unless Date.valid_date?(year.to_i, mon.to_i, day.to_i, Date::GREGORIAN)
-        raise ParseError, "Invalid date: #{year}-#{mon}-#{day}"
-      end
-      [year, mon, day]
-    end
-  end
+  module DatetimeParser
+    module_function
 
-  module TimeSkeletonParser
-    def value
-      hour, min, sec = [:hour, :mim, :sec].map { |s| capture(s)&.value || "0" }
-      unless hour.to_i.between?(0, 23) && min.to_i.between?(0, 59) && sec.to_i.between?(0, 60)
-        raise ParseError, "Invalid time: #{hour}:#{min}:#{sec}"
-      end
-      [hour, min, sec, capture(:sec_frac) || "0"]
-    end
-  end
-
-  module OffsetDateTimeParser
-    def value
-      skeleton = captures[:datetime_skeleton].first
-      year, mon, day, hour, min, sec, sec_frac = skeleton.value
-      offset = (captures[:date_offset].first || "+00:00").to_s
+    def offset_datetime(year, mon, day, hour, min, sec, sec_frac, offset)
+      validate_date(year, mon, day)
+      validate_time(hour, min, sec)
+      offset = "+00:00" if offset.casecmp?("Z")
       unless offset[1, 2].to_i.between?(0, 23) && offset[4, 2].to_i.between?(0, 59)
         raise ParseError, "Invalid UTC offset: #{offset}"
       end
-      sec = "#{sec}.#{sec_frac}".to_r
 
-      Time.new(year, mon, day, hour, min, sec, offset)
+      Time.new(year, mon, day, hour, min, seconds(sec, sec_frac), offset)
     end
-  end
 
-  module LocalDateTimeParser
-    def value
-      year, mon, day = captures[:date_skeleton].first.value
-      hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      sec = "#{sec}.#{sec_frac}".to_r
-
-      LocalDateTime.local(year, mon, day, hour, min, sec)
+    def local_datetime(year, mon, day, hour, min, sec, sec_frac)
+      validate_date(year, mon, day)
+      validate_time(hour, min, sec)
+      LocalDateTime.utc(year, mon, day, hour, min, seconds(sec, sec_frac))
     end
-  end
 
-  module LocalDateParser
-    def value
-      year, mon, day = captures[:date_skeleton].first.value
-      LocalDate.local(year, mon, day)
+    def local_date(year, mon, day)
+      validate_date(year, mon, day)
+      LocalDate.utc(year, mon, day)
     end
-  end
 
-  module LocalTimeParser
-    def value
-      hour, min, sec, sec_frac = captures[:time_skeleton].first.value
-      sec = "#{sec}.#{sec_frac}".to_r
+    def local_time(hour, min, sec, sec_frac)
+      validate_time(hour, min, sec)
+      LocalTime.utc(1970, 1, 1, hour, min, seconds(sec, sec_frac))
+    end
 
-      LocalTime.utc(1970, 1, 1, hour, min, sec)
+    def validate_date(year, mon, day)
+      unless Date.valid_date?(year.to_i, mon.to_i, day.to_i, Date::GREGORIAN)
+        raise ParseError, "Invalid date: #{year}-#{mon}-#{day}"
+      end
+    end
+
+    def validate_time(hour, min, sec)
+      unless hour.to_i.between?(0, 23) && min.to_i.between?(0, 59) && sec.to_i.between?(0, 60)
+        raise ParseError, "Invalid time: #{hour}:#{min}:#{sec || 0}"
+      end
+    end
+
+    def seconds(sec, sec_frac)
+      "#{sec || 0}.#{sec_frac || 0}".to_r
     end
   end
 end

@@ -59,6 +59,12 @@ class EncodingTest < Minitest::Test
     assert_equal({"key" => "value"}, result)
   end
 
+  def test_ascii_8bit_toml_with_high_bytes_parses_with_or_without_final_newline
+    ["k = \"\xFF\"", "k = \"\xFF\"\n"].each do |toml|
+      assert_equal({"k" => "\xFF".b}, TomlRB.parse(toml.b), toml.inspect)
+    end
+  end
+
   def test_null_bytes_raise_parse_error
     data_with_nulls = String.new("key\x00=\x00value", encoding: "ASCII-8BIT")
 

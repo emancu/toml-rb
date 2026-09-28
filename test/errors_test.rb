@@ -128,4 +128,59 @@ class ErrorsTest < Minitest::Test
       assert_raises(TomlRB::ValueOverwriteError, str) { TomlRB.parse(str) }
     end
   end
+
+  def test_syntax_error_messages
+    {
+      "[ owner emancu ]" => %(Unexpected "e" at line 1, column 9: expected ']'),
+      "a = 1 b = 2" => %(Unexpected "b" at line 1, column 7: expected a new line),
+      "a = [1, 2" => %(Unexpected end of input at line 1, column 10: expected ',' or ']'),
+      "\n\nkey = [1,\n  2 3]" => %(Unexpected "3" at line 4, column 5: expected ',' or ']'),
+      "a = \"café\" x" => %(Unexpected "x" at line 1, column 12: expected a new line),
+      "a = 1\r\nb = " => %(Unexpected end of input at line 2, column 5: expected a value)
+    }.each do |toml, message|
+      error = assert_raises(TomlRB::ParseError, toml) { TomlRB.parse(toml) }
+      assert_equal message, error.message
+    end
+  end
+
+  def test_multiline_string_errors_name_the_string
+    {
+      "a = \"\"\"\nfirst\nsecond\n" =>
+        %(Unexpected end of input at line 4, column 1: expected '"""' to close the string at line 1, column 5),
+      "a = \"\"\"\nok\n\x7F\"\"\"" =>
+        %(Unexpected "\\u007F" at line 3, column 1: expected '"""' to close the string at line 1, column 5),
+      "a = 1\nb = '''\nok\nx\x01y'''" =>
+        %(Unexpected "\\u0001" at line 4, column 2: expected "'''" to close the string at line 2, column 5)
+    }.each do |toml, message|
+      error = assert_raises(TomlRB::ParseError, toml) { TomlRB.parse(toml) }
+      assert_equal message, error.message
+    end
+  end
+
+  def test_nesting_limit
+    assert_nesting_limit
+  end
+
+  # Some Ruby runtimes give a thread a smaller stack than the main thread.
+  def test_nesting_limit_in_a_thread
+    Thread.new { assert_nesting_limit }.join
+  end
+
+  private
+
+  def assert_nesting_limit
+    [["["], ["{b = "], ["[", "{b = "]].each do |kinds|
+      deepest = kinds.cycle.first(100)
+      expected = deepest.reverse.reduce(1) { |inner, open| (open == "[") ? [inner] : {"b" => inner} }
+      assert_equal({"a" => expected}, TomlRB.parse(nested_toml(deepest)))
+
+      error = assert_raises(TomlRB::ParseError) { TomlRB.parse(nested_toml(kinds.cycle.first(101))) }
+      assert_match(/expected at most 100 nested arrays and inline tables\z/, error.message)
+    end
+  end
+
+  def nested_toml(opens)
+    closes = opens.reverse.map { |open| (open == "[") ? "]" : "}" }
+    "a = #{opens.join}1#{closes.join}"
+  end
 end

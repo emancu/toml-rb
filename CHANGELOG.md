@@ -1,5 +1,40 @@
 # Changelog
 
+## v6.0.0 (2026-09-28)
+
+### Breaking changes
+
+- toml-rb has no runtime dependencies. A parser on the `StringScanner` class
+  replaces Citrus, and `require "toml-rb"` does not load Citrus. (#212, #213)
+- This release removes the Citrus grammars `TomlRB::Document`,
+  `TomlRB::Primitive` and `TomlRB::Helper`, and their modules, like
+  `TomlRB::KeyvalueParser`. (#212)
+- More than 100 nested levels of arrays and inline tables, counted together,
+  raise `TomlRB::ParseError`. Before, up to 359 levels parsed on Ruby 3.4.1,
+  and more levels raised `SystemStackError`. (#212)
+- Syntax errors give the line, the column and the expected text, like
+  `Unexpected "e" at line 1, column 9: expected ']'`. Update code that matches
+  the old message. Errors for invalid values, like `Invalid date: 1979-13-01`,
+  do not change. (#212)
+- When a multi-line string has no end or has an invalid character, the error
+  also gives the line and the column where the string starts. (#212)
+- `parse` reports an invalid value, like `1979-13-01`, when it reads the value.
+  Before, any syntax error in the document came first. (#212)
+- `TomlRB::LocalDateTime` and `TomlRB::LocalDate` are UTC `Time` values, like
+  `TomlRB::LocalTime`. `utc?` is true, `utc_offset` is 0, and `to_s`, `zone`,
+  `iso8601` and YAML show UTC. The instant moves by the system UTC offset.
+  Compare with `Time.utc`. `dump` still writes no time zone. (#214)
+
+### Fixes
+
+- A local datetime in a daylight saving time (DST) gap of the system time zone
+  keeps its clock time: `2026-03-29T02:30:00` in Europe/Warsaw stays 02:30, not
+  03:30. A local date keeps the hour 0 when the zone skips midnight. (#214)
+- A document in an encoding other than UTF-8, like BINARY, gives the same
+  result with and without a newline at the end. (#212)
+- `dump` time grows in proportion to the output size. Before, it grew with the
+  square of the size, and a 3.3 MB lock file took 45 times longer. (#218)
+
 ## v5.0.0 (2026-09-28)
 
 ### Breaking changes

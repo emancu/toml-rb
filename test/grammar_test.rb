@@ -317,11 +317,11 @@ class GrammarTest < Minitest::Test
 
     assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), value_of("1979-05-27 07:32:00Z"))
 
-    assert_equal(Time.local(1979, 5, 27, 7, 32, 0), value_of("1979-05-27T07:32:00"))
+    assert_equal(Time.utc(1979, 5, 27, 7, 32, 0), value_of("1979-05-27T07:32:00"))
 
-    assert_equal(Time.local(1979, 5, 27, 0, 32, 0, 999999), value_of("1979-05-27T00:32:00.999999"))
+    assert_equal(Time.utc(1979, 5, 27, 0, 32, 0, 999999), value_of("1979-05-27T00:32:00.999999"))
 
-    assert_equal(Time.local(1979, 5, 27), value_of("1979-05-27"))
+    assert_equal(Time.utc(1979, 5, 27), value_of("1979-05-27"))
 
     assert_equal(Time.at(3600 * 7 + 60 * 32), value_of("07:32:00"))
 
@@ -360,11 +360,11 @@ class GrammarTest < Minitest::Test
       "2000-02-29t23:59:59z" => Time.utc(2000, 2, 29, 23, 59, 59),
       "2000-02-29t23:59:59+18:00" => Time.new(2000, 2, 29, 23, 59, 59, "+18:00"),
       "2000-02-29T23:59:59-18:00" => Time.new(2000, 2, 29, 23, 59, 59, "-18:00"),
-      "2000-02-29t23:59:59" => TomlRB::LocalDateTime.local(2000, 2, 29, 23, 59, 59),
-      "2000-02-29" => TomlRB::LocalDate.local(2000, 2, 29),
-      "1582-10-10" => TomlRB::LocalDate.local(1582, 10, 10),
+      "2000-02-29t23:59:59" => TomlRB::LocalDateTime.utc(2000, 2, 29, 23, 59, 59),
+      "2000-02-29" => TomlRB::LocalDate.utc(2000, 2, 29),
+      "1582-10-10" => TomlRB::LocalDate.utc(1582, 10, 10),
       "2016-12-31T23:59:60.5Z" => Time.utc(2016, 12, 31, 23, 59, 60.5r),
-      "2016-12-31T23:59:60.5" => TomlRB::LocalDateTime.local(2016, 12, 31, 23, 59, 60.5r),
+      "2016-12-31T23:59:60.5" => TomlRB::LocalDateTime.utc(2016, 12, 31, 23, 59, 60.5r),
       "23:59:60.5" => TomlRB::LocalTime.utc(1970, 1, 1, 23, 59, 60.5r)
     }.each do |datetime, expected|
       actual = value_of(datetime)
