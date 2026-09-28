@@ -146,8 +146,30 @@ class TomlTest < Minitest::Test
     assert_instance_of TomlRB::LocalDateTime, parsed["ldt"]
     assert_instance_of TomlRB::LocalTime, parsed["lt"]
     assert_equal Time.utc(1979, 5, 27, 7, 32, 0), parsed["odt"]
-    assert_equal Time.local(2025, 1, 1, 10, 30, 0), parsed["ldt"]
+    assert_equal Time.utc(2025, 1, 1, 10, 30, 0), parsed["ldt"]
     assert_equal Time.utc(1970, 1, 1, 10, 30, 0), parsed["lt"]
+  end
+
+  def test_local_values_ignore_the_process_time_zone
+    toml = "a = 2021-03-14T02:30:00\nb = 2021-03-28T02:30:00\nc = 2021-09-05\n"
+    gaps = {
+      "America/New_York" => [2021, 3, 14, 2, 30, 0],
+      "Europe/Warsaw" => [2021, 3, 28, 2, 30, 0],
+      "America/Santiago" => [2021, 9, 5, 0, 0, 0]
+    }
+    wall_clock = ->(time) { [time.year, time.mon, time.day, time.hour, time.min, time.sec] }
+    tz = ENV["TZ"]
+
+    gaps.each do |zone, gap|
+      ENV["TZ"] = zone
+      refute_equal gap, wall_clock.call(Time.local(*gap)), "Time.local keeps #{gap} in TZ=#{zone}"
+
+      parsed = TomlRB.parse(toml)
+      assert_equal gaps.values, parsed.values.map(&wall_clock), zone
+      assert_equal toml, TomlRB.dump(parsed), zone
+    end
+  ensure
+    ENV["TZ"] = tz
   end
 
   def test_line_break
