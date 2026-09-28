@@ -29,8 +29,10 @@ tomlib is a C extension. tomlrb uses the Racc runtime, which runs the parser loo
 gem install toml-rb:5.0.0 toml-rb:4.2.2 tomlrb:2.0.4 perfect_toml:0.9.1 tomlib:0.7.3
 ruby benchmark/run.rb
 RUBYOPT=--yjit ruby benchmark/run.rb
+RUBYOPT=--zjit ruby benchmark/run.rb
 ```
 
+`--zjit` needs Ruby 4.0 or later.
 The table shows "not installed" for a gem that is not installed.
 Do not use `bundle exec`. Bundler hides the gems that are not in `Gemfile.lock`.
 
@@ -63,3 +65,42 @@ The results are from 2026-09-28, on an Apple M3 Pro (5 performance cores and 6 e
 | tomlrb 2.0.4 | 317.5 µs (6.53x) | 31.7 ms (7.06x) | 318.9 ms (6.86x) |
 | perfect_toml 0.9.1 | 54.6 µs (1.12x) | 4.5 ms (1.01x) | 46.4 ms (1.00x) |
 | tomlib 0.7.3 (native) | 9.9 µs (0.20x) | 929.3 µs (0.21x) | 9.9 ms (0.21x) |
+
+### Ruby 4.0.7
+
+`ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin25]`
+
+| Library | example.toml (0.8 KB) | 100 packages (99.1 KB) | 1,000 packages (1003.4 KB) |
+|---|---:|---:|---:|
+| toml-rb (this checkout) | 68.3 µs (1.00x) | 5.8 ms (1.00x) | 62.0 ms (1.00x) |
+| toml-rb 5.0.0 | 4.3 ms (63.42x) | 513.3 ms (87.89x) | 5.21 s (84.07x) |
+| toml-rb 4.2.2 | 4.1 ms (60.14x) | 471.1 ms (80.67x) | 4.81 s (77.60x) |
+| tomlrb 2.0.4 | 384.9 µs (5.64x) | 36.6 ms (6.27x) | 381.3 ms (6.15x) |
+| perfect_toml 0.9.1 | 70.1 µs (1.03x) | 6.0 ms (1.03x) | 62.5 ms (1.01x) |
+| tomlib 0.7.3 (native) | 10.1 µs (0.15x) | 915.0 µs (0.16x) | 9.4 ms (0.15x) |
+
+### Ruby 4.0.7 with YJIT
+
+`ruby 4.0.7 (2026-09-15 revision 229531a6cf) +YJIT +PRISM [arm64-darwin25]`
+
+| Library | example.toml (0.8 KB) | 100 packages (99.1 KB) | 1,000 packages (1003.4 KB) |
+|---|---:|---:|---:|
+| toml-rb (this checkout) | 49.5 µs (1.00x) | 4.3 ms (1.00x) | 44.4 ms (1.00x) |
+| toml-rb 5.0.0 | 3.0 ms (60.23x) | 432.0 ms (99.40x) | 9.39 s (211.58x) |
+| toml-rb 4.2.2 | 2.9 ms (58.63x) | 450.2 ms (103.61x) | 9.50 s (214.06x) |
+| tomlrb 2.0.4 | 316.2 µs (6.39x) | 32.7 ms (7.53x) | 317.4 ms (7.16x) |
+| perfect_toml 0.9.1 | 56.4 µs (1.14x) | 4.6 ms (1.06x) | 46.9 ms (1.06x) |
+| tomlib 0.7.3 (native) | 10.1 µs (0.20x) | 906.7 µs (0.21x) | 9.5 ms (0.21x) |
+
+### Ruby 4.0.7 with ZJIT
+
+`ruby 4.0.7 (2026-09-15 revision 229531a6cf) +ZJIT +PRISM [arm64-darwin25]`
+
+| Library | example.toml (0.8 KB) | 100 packages (99.1 KB) | 1,000 packages (1003.4 KB) |
+|---|---:|---:|---:|
+| toml-rb (this checkout) | 58.5 µs (1.00x) | 5.2 ms (1.00x) | 54.5 ms (1.00x) |
+| toml-rb 5.0.0 | 3.9 ms (66.01x) | 474.9 ms (90.90x) | 4.83 s (88.61x) |
+| toml-rb 4.2.2 | 3.6 ms (62.13x) | 439.7 ms (84.15x) | 4.54 s (83.32x) |
+| tomlrb 2.0.4 | 339.3 µs (5.80x) | 37.3 ms (7.14x) | 344.9 ms (6.33x) |
+| perfect_toml 0.9.1 | 60.5 µs (1.03x) | 5.2 ms (0.99x) | 52.2 ms (0.96x) |
+| tomlib 0.7.3 (native) | 10.0 µs (0.17x) | 924.5 µs (0.18x) | 9.7 ms (0.18x) |
