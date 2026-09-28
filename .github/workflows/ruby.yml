@@ -9,9 +9,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, tmp/no-citrus ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, tmp/no-citrus ]
+    branches: [ master ]
   workflow_dispatch:
   schedule:
     - cron: '0 6 1,15 * *'  # Runs at 06:00, on day 1 and 15 of the month

@@ -2,9 +2,9 @@ name: Conformance
 
 on:
   push:
-    branches: [ master, tmp/no-citrus ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, tmp/no-citrus ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:

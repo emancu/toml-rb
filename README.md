@@ -9,7 +9,7 @@ toml-rb
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb/badges/gpa.svg)](https://codeclimate.com/github/emancu/toml-rb)
 [![RubyGem](https://img.shields.io/gem/dt/toml-rb.svg)](https://rubygems.org/gems/toml-rb)
 
-A [TOML](https://github.com/toml-lang/toml) parser and dumper with no runtime dependencies.
+A pure Ruby [TOML](https://github.com/toml-lang/toml) parser and dumper with no runtime dependencies.
 
 toml-rb implements [TOML 1.1.0](https://toml.io/en/v1.1.0) and passes all [toml-test](https://github.com/toml-lang/toml-test) v2.2.0 decoder tests for that version.
 
@@ -20,7 +20,7 @@ Installation
 
 Or add this line to your Gemfile:
 
-    gem "toml-rb", "~> 5.0"
+    gem "toml-rb", "~> 6.0"
 
 Parser Usage
 ------------
