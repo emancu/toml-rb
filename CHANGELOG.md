@@ -32,6 +32,8 @@
   03:30. A local date keeps the hour 0 when the zone skips midnight. (#214)
 - A document in an encoding other than UTF-8, like BINARY, gives the same
   result with and without a newline at the end. (#212)
+- `dump` time grows in proportion to the output size. Before, it grew with the
+  square of the size, and a 3.3 MB lock file took 45 times longer. (#218)
 
 ## v5.0.0 (2026-09-28)
 

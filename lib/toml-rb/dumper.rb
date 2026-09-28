@@ -19,7 +19,7 @@ module TomlRB
     attr_reader :toml_str
 
     def initialize(hash)
-      @toml_str = ""
+      @toml_str = +""
 
       visit(hash, [])
     end
@@ -78,7 +78,7 @@ module TomlRB
     def dump_simple_pairs(simple_pairs)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
-        @toml_str += "#{key} = #{to_toml(val)}\n"
+        @toml_str << "#{key} = #{to_toml(val)}\n"
       end
     end
 
@@ -108,7 +108,7 @@ module TomlRB
       new_prefix = prefix.join(".")
       new_prefix = "[" + new_prefix + "]" if extra_brackets
 
-      @toml_str += "[" + new_prefix + "]\n"
+      @toml_str << "[" + new_prefix + "]\n"
     end
 
     def to_toml(obj)
