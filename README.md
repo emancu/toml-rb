@@ -18,6 +18,10 @@ Installation
 
     $ gem install toml-rb
 
+Or add this line to your Gemfile:
+
+    gem "toml-rb", "~> 5.0"
+
 Parser Usage
 ------------
 
