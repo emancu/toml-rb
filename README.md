@@ -61,6 +61,8 @@ TomlRB.parse(times).transform_values(&:class)
 Dumper Usage
 ------------
 
+`TomlRB.dump` raises `TomlRB::Error` for more than 100 nested tables and arrays, and for cyclic values.
+
 ```ruby
 require 'toml-rb'
 
@@ -84,12 +86,6 @@ TomlRB.dump(hash)
 
 Conformance
 -----------
-
-`TomlRB.dump` raises `TomlRB::Error` for more than 100 nested tables and
-arrays, counted together below the root hash. This includes tables created
-by dotted keys and headers, arrays of tables, and Ruby values containing
-cycles. The limit prevents a `SystemStackError`; parsing dotted keys and
-headers is unchanged.
 
 `toml-rb` is exercised against the official
 [toml-test](https://github.com/toml-lang/toml-test) conformance suite for both

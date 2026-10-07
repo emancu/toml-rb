@@ -2,10 +2,10 @@
 
 ## Unreleased
 
+### Breaking changes
+
 - `dump` raises `TomlRB::Error` for more than 100 nested tables and arrays,
-  counted together below the root hash, instead of `SystemStackError` for
-  deeply nested or cyclic values. Parsing dotted keys and headers is
-  unchanged. (#219)
+  and for cyclic values. (#219)
 
 ## v6.0.0 (2026-09-28)
 

@@ -2,63 +2,18 @@ require_relative "helper"
 require "date"
 
 class DumperTest < Minitest::Test
-  def test_dump_rejects_deep_tables
-    hash = {"x" => 1}
-    5_000.times { hash = {"a" => hash} }
-    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
-  end
-
-  def test_dump_rejects_deep_arrays
-    value = 1
-    5_000.times { value = [value] }
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => value) }
-  end
-
-  def test_dump_rejects_deep_inline_tables
-    value = 1
-    5_000.times { value = [0, {"a" => value}] }
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => value) }
-  end
-
-  def test_dump_rejects_deep_table_arrays
-    hash = {"x" => 1}
-    5_000.times { hash = {"a" => [hash]} }
-    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
-  end
-
   def test_dump_rejects_deep_parsed_keys
     dotted = TomlRB.parse(("a." * 5_000) + "x = 1\n")
-    header = TomlRB.parse("[" + (["a"] * 5_000).join(".") + "]\nx = 1\n")
-    [dotted, header].each do |hash|
-      assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
-    end
+    assert_raises(TomlRB::Error) { TomlRB.dump(dotted) }
   end
 
   def test_dump_nesting_boundary
-    tables = {"x" => 1}
-    arrays = 1
-    100.times do
-      tables = {"a" => tables}
-      arrays = [arrays]
-    end
-    assert_equal(tables, TomlRB.parse(TomlRB.dump(tables)))
-    assert_equal({"a" => arrays}, TomlRB.parse(TomlRB.dump("a" => arrays)))
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => tables) }
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [arrays]) }
+    assert_dump_nesting_boundary
   end
 
-  def test_dump_table_array_nesting_boundary
-    hash = {"x" => 1}
-    50.times { hash = {"a" => [hash]} }
-    assert_equal(hash, TomlRB.parse(TomlRB.dump(hash)))
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [hash]) }
-  end
-
-  def test_dump_counts_mixed_nesting
-    value = 1
-    50.times { value = [0, {"a" => value}] }
-    assert_equal({"a" => value}, TomlRB.parse(TomlRB.dump("a" => value)))
-    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [value]) }
+  # Some Ruby runtimes give a thread a smaller stack than the main thread.
+  def test_dump_nesting_boundary_in_a_thread
+    Thread.new { assert_dump_nesting_boundary }.join
   end
 
   def test_dump_rejects_cycles
@@ -72,6 +27,7 @@ class DumperTest < Minitest::Test
 
   def test_dump_allows_shared_values
     shared = {"x" => 1}
+    99.times { shared = {"a" => shared} }
     hash = {"a" => shared, "b" => shared}
     assert_equal(hash, TomlRB.parse(TomlRB.dump(hash)))
   end
@@ -359,5 +315,40 @@ class DumperTest < Minitest::Test
 
   def test_dump_regexp_with_interpolation_chars
     assert_equal({"r" => "/\#{x}/"}, TomlRB.parse(TomlRB.dump(r: Regexp.new("\#{x}"))))
+  end
+
+  private
+
+  def assert_dump_nesting_boundary
+    tables = {"x" => 1}
+    arrays = 1
+    100.times do
+      tables = {"a" => tables}
+      arrays = [arrays]
+    end
+    assert_dump_boundary(tables, {"a" => tables})
+    assert_dump_boundary({"a" => arrays}, {"a" => [arrays]})
+
+    table_arrays = {"x" => 1}
+    50.times { table_arrays = {"a" => [table_arrays]} }
+    assert_dump_boundary(table_arrays, {"a" => [table_arrays]})
+
+    mixed = 1
+    50.times { mixed = [0, {"a" => mixed}] }
+    assert_dump_boundary({"a" => mixed}, {"a" => [mixed]})
+
+    table_value = 1
+    99.times { table_value = [table_value] }
+    assert_dump_boundary({"table" => {"a" => table_value}}, {"table" => {"a" => [table_value]}})
+
+    table_array_value = 1
+    98.times { table_array_value = [table_array_value] }
+    assert_dump_boundary({"table" => [{"a" => table_array_value}]}, {"table" => [{"a" => [table_array_value]}]})
+  end
+
+  def assert_dump_boundary(allowed, too_deep)
+    assert_equal(allowed, TomlRB.parse(TomlRB.dump(allowed)))
+    error = assert_raises(TomlRB::Error) { TomlRB.dump(too_deep) }
+    assert_match(/\ACannot dump more than 100 nested tables and arrays\z/, error.message)
   end
 end

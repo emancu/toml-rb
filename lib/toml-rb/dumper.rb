@@ -22,21 +22,21 @@ module TomlRB
 
     def initialize(hash)
       @toml_str = +""
+      @depth = 0
 
       visit(hash, [])
     end
 
     private
 
-    def visit(hash, prefix, extra_brackets = false, depth = 0)
-      check_nesting(depth)
+    def visit(hash, prefix, extra_brackets = false)
       simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
 
       if prefix.any? && (simple_pairs.any? || hash.empty?)
         print_prefix prefix, extra_brackets
       end
 
-      dump_pairs simple_pairs, nested_pairs, table_array_pairs, prefix, depth
+      dump_pairs simple_pairs, nested_pairs, table_array_pairs, prefix
     end
 
     def sort_pairs(hash)
@@ -71,40 +71,42 @@ module TomlRB
       end
     end
 
-    def dump_pairs(simple, nested, table_array, prefix = [], depth = 0)
+    def dump_pairs(simple, nested, table_array, prefix = [])
       # First add simple pairs, under the prefix
-      dump_simple_pairs simple, depth
-      dump_nested_pairs nested, prefix, depth
-      dump_table_array_pairs table_array, prefix, depth
+      dump_simple_pairs simple
+      dump_nested_pairs nested, prefix
+      dump_table_array_pairs table_array, prefix
     end
 
-    def dump_simple_pairs(simple_pairs, depth)
+    def dump_simple_pairs(simple_pairs)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
-        @toml_str << "#{key} = #{to_toml(val, depth)}\n"
+        @toml_str << "#{key} = #{to_toml(val)}\n"
       end
     end
 
-    def dump_nested_pairs(nested_pairs, prefix, depth)
+    def dump_nested_pairs(nested_pairs, prefix)
       nested_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
 
-        visit val, prefix + [key], false, depth + 1
+        nested { visit val, prefix + [key], false }
       end
     end
 
-    def dump_table_array_pairs(table_array_pairs, prefix, depth)
+    def dump_table_array_pairs(table_array_pairs, prefix)
       table_array_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
         aux_prefix = prefix + [key]
 
-        # Count the array and each child table as separate containers.
-        check_nesting(depth + 2)
         val.each do |child|
-          print_prefix aux_prefix, true
-          args = sort_pairs(child) << aux_prefix
+          nested do
+            nested do
+              print_prefix aux_prefix, true
+              args = sort_pairs(child) << aux_prefix
 
-          dump_pairs(*args, depth + 2)
+              dump_pairs(*args)
+            end
+          end
         end
       end
     end
@@ -116,12 +118,7 @@ module TomlRB
       @toml_str << "[" + new_prefix + "]\n"
     end
 
-    def to_toml(obj, depth = 0)
-      if obj.is_a?(Array) || obj.is_a?(Hash)
-        depth += 1
-        check_nesting(depth)
-      end
-
+    def to_toml(obj)
       if obj.is_a?(LocalDate)
         obj.strftime("%Y-%m-%d")
       elsif obj.is_a?(LocalTime)
@@ -138,14 +135,16 @@ module TomlRB
       elsif obj.is_a?(String) || obj.is_a?(Symbol)
         escape_string(obj.to_s)
       elsif obj.is_a?(Array)
-        "[" + obj.map { |val| to_toml(val, depth) }.join(", ") + "]"
+        nested { "[" + obj.map { |val| to_toml(val) }.join(", ") + "]" }
       elsif obj.is_a?(Hash)
-        pairs = sorted_keys(obj).map do |key|
-          val = obj[key]
-          key = quote_key(key) unless bare_key? key
-          "#{key} = #{to_toml(val, depth)}"
+        nested do
+          pairs = sorted_keys(obj).map do |key|
+            val = obj[key]
+            key = quote_key(key) unless bare_key? key
+            "#{key} = #{to_toml(val)}"
+          end
+          "{" + pairs.join(", ") + "}"
         end
-        "{" + pairs.join(", ") + "}"
       elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
         # Ruby renders these as Infinity/-Infinity/NaN, which are invalid TOML.
         if obj.nan?
@@ -165,8 +164,12 @@ module TomlRB
       end
     end
 
-    def check_nesting(depth)
-      raise Error, "Cannot dump more than #{MAX_NESTING} nested tables and arrays" if depth > MAX_NESTING
+    def nested
+      @depth += 1
+      raise Error, "Cannot dump more than #{MAX_NESTING} nested tables and arrays" if @depth > MAX_NESTING
+      yield
+    ensure
+      @depth -= 1
     end
 
     def bare_key?(key)
