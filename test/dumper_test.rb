@@ -2,6 +2,80 @@ require_relative "helper"
 require "date"
 
 class DumperTest < Minitest::Test
+  def test_dump_rejects_deep_tables
+    hash = {"x" => 1}
+    5_000.times { hash = {"a" => hash} }
+    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
+  end
+
+  def test_dump_rejects_deep_arrays
+    value = 1
+    5_000.times { value = [value] }
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => value) }
+  end
+
+  def test_dump_rejects_deep_inline_tables
+    value = 1
+    5_000.times { value = [0, {"a" => value}] }
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => value) }
+  end
+
+  def test_dump_rejects_deep_table_arrays
+    hash = {"x" => 1}
+    5_000.times { hash = {"a" => [hash]} }
+    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
+  end
+
+  def test_dump_rejects_deep_parsed_keys
+    dotted = TomlRB.parse(("a." * 5_000) + "x = 1\n")
+    header = TomlRB.parse("[" + (["a"] * 5_000).join(".") + "]\nx = 1\n")
+    [dotted, header].each do |hash|
+      assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
+    end
+  end
+
+  def test_dump_nesting_boundary
+    tables = {"x" => 1}
+    arrays = 1
+    100.times do
+      tables = {"a" => tables}
+      arrays = [arrays]
+    end
+    assert_equal(tables, TomlRB.parse(TomlRB.dump(tables)))
+    assert_equal({"a" => arrays}, TomlRB.parse(TomlRB.dump("a" => arrays)))
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => tables) }
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [arrays]) }
+  end
+
+  def test_dump_table_array_nesting_boundary
+    hash = {"x" => 1}
+    50.times { hash = {"a" => [hash]} }
+    assert_equal(hash, TomlRB.parse(TomlRB.dump(hash)))
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [hash]) }
+  end
+
+  def test_dump_counts_mixed_nesting
+    value = 1
+    50.times { value = [0, {"a" => value}] }
+    assert_equal({"a" => value}, TomlRB.parse(TomlRB.dump("a" => value)))
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => [value]) }
+  end
+
+  def test_dump_rejects_cycles
+    hash = {}
+    hash["a"] = hash
+    array = []
+    array << array
+    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => array) }
+  end
+
+  def test_dump_allows_shared_values
+    shared = {"x" => 1}
+    hash = {"a" => shared, "b" => shared}
+    assert_equal(hash, TomlRB.parse(TomlRB.dump(hash)))
+  end
+
   def test_dump_empty
     dumped = TomlRB.dump({})
     assert_equal("", dumped)

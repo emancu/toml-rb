@@ -4,6 +4,8 @@ require "date"
 
 module TomlRB
   class Dumper
+    MAX_NESTING = 100
+
     # TOML basic strings only allow these short escapes; every other control
     # character must be written as \uXXXX (TOML 1.0.0 spec).
     BASIC_ESCAPES = {
@@ -26,14 +28,15 @@ module TomlRB
 
     private
 
-    def visit(hash, prefix, extra_brackets = false)
+    def visit(hash, prefix, extra_brackets = false, depth = 0)
+      check_nesting(depth)
       simple_pairs, nested_pairs, table_array_pairs = sort_pairs hash
 
       if prefix.any? && (simple_pairs.any? || hash.empty?)
         print_prefix prefix, extra_brackets
       end
 
-      dump_pairs simple_pairs, nested_pairs, table_array_pairs, prefix
+      dump_pairs simple_pairs, nested_pairs, table_array_pairs, prefix, depth
     end
 
     def sort_pairs(hash)
@@ -68,38 +71,40 @@ module TomlRB
       end
     end
 
-    def dump_pairs(simple, nested, table_array, prefix = [])
+    def dump_pairs(simple, nested, table_array, prefix = [], depth = 0)
       # First add simple pairs, under the prefix
-      dump_simple_pairs simple
-      dump_nested_pairs nested, prefix
-      dump_table_array_pairs table_array, prefix
+      dump_simple_pairs simple, depth
+      dump_nested_pairs nested, prefix, depth
+      dump_table_array_pairs table_array, prefix, depth
     end
 
-    def dump_simple_pairs(simple_pairs)
+    def dump_simple_pairs(simple_pairs, depth)
       simple_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
-        @toml_str << "#{key} = #{to_toml(val)}\n"
+        @toml_str << "#{key} = #{to_toml(val, depth)}\n"
       end
     end
 
-    def dump_nested_pairs(nested_pairs, prefix)
+    def dump_nested_pairs(nested_pairs, prefix, depth)
       nested_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
 
-        visit val, prefix + [key], false
+        visit val, prefix + [key], false, depth + 1
       end
     end
 
-    def dump_table_array_pairs(table_array_pairs, prefix)
+    def dump_table_array_pairs(table_array_pairs, prefix, depth)
       table_array_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
         aux_prefix = prefix + [key]
 
+        # Count the array and each child table as separate containers.
+        check_nesting(depth + 2)
         val.each do |child|
           print_prefix aux_prefix, true
           args = sort_pairs(child) << aux_prefix
 
-          dump_pairs(*args)
+          dump_pairs(*args, depth + 2)
         end
       end
     end
@@ -111,7 +116,12 @@ module TomlRB
       @toml_str << "[" + new_prefix + "]\n"
     end
 
-    def to_toml(obj)
+    def to_toml(obj, depth = 0)
+      if obj.is_a?(Array) || obj.is_a?(Hash)
+        depth += 1
+        check_nesting(depth)
+      end
+
       if obj.is_a?(LocalDate)
         obj.strftime("%Y-%m-%d")
       elsif obj.is_a?(LocalTime)
@@ -128,12 +138,12 @@ module TomlRB
       elsif obj.is_a?(String) || obj.is_a?(Symbol)
         escape_string(obj.to_s)
       elsif obj.is_a?(Array)
-        "[" + obj.map(&method(:to_toml)).join(", ") + "]"
+        "[" + obj.map { |val| to_toml(val, depth) }.join(", ") + "]"
       elsif obj.is_a?(Hash)
         pairs = sorted_keys(obj).map do |key|
           val = obj[key]
           key = quote_key(key) unless bare_key? key
-          "#{key} = #{to_toml(val)}"
+          "#{key} = #{to_toml(val, depth)}"
         end
         "{" + pairs.join(", ") + "}"
       elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
@@ -153,6 +163,10 @@ module TomlRB
       else
         raise Error, "Cannot dump #{obj.class} to TOML"
       end
+    end
+
+    def check_nesting(depth)
+      raise Error, "Cannot dump more than #{MAX_NESTING} nested tables and arrays" if depth > MAX_NESTING
     end
 
     def bare_key?(key)
