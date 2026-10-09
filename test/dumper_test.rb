@@ -2,6 +2,36 @@ require_relative "helper"
 require "date"
 
 class DumperTest < Minitest::Test
+  def test_dump_rejects_deep_parsed_keys
+    dotted = TomlRB.parse(("a." * 5_000) + "x = 1\n")
+    assert_raises(TomlRB::Error) { TomlRB.dump(dotted) }
+  end
+
+  def test_dump_nesting_boundary
+    assert_dump_nesting_boundary
+  end
+
+  # Some Ruby runtimes give a thread a smaller stack than the main thread.
+  def test_dump_nesting_boundary_in_a_thread
+    Thread.new { assert_dump_nesting_boundary }.join
+  end
+
+  def test_dump_rejects_cycles
+    hash = {}
+    hash["a"] = hash
+    array = []
+    array << array
+    assert_raises(TomlRB::Error) { TomlRB.dump(hash) }
+    assert_raises(TomlRB::Error) { TomlRB.dump("a" => array) }
+  end
+
+  def test_dump_allows_shared_values
+    shared = {"x" => 1}
+    99.times { shared = {"a" => shared} }
+    hash = {"a" => shared, "b" => shared}
+    assert_equal(hash, TomlRB.parse(TomlRB.dump(hash)))
+  end
+
   def test_dump_empty
     dumped = TomlRB.dump({})
     assert_equal("", dumped)
@@ -285,5 +315,40 @@ class DumperTest < Minitest::Test
 
   def test_dump_regexp_with_interpolation_chars
     assert_equal({"r" => "/\#{x}/"}, TomlRB.parse(TomlRB.dump(r: Regexp.new("\#{x}"))))
+  end
+
+  private
+
+  def assert_dump_nesting_boundary
+    tables = {"x" => 1}
+    arrays = 1
+    100.times do
+      tables = {"a" => tables}
+      arrays = [arrays]
+    end
+    assert_dump_boundary(tables, {"a" => tables})
+    assert_dump_boundary({"a" => arrays}, {"a" => [arrays]})
+
+    table_arrays = {"x" => 1}
+    50.times { table_arrays = {"a" => [table_arrays]} }
+    assert_dump_boundary(table_arrays, {"a" => [table_arrays]})
+
+    mixed = 1
+    50.times { mixed = [0, {"a" => mixed}] }
+    assert_dump_boundary({"a" => mixed}, {"a" => [mixed]})
+
+    table_value = 1
+    99.times { table_value = [table_value] }
+    assert_dump_boundary({"table" => {"a" => table_value}}, {"table" => {"a" => [table_value]}})
+
+    table_array_value = 1
+    98.times { table_array_value = [table_array_value] }
+    assert_dump_boundary({"table" => [{"a" => table_array_value}]}, {"table" => [{"a" => [table_array_value]}]})
+  end
+
+  def assert_dump_boundary(allowed, too_deep)
+    assert_equal(allowed, TomlRB.parse(TomlRB.dump(allowed)))
+    error = assert_raises(TomlRB::Error) { TomlRB.dump(too_deep) }
+    assert_match(/\ACannot dump more than 100 nested tables and arrays\z/, error.message)
   end
 end

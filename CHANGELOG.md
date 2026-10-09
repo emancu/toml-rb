@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Breaking changes
+
+- `dump` raises `TomlRB::Error` for more than 100 nested tables and arrays,
+  and for cyclic values. (#219)
+
 ## v6.0.0 (2026-09-28)
 
 ### Breaking changes

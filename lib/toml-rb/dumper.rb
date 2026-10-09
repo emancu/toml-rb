@@ -4,6 +4,8 @@ require "date"
 
 module TomlRB
   class Dumper
+    MAX_NESTING = 100
+
     # TOML basic strings only allow these short escapes; every other control
     # character must be written as \uXXXX (TOML 1.0.0 spec).
     BASIC_ESCAPES = {
@@ -20,6 +22,7 @@ module TomlRB
 
     def initialize(hash)
       @toml_str = +""
+      @depth = 0
 
       visit(hash, [])
     end
@@ -68,10 +71,10 @@ module TomlRB
       end
     end
 
-    def dump_pairs(simple, nested, table_array, prefix = [])
+    def dump_pairs(simple, nested_pairs, table_array, prefix = [])
       # First add simple pairs, under the prefix
       dump_simple_pairs simple
-      dump_nested_pairs nested, prefix
+      dump_nested_pairs nested_pairs, prefix
       dump_table_array_pairs table_array, prefix
     end
 
@@ -86,7 +89,7 @@ module TomlRB
       nested_pairs.each do |key, val|
         key = quote_key(key) unless bare_key? key
 
-        visit val, prefix + [key], false
+        nested { visit val, prefix + [key], false }
       end
     end
 
@@ -96,10 +99,14 @@ module TomlRB
         aux_prefix = prefix + [key]
 
         val.each do |child|
-          print_prefix aux_prefix, true
-          args = sort_pairs(child) << aux_prefix
+          nested do
+            nested do
+              print_prefix aux_prefix, true
+              args = sort_pairs(child) << aux_prefix
 
-          dump_pairs(*args)
+              dump_pairs(*args)
+            end
+          end
         end
       end
     end
@@ -128,14 +135,16 @@ module TomlRB
       elsif obj.is_a?(String) || obj.is_a?(Symbol)
         escape_string(obj.to_s)
       elsif obj.is_a?(Array)
-        "[" + obj.map(&method(:to_toml)).join(", ") + "]"
+        nested { "[" + obj.map { |val| to_toml(val) }.join(", ") + "]" }
       elsif obj.is_a?(Hash)
-        pairs = sorted_keys(obj).map do |key|
-          val = obj[key]
-          key = quote_key(key) unless bare_key? key
-          "#{key} = #{to_toml(val)}"
+        nested do
+          pairs = sorted_keys(obj).map do |key|
+            val = obj[key]
+            key = quote_key(key) unless bare_key? key
+            "#{key} = #{to_toml(val)}"
+          end
+          "{" + pairs.join(", ") + "}"
         end
-        "{" + pairs.join(", ") + "}"
       elsif obj.is_a?(Float) && (obj.nan? || obj.infinite?)
         # Ruby renders these as Infinity/-Infinity/NaN, which are invalid TOML.
         if obj.nan?
@@ -153,6 +162,14 @@ module TomlRB
       else
         raise Error, "Cannot dump #{obj.class} to TOML"
       end
+    end
+
+    def nested
+      @depth += 1
+      raise Error, "Cannot dump more than #{MAX_NESTING} nested tables and arrays" if @depth > MAX_NESTING
+      yield
+    ensure
+      @depth -= 1
     end
 
     def bare_key?(key)

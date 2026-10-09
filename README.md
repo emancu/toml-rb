@@ -61,6 +61,8 @@ TomlRB.parse(times).transform_values(&:class)
 Dumper Usage
 ------------
 
+`TomlRB.dump` raises `TomlRB::Error` for more than 100 nested tables and arrays, and for cyclic values.
+
 ```ruby
 require 'toml-rb'
 
