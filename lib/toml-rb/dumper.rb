@@ -71,10 +71,10 @@ module TomlRB
       end
     end
 
-    def dump_pairs(simple, nested, table_array, prefix = [])
+    def dump_pairs(simple, nested_pairs, table_array, prefix = [])
       # First add simple pairs, under the prefix
       dump_simple_pairs simple
-      dump_nested_pairs nested, prefix
+      dump_nested_pairs nested_pairs, prefix
       dump_table_array_pairs table_array, prefix
     end
 
